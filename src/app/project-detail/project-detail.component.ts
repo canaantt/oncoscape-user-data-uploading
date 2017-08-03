@@ -55,7 +55,7 @@ export class ProjectDetailComponent implements  OnInit {
   files: any;
   statusMsg: any;
   lastModifiedTime: any;
-  errorMessage = {Name: '', DataCompliance: ''};
+  errorMessage = { Name: '', DataCompliance: ''};
   users$: Observable<any>;
   results$: Observable<any>;
   newAnnotationForm: FormGroup;
@@ -111,8 +111,8 @@ export class ProjectDetailComponent implements  OnInit {
   }
   ngOnInit(): void {
     this.newAnnotationForm = new FormGroup({
-        key: new FormControl(''),
-        value: new FormControl('')
+        key: new FormControl('', Validators.required),
+        value: new FormControl('', Validators.required),
       });
   }
 
@@ -184,7 +184,6 @@ export class ProjectDetailComponent implements  OnInit {
       this.project.DataCompliance.IECNumber = '';
       this.project.DataCompliance.Waiver = '';
       this.project.DataCompliance.HumanStudy = '';
-      console.log(this.project);
       this.update(this.project);
     }
   }
