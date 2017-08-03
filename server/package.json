@@ -1,0 +1,57 @@
+{
+  "private": true,
+  "engines": {
+    "node": ">=4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.5.2",
+    "browser-sync": "^2.2.1",
+    "express": "^4.13.4",
+    "url-loader": "^0.5.8"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true,
+      "browser": true
+    },
+    "rules": {
+      "quotes": [
+        2,
+        "single"
+      ]
+    }
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "csvtojson": "^1.1.6",
+    "excel-as-json": "^2.0.1",
+    "excel-parser": "^0.2.2",
+    "express": "^4.15.2",
+    "express-fileupload": "^0.1.2",
+    "file-browser": "0.0.5",
+    "file-loader": "^0.11.1",
+    "file-type": "^4.1.0",
+    "font-awesome": "^4.7.0",
+    "fs": "0.0.1-security",
+    "gridfs-stream": "^1.1.1",
+    "jsonfile": "^2.4.0",
+    "jsonfile-promised": "0.0.1",
+    "method-override": "^2.3.7",
+    "mongodb": "^2.2.5",
+    "mongoose": "^4.6.1",
+    "multer": "^1.3.0",
+    "multer-gridfs-storage": "^1.0.1",
+    "node-async-loop": "^1.2.2",
+    "node-tsv-json": "^0.2.1",
+    "path": "^0.12.7",
+    "promise": "^7.1.1",
+    "read-chunk": "^2.0.0",
+    "request": "^2.81.0",
+    "underscore": "^1.8.3"
+  }
+}

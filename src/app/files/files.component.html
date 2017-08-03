@@ -1,0 +1,64 @@
+<h3>Files Management</h3>
+<div class='well well-lg'>
+  <div class="row">
+    <div class="col-md-12" *ngIf="project.File">
+      <label>Existing File meta data</label>
+      <button type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
+          <span class="glyphicon glyphicon-minor"></span>Remove
+      </button>
+      <table>
+        <thead>
+          <td>File Name</td>
+          <td>Size</td>
+          <td>Timestamp</td>
+        </thead>
+        <tbody>
+          <td>{{project.File.filename}}</td>
+          <td>{{project.File.size}}</td>
+          <td>{{project.File.timestamp}}</td>
+        </tbody>
+      </table>
+      <hr>
+    </div>
+    <div class="col-md-12" *ngIf="hasFiles">
+      <label>File summary</label>
+      
+      <table>
+         <thead>
+          <td>Clinical Sheet Name</td>
+          <td>Patient Size</td>
+          <td>Sample Size</td>
+         </thead>
+         <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryClinical">
+            <tr>
+              <td><span>{{sum.sheet}}</span></td>  
+              <td><span *ngIf="sum.patients">{{sum.patients.length}}</span></td>
+              <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
+            </tr>
+          </tbody>
+      </table>
+      <hr>
+      <table>
+         <thead>
+          <td>Molecular Sheet Name</td>
+          <td>Sample Size</td>
+          <td>Biomarker Size</td>
+         </thead>
+         <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryMolecular">
+            <tr>
+              <td><span>{{sum.sheet}}</span></td>  
+              <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
+              <td><span *ngIf="sum.markers">{{sum.markers.length}}</span></td>
+            </tr>
+          </tbody>
+      </table>
+
+    </div>
+    <input #fileInput type="file" class="form-control col-md-5" name="single" 
+                        ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])"/>
+    <!-- <span *ngIf="uploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i>Uploaded</span>
+    <span *ngIf="uploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i>Error</span>
+     -->
+    
+  </div>
+</div>

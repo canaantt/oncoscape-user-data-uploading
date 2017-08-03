@@ -1,0 +1,281 @@
+/**
+ *  If you want to override some bootstrap variables, you have to change values here.
+ *  The list of variables are listed here bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
+ */
+@import url(https://fonts.googleapis.com/css?family=Lato);
+$color-gray-light: #EAEAEA;
+$color-gray: #bbb;
+$color-black: #000;
+$color-white: #FFFFFF;
+$color-blue-light: #c1e9fe;
+$color-onco-blue: #039BE5;
+$color-blue: #039BE5;
+$link-color: $color-blue;
+$link-hover-color: $color-blue;
+$box-shaddow: 0 2px 3px #bbb;
+$input-border: $color-gray-light;
+$btn-default-border: $color-gray-light;
+$btn-primary-bg: $color-blue;
+$input-border-radius: 0;
+$border-radius-base: 0;
+$navbar-inverse-bg:$color-blue;
+$navbar-inverse-link-color: $color-white;
+$navbar-inverse-brand-hover-bg: $color-blue; 
+$navbar-inverse-link-active-bg: $color-blue; 
+$navbar-inverse-link-hover-bg: $color-blue; 
+$navbar-inverse-brand-color: $color-white;
+$navbar-inverse-brand-hover-color: $color-white;
+$navbar-height: 60px;
+$font-family-sans-serif: 'Lato',
+sans-serif;
+$font-family-serif: 'Lato',
+sans-serif;
+$font-size-base: 13px;
+$headings-font-weight: 300 !default;
+
+
+
+/**
+ *  Do not remove the comments below. It's the markers used by wiredep to inject
+ *  sass dependencies when defined in the bower.json of your dependencies
+ */
+
+// bower:scss
+// endbower
+html {}
+
+body {
+    font-weight: 300;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-rendering: optimizeLegibility;
+    font-smoothing: subpixel-antialiased;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: $font-family-sans-serif;
+    background: #f5f5f5;
+}
+
+button {
+    font-weight: 300;
+}
+
+label {
+    // display: inline-block;
+    // max-width: 100%;
+    // margin-bottom: 5px;
+    // letter-spacing: 3px;
+    font-weight: 300;
+    
+}
+
+.container-fluid {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.tooltip {
+    z-index: 99999 !important;
+}
+
+.btn {
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 13px;
+    line-height: 1.42857;
+    border-radius: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+ 
+}
+.btn-primary {
+    color: #fff;
+    background-color: #039BE5;
+    // border-color: #fff;
+    text-decoration: none;
+}
+.btn-link {
+    color: $color-onco-blue;
+    font-size: 12px;
+}
+// Bootstrap needs to be placed in index.scss for overides
+.panel.panel-horizontal {
+    display:table;
+    width:100%;
+}
+.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-body, .panel.panel-horizontal > .panel-footer >  .panel-body-desc,{
+    display:table-cell;
+}
+.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-footer {
+    width: 25%;
+    border:0;
+    vertical-align: middle;
+}
+.panel.panel-horizontal > .panel-heading {
+    // border-right: px solid $color-onco-blue;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 4px;
+}
+.panel-default>.panel-heading {
+    color: #333;
+    background-color: #fff;
+    border-color: #ddd;
+}
+.panel-body{
+    width:50%;
+    padding: 10px 10px;
+    border-left: 1px solid #ddd;
+}
+// Bootstrap needs to be placed in index.scss for overides
+
+
+/* Small devices (tablets, 768px and up) */
+
+@media (min-width: 768px) {}
+
+
+/* Medium devices (desktops, 992px and up) */
+
+@media (min-width: 992px) {
+    .container-fluid {
+        padding-left: 70px;
+        padding-right: 70px;
+    }
+}
+
+
+/* Large devices (large desktops, 1200px and up) */
+
+@media (min-width: 1200px) {}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+
+.sro {
+    // Screen Readers Only
+    display: none !important;
+}
+
+.dropdown-menu {
+    li {
+        padding: 0px 5px;
+    }
+    li:hover {
+        background-color: $color-gray-light;
+    }
+}
+
+
+
+
+/* Overrides */
+
+.bs-dropdown {
+    width: 100%;
+    button {
+        width: 100%;
+        text-align: left;
+        height: 34px;
+        line-height: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 300;
+        position: relative;
+        .caret {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+    }
+    ul {
+        li {
+            padding: 5px;
+        }
+    }
+}
+
+button .fa {
+    color: $color-white;
+}
+
+// .round-button {
+//     width: 20%;
+//     padding-bottom: 10%;
+//     border-radius: 50%;
+//     border: 2px solid #f5f5f5;
+//     overflow: hidden;
+//     background: $color-white;
+//     box-shadow: 0 0 3px gray;
+//     margin: 10 10 10 10;
+// }
+// .round-button:hover {
+//     background:lightblue;
+// }
+
+
+
+/**
+ *  Do not remove the comments below. It's the markers used by gulp-inject to inject
+ *  all your sass files automatically
+ */
+
+// injector
+// endinjector
+@media print {
+    @page {
+        margin: 0;
+        size: A4 landscape;
+    }
+    button {
+        display: none;
+    }
+    #main {
+        padding-top: 0px;
+    }
+    .tray-label {
+        display: none !important;
+    }
+    .header {
+        display: none;
+    }
+    .tray {
+        background: none;
+        border: none;
+        box-shadow: none
+    }
+    .fa-angle-down {
+        display: none;
+    }
+    .fa-lock {
+        display: none;
+    }
+    .caret {
+        display: none;
+    }
+    .tray-right {
+        display: block !important;
+    }
+}

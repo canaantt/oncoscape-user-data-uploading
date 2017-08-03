@@ -1,0 +1,38 @@
+// import global variable
+@import '/../index';
+
+.dashboard-header{
+    font-weight: 300;
+    color: #039BE5;
+    letter-spacing: 4px;
+    margin-bottom: 50px;
+    margin-top: 0;
+ }
+
+ .dashboard-title {
+     padding-bottom:10px;
+     font-size: 19px; 
+     font-weight: 300; 
+     margin-top:0px;
+ }
+
+ .dashboard-lists {
+     padding-bottom: 5px;
+ }
+
+ .dashboard-description {
+     margin-top:10px;
+     margin-bottom: 25px;
+ }
+
+.dashboard{
+    .btn {
+        width: 110px;
+        margin-right: 5px;
+        margin-bottom: 10px;
+        float: right;
+    }
+}
+
+
+

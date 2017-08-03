@@ -1,0 +1,37 @@
+<div *ngIf="user">
+  <hr>
+  <h3>User Detail Section</h3>
+  <div>
+    <label>First name: </label>
+    <input [(ngModel)]="user.FirstName" placeholder="First Name"/>
+    <p *ngIf="error.fn !==''"><small  class="text-danger">{{error.fn}}</small></p>
+  </div>
+  <div>
+    <label>Last name: </label>
+    <input [(ngModel)]="user.LastName" placeholder="Last Name"/>
+    <p *ngIf="error.ln!==''"><small  class="text-danger">{{error.ln}}</small></p>
+  </div>
+  <div>
+    <label>Email: </label>
+    <input [(ngModel)]="user.Email" placeholder=" "/>
+    <p *ngIf="error.email.empty !=='' || error.email.format !=='' || error.email.duplicate !==''">
+      <small  class="text-danger">{{error.email.empty}}{{error.email.format}}{{error.email.duplicate}}
+        </small></p>
+  </div>
+  <div>
+    <label>Institution: </label>
+    <input [(ngModel)]="user.Institution" placeholder=" "/>
+    <p *ngIf="error.in !==''"><small  class="text-danger">{{error.in}}</small></p>
+  </div>
+  <div>
+    <label>Member since:  </label>
+    <span>{{user.Date | DateFormatter : 'Date'}}</span>
+  </div>
+  <!-- <div>
+    <label>Database ID:  </label>
+    <span> {{user._id}}</span>
+  </div> -->
+  <button class='btn btn-primary'  (click)="update(user)">Update</button>
+  <!-- <button class='btn btn-primary'  (click)="goHomepage()">Go Back</button> -->
+ 
+</div>

@@ -1,0 +1,111 @@
+<div class="detail">
+  <div class="container">
+    <div class="row">
+      <div *ngIf="project">
+        <h1 class="detail-header">Dataset Detail</h1>
+        <label class="pull-right">{{statusMsg}}</label>
+        <div class="form-group">
+          <label>Dataset Name<span class="text-danger">*</span></label>
+          <input [(ngModel)]="project.Name" placeholder="Dataset Name" class="form-control" rows="1"> 
+        </div>
+        <!-- <div class="form-group">
+          <label>Private</label>
+          <input type="checkbox" [(ngModel)]="project.Private">
+        </div> -->
+        <div class="form-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="project.Description" placeholder="Description" class="form-control" rows="4"></textarea>
+        </div>
+        <div #annotations>
+          <label>Dataset Annotations</label>
+          <div *ngIf='project.Annotations.length > 0'>
+            <table>
+              <thead>
+                <tr>
+                  <td>Key</td>
+                  <td>Value</td>
+                  <td>Remove/Add</td>
+                </tr>
+              </thead>
+              <tbody *ngFor="let annot of project.Annotations; let i = index">
+                <tr>
+                  <td><input [(ngModel)]="annot.key" placeholder="Sample Size" class="form-control"></td>
+                  <td><input [(ngModel)]="annot.value" placeholder="110" class="form-control"></td>
+                  <td><span type="button" class="btn glyphicon glyphicon-minus-sign" (click)="project.Annotations.splice(i,1)"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <form class='submitForm' [formGroup]="newAnnotationForm" (ngSubmit)="submitAnnotations()">
+            <div class="form-group">
+              <table>
+                <tbody>  
+                  <tr>
+                    <td><input class="form-control" type="text" formControlName="key" placeholder="Sample Size"></td>
+                    <td><input class="form-control" type="text" formControlName="value" placeholder="110"></td>
+                    <!-- <td><button type="submit" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td> -->
+                    <td><button type="submit" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+        
+        <div *ngIf="permission">
+        <app-permissions [role]="permission.Role" [project]="project" ></app-permissions>
+        <div class="well form-group">
+            <label>Regulatory Infomation<span class="text-danger">*</span></label>
+            <!-- <input [(ngModel)]="project.IRBNumber" placeholder="IRB#" class="col-sx-3">
+            <div *ngIf="project.IRBNumber" class="col-sx-3">IRB Title : {{project.IRBNumber | IrbDetailService | async}}</div> -->
+            <p>Date Derived from Human Subjects?</p>
+            <td>
+              <tr>
+                <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">Yes
+                <input type="radio" value="non-human" name="non-human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('non-human')">No
+              </tr>
+              </td>
+              <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
+
+                <tr><input type="radio" value="IRBChecked" name="IRBChecked" [(ngModel)]="human">IRB</tr>
+                <tr><input type="radio" value="IECChecked"  name="IECChecked" [(ngModel)]="human">IEC</tr>
+                <tr><input type="radio"  value="ExemptedCheckedWithWaiver" name="ExemptedCheckedWithWaiver" [(ngModel)]="human">Exempted With Waiver Document</tr>
+                <tr><input type="radio"  value="ExemptedChecked" name="ExemptedChecked" [(ngModel)]="human">Exempted</tr>
+                <td>
+                  <div *ngIf="human === 'IRBChecked'">
+                    <label>IRB Number: </label>
+                    <input name="IRBNumber" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1"> 
+                  </div>
+                  <div *ngIf="human === 'IECChecked'">
+                    <label>IEC Number: </label>
+                    <input name="IECNumber" [(ngModel)]="project.DataCompliance.IECNumber" rows="1" > 
+                  </div>
+                  <div *ngIf="human === 'ExemptedCheckedWithWaiver'">
+                    <label>Waiver Number: </label>
+                    <input name="exempted" [(ngModel)]="project.DataCompliance.Waiver" rows="1"> 
+                  </div>
+                  
+                </td>
+              </div>
+              <!-- <tr>
+                <input type="radio" value="huirb" name="humanStudyWithIRB" [(ngModel)]="project.DataCompliance.ComplianceOption" (click)="collectDataCompliance('huirb')" [disabled]="project.DataCompliance.IRBNumber===''">
+                A.1 If data are derieved from humans and IRB has been approved.
+                <input [(ngModel)]="project.DataCompliance.IRBNumber" placeholder="IRB#" rows="1">
+              </tr>
+              <tr>
+                <input type="radio" value="huiec" name="humanStudyWithIEC" [(ngModel)]="project.DataCompliance.ComplianceOption" (click)="collectDataCompliance('huiec')" [disabled]="project.DataCompliance.IECNumber===''">
+                A.2 If data are derieved from humans and IEC number is ready. 
+                <input [(ngModel)]="project.DataCompliance.IECNumber" placeholder="IEC#" rows="1">
+              </tr> -->
+            
+        </div>
+        <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project" (uploaded)="fileUpdates($event)"></app-files>
+        </div>
+        <div class="form-group">
+          <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
+        </div>
+        <!-- <button class='btn btn-primary' [disabled]=false (click)="update(project)">Update</button> -->
+      </div>
+    </div>
+  </div>
+</div>

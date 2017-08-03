@@ -1,0 +1,47 @@
+<div #permissions>
+  <label>User Permissions</label>
+  <div *ngIf="role === 'admin'">
+    <table>
+      <tbody class="form-group row" *ngFor="let permission of permissions$ | async">
+        <tr>
+          <td><span *ngIf="project.Author === permission.User">author/admin</span></td>
+          <td><span class="detail-users">{{permission.User | userFullName | async }}</span></td>
+          <td><span *ngIf="project.Author !== permission.User"><select [(ngModel)]="permission.Role" (change)="updatePermission(permission, $event.target.value)">
+                <option *ngFor="let role of roles" [value]="role">{{role}}</option>
+              </select></span></td>
+          <td><span *ngIf="project.Author !== permission.User" type="button" class="btn glyphicon glyphicon-minus-sign" (click)="deletePermission(permission)"></span></td>
+        </tr>
+      </tbody>
+    </table>
+    <form class='submitForm' [formGroup]="newPermissionForm">
+      <div class="form-group">
+        <fieldset formArrayName="Permissions">
+          <table>
+            <tbody class="form-group row" *ngFor="let permissionItem of newPermissionForm.get('Permissions').controls" [formGroup]='permissionItem'>
+              <tr>
+                <td><input class="form-control" type="text" formControlName="Email" placeholder="Enter Collaborator's Institutional Email"></td>
+                <td><select formControlName="Role">
+                          <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+                        </select></td>
+                <td><button (click)="submitPermissions()" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td>
+                <!-- <td><small  class="text-danger">EmailContent: {{emailError}}</small></td> -->
+                <td><small [hidden]="permissionItem.controls.Email.valid" class="text-danger">Please Add Valid Email</small></td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+      </div>
+    </form>
+    <small  class="text-danger">{{emailError}}</small>
+  </div> 
+  <div *ngIf="role !== 'admin'">
+    <table>
+      <tbody class="form-group row" *ngFor="let permission of permissions$ | async">
+        <tr>
+           <td><span class="detail-users">{{permission.User | userFullName | async }}</span></td>
+           <td><span>{{permission.Role}}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
