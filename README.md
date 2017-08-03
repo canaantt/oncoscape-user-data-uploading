@@ -8,6 +8,8 @@
 
 ## Step II: Start MongoDB
 `mongod`
+* Create Database called 'mydb'
+* In 'mydb', create collections named: 'users', 'projects', 'files', permissions', 'irbs'.
 
 ## Step III: Start Client Server
 
