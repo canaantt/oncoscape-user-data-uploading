@@ -1,4 +1,24 @@
-# NG4DataUpload
+
+# Steps to run Development Mode
+
+## Step I: Before Start
+`mkdir uploads` at root
+`sudo chmod 777 uploads` if necessary
+
+## Step II: Start MongoDB
+`mongod`
+
+## Step III: Start Client Server
+`ng serve`
+
+## Step IV: Start Backend Express Server
+`cd server`
+`npm install`
+`node server.js`
+
+
+
+# More about Client created by Angular 4
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.6.
 
