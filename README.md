@@ -21,6 +21,8 @@
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
 
 ## Step IV: Start Backend Express Server
-`cd server`
-`npm install`
-`node server.js`
+ ```javascript
+    cd server
+    npm install
+    node server.js
+ ```
