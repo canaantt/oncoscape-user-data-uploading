@@ -10,7 +10,7 @@ var projectSchema = new Schema({
     Annotations: [{key: String, value: String}], 
     Private: Boolean,
     // IRBNumber: String,
-    DataCompliance:  {IRBNumber: String, IECNumber: String, Waiver: String, ComplianceOption: String},
+    DataCompliance:  {HumanStudy: String, IRBNumber: String, IECNumber: String, Waiver: String, ComplianceOption: String},
     File: {filename: String, size: Number, timestamp: Date},
     Permissions: [{type: Schema.ObjectId, ref: Permission}],
     Date: {type: Date, default: Date.now},

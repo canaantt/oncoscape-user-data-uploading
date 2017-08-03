@@ -21,32 +21,21 @@ export class LandingComponent {
             .map(() => this.authenticated)
             .debounceTime(500)
             .subscribe(input => {
-              console.log('is this doing anything ?');
+              console.log('mouseover move');
             });
     this.stateService.user
         .subscribe(res => {
           this.user = res;
-          // if('email' in this.user){
-          //   this.userService.getUserIDByGmail(this.user.email)
-          //     .subscribe(res => {
-          //       console.log('......' + res[0]);
-          //       console.log(res);
-          //     });
-          // }
         });
     this.stateService.authenticated
         .subscribe(res => {
           this.authenticated = res;
-          console.log('in Nav constructor');
-          console.log(this.authenticated);
           if (this.authenticated) {
             if (this.user !== null) {
               this.userService.getUserIDByGmail(this.user.email)
                   .subscribe( res => {
                     if (typeof(res[0]) !== 'undefined') {
                       console.log('Found user', res[0]);
-                      // setTimeout(() => {this.router.navigate(['/projects', 'dashboard'];}, 1000);
-                      // this.router.navigate(['/projects/{id}']);
                     } else {
                       console.log('Couldn\'t find this user from user collection');
                       setTimeout(() => {
@@ -69,7 +58,6 @@ export class LandingComponent {
     }
   }
   goAdmin() {
-    console.log('need to set lock for this feature.');
     this.router.navigate(['admin']);
   }
  }

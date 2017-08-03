@@ -50,14 +50,12 @@ export class ProjectDetailComponent implements  OnInit {
   authenticated: boolean;
   userID: any;
   id: string;
-  clickedHuman = false;
-  IRB = '';
-  IEC = '';
   permission: any;
   role: any;
   files: any;
   statusMsg: any;
   lastModifiedTime: any;
+  errorMessage = {Name: '', DataCompliance: ''};
   users$: Observable<any>;
   results$: Observable<any>;
   newAnnotationForm: FormGroup;
@@ -83,7 +81,14 @@ export class ProjectDetailComponent implements  OnInit {
                          .subscribe(res0 => {
                            this.project = res0;
                          });
-      const eventStream = Observable.fromEvent(elementRef.nativeElement, 'keyup')
+      const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
+            .map(() => this.project)
+            .debounceTime(500)
+            .subscribe(input => {
+              this.statusMsg = '';
+              this.update(this.project);
+            });
+      const eventStreamKeyUp = Observable.fromEvent(elementRef.nativeElement, 'keyup')
             .map(() => this.project)
             .debounceTime(500)
             .subscribe(input => {
@@ -92,21 +97,16 @@ export class ProjectDetailComponent implements  OnInit {
             });
      }
   getUserID(id: string, projectID: string): void {
-    console.log('in getting user id');
     this.userService.getUserIDByGmail(id)
               .subscribe(res => {
-                console.log(res);
                 this.getPermission(res[0]._id, projectID );
                 this.userID = res[0]._id;
               });
     }
   getPermission(userID: string, projectID: string) {
-    console.log('in getting permission by user by project');
     this.permissionService.getPermissionByUserByProject(userID, projectID)
         .subscribe(res => {
-          console.log(res);
           this.permission = res;
-          console.log('what is the permission', res);
         });
   }
   ngOnInit(): void {
@@ -117,19 +117,49 @@ export class ProjectDetailComponent implements  OnInit {
   }
 
   update(project: Project): void {
-    if (project.Name === '') {
-      alert('Project Name cannot be empty');
+    if ( !this.updatePreChecking(project)) {
+      console.log('Please see the error message in red.');
+
     } else {
        this.projectService.update(project).subscribe(() => {
-        console.log('updating...');
         this.statusReport();
         this.refresh();
       });
     }
   }
+
+  updatePreChecking (project: Project): boolean {
+    if (this.project.Name === '') {
+        this.errorMessage.Name = 'Project Name is required.';
+        return false;
+      } else {
+        this.errorMessage.Name = '';
+        if (this.project.DataCompliance.ComplianceOption === 'human'
+          && this.project.DataCompliance.HumanStudy === '') {
+            this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
+            return false;
+      } else {
+          if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
+              && this.project.DataCompliance.IRBNumber === '') {
+                this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
+                return false;
+          } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
+              && this.project.DataCompliance.IECBNumber === '') {
+                this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
+                return false;
+          } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
+              && this.project.DataCompliance.Waiver === '') {
+                this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
+                return false;
+          } else {
+            this.errorMessage.DataCompliance = '';
+            return true;
+          }
+      }
+    }
+  }
+
   refresh() {
-    console.log('project is being refreshed...');
-    console.log(this.id);
     this.projectService.getProjectByID(this.route.snapshot.params['id'])
                         .subscribe(res0 => {
                           this.filesComponent.filerefresh();
@@ -141,13 +171,9 @@ export class ProjectDetailComponent implements  OnInit {
     this.lastModifiedTime = Date();
   }
   fileUpdates(event) {
-    console.log('event is triggered in parent');
-    console.log(event);
-    console.log(this.project);
     this.update(this.project);
   }
   submitAnnotations(): void {
-    console.log('&&&', this.newAnnotationForm.value);
     this.project.Annotations.push(this.newAnnotationForm.value);
   }
   collectDataCompliance(value: string) {
@@ -157,6 +183,7 @@ export class ProjectDetailComponent implements  OnInit {
       this.project.DataCompliance.IRBNumber = '';
       this.project.DataCompliance.IECNumber = '';
       this.project.DataCompliance.Waiver = '';
+      this.project.DataCompliance.HumanStudy = '';
       console.log(this.project);
       this.update(this.project);
     }

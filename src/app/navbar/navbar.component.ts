@@ -27,14 +27,11 @@ export class NavbarComponent {
                   this.stateService.authenticated
                       .subscribe(res => {
                         this.authenticated = res;
-                        console.log('in Nav constructor');
-                        console.log(this.authenticated);
                         if (this.authenticated) {
                           if (this.user !== null) {
                             this.userService.getUserIDByGmail(this.user.email)
                                 .subscribe( res  => {
                                   if (res[0] !== null) {
-                                    console.log('You are logged in.');
                                     this.internalUser = res[0];
                                   }
                                 });
@@ -50,7 +47,6 @@ export class NavbarComponent {
     }
   }
   toProfile() {
-    console.log('in nav toProfile(), user is', this.internalUser);
     this.router.navigate([`/users/${this.internalUser._id}/`]);
   }
  }

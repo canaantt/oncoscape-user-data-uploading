@@ -30,18 +30,13 @@ export class LoginComponent implements OnInit {
     this.stateService.authenticated
         .subscribe(res => {
           this.authenticated = res;
-          console.log('in Child OnInit');
-          console.log(this.authenticated);
         });
     this.stateService.user
         .subscribe(res => {
           this.user = res;
-          console.log('in Child OnInit');
-          console.log(this.user);
         });
   }
   googleLogin(): any {
-    console.log('In login component', this.authenticated);
     hello.login('google', {
                  display: 'popup',
                  response_type: 'token',
@@ -61,11 +56,9 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/landing']);
   }
   updateUserInfo(v) {
-    console.log(this.stateService.user);
     this.stateService.user.next(v);
   }
   updateAuth(v) {
-    console.log(this.stateService.authenticated);
     this.stateService.authenticated.next(v);
   }
 }

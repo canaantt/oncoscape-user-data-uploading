@@ -7,7 +7,7 @@ export class Project {
     Description: string;
     Annotations: [{key: string, value: string}];
     Private: boolean;
-    DataCompliance:  {IRBNumber: string, IECNumber: string, Waiver: string, ComplianceOption: string};
+    DataCompliance:  {HumanStudy: string, IRBNumber: string, IECNumber: string, Waiver: string, ComplianceOption: string};
     File: {filename: string, size: number, timestamp: Date};
     Permissions: Permission[];
     Date: Date;

@@ -3,15 +3,12 @@
     <div class="row">
       <div *ngIf="project">
         <h1 class="detail-header">Dataset Detail</h1>
-        <label class="pull-right">{{statusMsg}}</label>
+        <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
+        <label class="pull-right">{{statusMsg}}</label> 
         <div class="form-group">
           <label>Dataset Name<span class="text-danger">*</span></label>
           <input [(ngModel)]="project.Name" placeholder="Dataset Name" class="form-control" rows="1"> 
         </div>
-        <!-- <div class="form-group">
-          <label>Private</label>
-          <input type="checkbox" [(ngModel)]="project.Private">
-        </div> -->
         <div class="form-group">
           <label>Description</label>
           <textarea [(ngModel)]="project.Description" placeholder="Description" class="form-control" rows="4"></textarea>
@@ -56,9 +53,8 @@
         <app-permissions [role]="permission.Role" [project]="project" ></app-permissions>
         <div class="well form-group">
             <label>Regulatory Infomation<span class="text-danger">*</span></label>
-            <!-- <input [(ngModel)]="project.IRBNumber" placeholder="IRB#" class="col-sx-3">
-            <div *ngIf="project.IRBNumber" class="col-sx-3">IRB Title : {{project.IRBNumber | IrbDetailService | async}}</div> -->
             <p>Date Derived from Human Subjects?</p>
+            <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
             <td>
               <tr>
                 <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">Yes
@@ -66,21 +62,21 @@
               </tr>
               </td>
               <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
-
-                <tr><input type="radio" value="IRBChecked" name="IRBChecked" [(ngModel)]="human">IRB</tr>
-                <tr><input type="radio" value="IECChecked"  name="IECChecked" [(ngModel)]="human">IEC</tr>
-                <tr><input type="radio"  value="ExemptedCheckedWithWaiver" name="ExemptedCheckedWithWaiver" [(ngModel)]="human">Exempted With Waiver Document</tr>
-                <tr><input type="radio"  value="ExemptedChecked" name="ExemptedChecked" [(ngModel)]="human">Exempted</tr>
+                
+                <tr><input type="radio" value="IRBChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">IRB</tr>
+                <tr><input type="radio" value="IECChecked"  name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">IEC</tr>
+                <tr><input type="radio"  value="ExemptedCheckedWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">Exempted With Waiver Document</tr>
+                <tr><input type="radio"  value="ExemptedChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">Exempted</tr>
                 <td>
-                  <div *ngIf="human === 'IRBChecked'">
+                  <div *ngIf="project.DataCompliance.HumanStudy === 'IRBChecked'">
                     <label>IRB Number: </label>
                     <input name="IRBNumber" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1"> 
                   </div>
-                  <div *ngIf="human === 'IECChecked'">
+                  <div *ngIf="project.DataCompliance.HumanStudy  === 'IECChecked'">
                     <label>IEC Number: </label>
                     <input name="IECNumber" [(ngModel)]="project.DataCompliance.IECNumber" rows="1" > 
                   </div>
-                  <div *ngIf="human === 'ExemptedCheckedWithWaiver'">
+                  <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptedCheckedWithWaiver'">
                     <label>Waiver Number: </label>
                     <input name="exempted" [(ngModel)]="project.DataCompliance.Waiver" rows="1"> 
                   </div>
