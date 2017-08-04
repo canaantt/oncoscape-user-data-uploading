@@ -15,21 +15,18 @@
     </table>
     <form class='submitForm' [formGroup]="newPermissionForm">
       <div class="form-group">
-        <fieldset formArrayName="Permissions">
           <table>
-            <tbody class="form-group row" *ngFor="let permissionItem of newPermissionForm.get('Permissions').controls" [formGroup]='permissionItem'>
+            <tbody>
               <tr>
                 <td><input class="form-control" type="text" formControlName="Email" placeholder="Enter Collaborator's Institutional Email"></td>
                 <td><select formControlName="Role">
                           <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
                         </select></td>
                 <td><button (click)="submitPermissions()" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td>
-                <!-- <td><small  class="text-danger">EmailContent: {{emailError}}</small></td> -->
-                <td><small [hidden]="permissionItem.controls.Email.valid" class="text-danger">Please Add Valid Email</small></td>
+                <td><small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small></td>
               </tr>
             </tbody>
           </table>
-        </fieldset>
       </div>
     </form>
     <small  class="text-danger">{{emailError}}</small>

@@ -15,10 +15,8 @@ export class FileService {
 
   getFilesByProjectID(id: string): Observable<Response> {
     const url = `${this.filesUrl}/` + id;
-    console.log(url);
     return this.http.get(url, {headers: this.headers})
                .map(res => {
-                  console.log(res);
                   return res.json();
                 });
   }

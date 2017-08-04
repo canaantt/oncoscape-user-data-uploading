@@ -33,8 +33,6 @@ export class PermissionService {
             .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
   }
   getPermissionByUserByProject(userID: string, projectID: string): Observable<Response> {
-    console.log(userID);
-    console.log(projectID);
     return this.http.get(this.permissionsUrl)
             .map(res => res.json().filter(value => (value.User === userID && value.Project === projectID))[0]);
   }
@@ -43,7 +41,6 @@ export class PermissionService {
         .map(res => res.json().filter(value => value.Project === id)
         .map(permission => permission._id))
         .subscribe(res => {
-          console.log('All permissions related to ProjectID ', id, ' are ', res);
           this.deletePermissions(res).subscribe();
         });
   }
@@ -61,7 +58,6 @@ export class PermissionService {
     return this.http.delete(url, {headers: this.headers});
   }
   deleteById(id: string): Observable<Response> {
-    console.log(id);
     const url = `${this.permissionsUrl}/` + id;
     return this.http.delete(url, {headers: this.headers});
   }

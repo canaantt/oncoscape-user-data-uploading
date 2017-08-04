@@ -38,7 +38,10 @@ export class PermissionsComponent implements OnInit {
                private fb: FormBuilder ) { }
 
   ngOnInit() {
-    this.newPermissionForm = this.fb.group({Permissions: this.fb.array([this.permissionItem('')])});
+    this.newPermissionForm = new FormGroup({
+      Email: new FormControl('', [Validators.required, Validators.minLength(10), UserEmailValidators.UserEmailFormat]),
+      Role: new FormControl('read-only', Validators.required)
+    });
     this.id = this.project._id;
     this.getPermissions();
     console.log('Current role is...........', this.role);
@@ -81,9 +84,8 @@ export class PermissionsComponent implements OnInit {
   }
 
   submitPermissions(): void {
-    this.newPermissionForm.get('Permissions').value.forEach(element => {
-      this.addPermission(element);
-    });
+      this.addPermission(this.newPermissionForm.value);
+      this.newPermissionForm.reset({Email: '', Role: 'read-only'});
   }
 
   updatePermission(permission: Permission, permissionRole: roles) {

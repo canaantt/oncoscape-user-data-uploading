@@ -19,8 +19,8 @@
             <table>
               <thead>
                 <tr>
-                  <td>Key</td>
-                  <td>Value</td>
+                  <td>Key<span class="text-danger">*</span></td>
+                  <td>Value<span class="text-danger">*</span></td>
                   <td>Remove/Add</td>
                 </tr>
               </thead>
@@ -40,8 +40,7 @@
                   <tr>
                     <td><input class="form-control" type="text" formControlName="key" placeholder="Sample Size"></td>
                     <td><input class="form-control" type="text" formControlName="value" placeholder="110"></td>
-                    <!-- <td><button type="submit" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td> -->
-                    <td><button type="submit" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td>
+                    <td><button type="submit" class="btn glyphicon glyphicon-plus-sign detail-submission-btn" [disabled]="newAnnotationForm.invalid"></button></td>
                   </tr>
                 </tbody>
               </table>
@@ -100,7 +99,6 @@
         <div class="form-group">
           <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
         </div>
-        <!-- <button class='btn btn-primary' [disabled]=false (click)="update(project)">Update</button> -->
       </div>
     </div>
   </div>

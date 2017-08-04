@@ -112,7 +112,7 @@ export class ProjectDetailComponent implements  OnInit {
   ngOnInit(): void {
     this.newAnnotationForm = new FormGroup({
         key: new FormControl('', Validators.required),
-        value: new FormControl('', Validators.required),
+        value: new FormControl('', Validators.required)
       });
   }
 
@@ -174,7 +174,9 @@ export class ProjectDetailComponent implements  OnInit {
     this.update(this.project);
   }
   submitAnnotations(): void {
+    // document.getElementById('annotationKey').focus();
     this.project.Annotations.push(this.newAnnotationForm.value);
+    this.newAnnotationForm.reset({key: '', value: ''});
   }
   collectDataCompliance(value: string) {
     if (value === 'human') {
