@@ -3,6 +3,7 @@ import * as hello from 'hellojs';
 import { StateService } from '../service/state.service';
 import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private stateService: StateService,
               private elementRef: ElementRef,
+              private userService: UserService,
               private router: Router) {
       hello.init({
         google: this.GOOGLE_CLIENT_ID
@@ -37,6 +39,8 @@ export class LoginComponent implements OnInit {
         });
   }
   googleLogin(): any {
+    this.googleLogOut();
+    this.stateService.user.next(null);
     hello.login('google', {
                  display: 'popup',
                  response_type: 'token',
@@ -57,6 +61,18 @@ export class LoginComponent implements OnInit {
   }
   updateUserInfo(v) {
     this.stateService.user.next(v);
+    this.userService.getUserIDByGmail(this.user.email)
+                  .subscribe( res => {
+                    if (typeof(res[0]) !== 'undefined') {
+                      console.log('Found user', res[0]);
+                    } else {
+                      console.log('Couldn\'t find this user from user collection');
+                      setTimeout(() => {
+                        this.router.navigate(['/register']);
+                      }, 100);
+                    }
+                  });
+
   }
   updateAuth(v) {
     this.stateService.authenticated.next(v);

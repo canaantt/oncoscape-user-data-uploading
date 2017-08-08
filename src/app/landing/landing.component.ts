@@ -31,19 +31,20 @@ export class LandingComponent {
         .subscribe(res => {
           this.authenticated = res;
           if (this.authenticated) {
-            if (this.user !== null) {
-              this.userService.getUserIDByGmail(this.user.email)
-                  .subscribe( res => {
-                    if (typeof(res[0]) !== 'undefined') {
-                      console.log('Found user', res[0]);
-                    } else {
-                      console.log('Couldn\'t find this user from user collection');
-                      setTimeout(() => {
-                        this.router.navigate(['/register']);
-                      }, 100);
-                    }
-                  });
-            }
+            console.log('Passed OAuth.');
+            // if (this.user !== null) {
+              // this.userService.getUserIDByGmail(this.user.email)
+              //     .subscribe( res => {
+              //       if (typeof(res[0]) !== 'undefined') {
+              //         console.log('Found user', res[0]);
+              //       } else {
+              //         console.log('Couldn\'t find this user from user collection');
+              //         setTimeout(() => {
+              //           this.router.navigate(['/register']);
+              //         }, 100);
+              //       }
+              //     });
+            // }
           } else {
               this.router.navigate(['/landing']);
           }

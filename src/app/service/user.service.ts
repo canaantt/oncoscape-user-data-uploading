@@ -21,8 +21,7 @@ export class UserService {
   }
   getUserIDByGmail(gmail: string): Observable<Response> {
     return this.http.get(this.usersUrl)
-               .map(res => res.json().filter(value => value.Gmail === gmail))
-               .catch(err => Observable.throw(err));
+               .map(res => res.json().filter(value => value.Gmail === gmail));
   }
   getUsersByIDs(ids: string[]): Observable<Response> {
     return this.http.get(this.usersUrl)
