@@ -1,6 +1,15 @@
 // import global variable
 @import '/../index';
 
+.navbar {
+    border: none;
+    box-shadow: 0 2px 3px $color-gray;
+    min-height: $navbar-height;
+    margin-bottom: 18px;
+    font-family: $font-family;
+    font-weight: $font-weight;
+}
+
 .navbar-logo-img {
     position: absolute;
     left: 0px;
@@ -8,17 +17,17 @@
     max-height: 40px;
     image-rendering: crisp-edges;
 }
-.navbar-logo-text {
+.navbar-logo-text  {
     position: absolute;
     left: 45px;
     top: 0px;
-    font-size: 18px;
+    // font-size: 18px;
     line-height: 60px;
     vertical-align: middle;
     color: $color-white;
     letter-spacing: 6px;
     text-transform: uppercase;
-    font: $font-family-sans-serif;
+  
 }
 .navbar-inverse {
     border: none;
@@ -42,13 +51,6 @@
             }
         }
     }
-}
-
-.navbar {
-    border: none;
-    box-shadow: 0 2px 3px $color-gray;
-    min-height: $navbar-height;
-    margin-bottom: 18px;
 }
 
 .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {

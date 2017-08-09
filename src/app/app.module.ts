@@ -28,6 +28,7 @@ import { UserService } from './service/user.service';
 import { StateService } from './service/state.service';
 import { FileService } from './service/file.service';
 import { PermissionService } from './service/permission.service';
+import { ComponentNameComponent } from './component-name/component-name.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { PermissionService } from './service/permission.service';
     DateFormatter,
     UserFullNamePipe,
     Overlapping,
-    FileSelectDirective
+    FileSelectDirective,
+    ComponentNameComponent
   ],
   imports: [
     BrowserModule,
