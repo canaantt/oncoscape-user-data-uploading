@@ -29,6 +29,7 @@ import { StateService } from './service/state.service';
 import { FileService } from './service/file.service';
 import { PermissionService } from './service/permission.service';
 import { ComponentNameComponent } from './component-name/component-name.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { ComponentNameComponent } from './component-name/component-name.componen
     AppRouterModule,
     ReactiveFormsModule,
     HttpModule,
-    RouterModule
+    RouterModule,
+    NgbModule.forRoot()
   ],
   providers: [UserService,
               StateService,

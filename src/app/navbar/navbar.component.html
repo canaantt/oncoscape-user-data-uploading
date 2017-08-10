@@ -17,22 +17,31 @@
         <ul class="nav navbar-nav navbar-right" routerLinkActive="active">
           <li class="nav-item"><a *ngIf='authenticated' type="button" (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a></li>
           <li class="nav-item"><a href="http://resources.sttrcancer.org/oncoscape-contact" *ngIf='authenticated' type="button" ><span class="fa fa-comment"></span>Feedback</a></li>
-          <!-- <li>
+           <li>
             <a href="" target="_blank " routerLink="/documentation">
               <span class="glyphicon glyphicon-question-sign"></span>Help
             </a>
-          </li> -->
-           <!-- <li>
+          </li>
+           <li>
             <a href="http://resources.sttrcancer.org/oncoscape-contact">
               <span class="fa fa-comments"></span>Feedback
             </a>
-          </li>  -->
+          </li>  
           <li class="nav-item">
-            <div *ngIf='user && authenticated'><a type="button" ><img (click)="toProfile()" class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>
-              <!-- <a type="button" class="btn landing-button" (click)="googleLogOut()">
+
+
+
+
+              <div *ngIf='user && authenticated'><a type="button" ><img (click)="toProfile()" class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>  
+             
+             
+             
+             
+             
+               <a type="button" class="btn landing-button" (click)="googleLogOut()">
                 <span class="fa fa-power-off"></span>Logout
-              </a> -->
-            </div>
+              </a> 
+             </div> 
           </li>
         </ul>
       </div>
