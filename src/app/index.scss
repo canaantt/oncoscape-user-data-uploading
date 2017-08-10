@@ -26,13 +26,10 @@ $navbar-inverse-link-hover-bg: $color-blue;
 $navbar-inverse-brand-color: $color-white;
 $navbar-inverse-brand-hover-color: $color-white;
 $navbar-height: 60px;
-$font-family-sans-serif: 'Lato',
-sans-serif;
-$font-family-serif: 'Lato',
-sans-serif;
 $font-size-base: 13px;
 $headings-font-weight: 300 !default;
-
+$font-family: 'Lato';
+$font-weight: 300;
 
 
 /**
@@ -42,10 +39,13 @@ $headings-font-weight: 300 !default;
 
 // bower:scss
 // endbower
-html {}
+html {
+  font-family: $font-family;
+  font-weight: $font-weight;
+}
 
 body {
-    font-weight: 300;
+    font-weight: $font-weight;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -53,10 +53,9 @@ body {
     -ms-user-select: none;
     user-select: none;
     text-rendering: optimizeLegibility;
-    font-smoothing: subpixel-antialiased;
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: $font-family-sans-serif;
+     font-family: $font-family;
     background: #f5f5f5;
 }
 
