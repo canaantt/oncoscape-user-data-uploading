@@ -42,9 +42,11 @@ export class RegisterComponent implements OnInit {
               } else {
                 this.userService.create(this.newUserForm.value).subscribe(() => {
                   alert('New User is added into Database.');
-                  this.stateService.authenticated.next(false);
-                  this.stateService.user.next(null);
-                  this.router.navigate(['/landing']);
+                  // this.stateService.authenticated.next(false);
+                  // this.stateService.user.next(null);
+                  this.stateService.authenticated.next(true);
+                  this.stateService.user.next(this.newUserForm.value);
+                  this.router.navigate(['/projects', 'dashboard']);
                 });
               }
             });

@@ -55,6 +55,7 @@ export class FilesComponent implements OnInit {
   filerefresh() {
     console.log('in File component refresh()');
     this.fileService.uploadingValidation(this.id + '_uploadingSummary')
+        .catch(this.handleError)
         .subscribe(res => {
           if (res[0].length  > 0 ) {
             this.hasFiles = true;
@@ -66,7 +67,10 @@ export class FilesComponent implements OnInit {
           this.uploadStatus.allPatientsUploaded = meta.allPatientIDs;
         });
   }
-
+  private handleError(error: any): Promise<any> {
+    // console.error('An error occurred', error);
+    return Promise.reject(error.message || error);
+  }
   updateStatus(fileitem: any) {
     // this.fileService.sendProjectID(this.id);
     fileitem.upload();
