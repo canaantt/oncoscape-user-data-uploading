@@ -5,6 +5,9 @@ import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
 
+
+
+
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
