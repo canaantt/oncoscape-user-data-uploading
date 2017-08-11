@@ -1,75 +1,80 @@
 // import global variable
 @import '/../index';
-
 .navbar {
     border: none;
     box-shadow: 0 2px 3px $color-gray;
-    min-height: $navbar-height;
-    margin-bottom: 18px;
     font-family: $font-family;
     font-weight: $font-weight;
 }
 
 .navbar-logo-img {
-    position: absolute;
-    left: 0px;
-    top: 10px;
     max-height: 40px;
     image-rendering: crisp-edges;
+    margin-right: 10px;
+    margin-left: 60px;
 }
-.navbar-logo-text  {
-    position: absolute;
-    left: 45px;
-    top: 0px;
-    // font-size: 18px;
-    line-height: 60px;
+
+.navbar-logo-text {
+    font-size: 18px;
+    line-height: 40px;
     vertical-align: middle;
     color: $color-white;
     letter-spacing: 6px;
     text-transform: uppercase;
-  
 }
+
 .navbar-inverse {
     border: none;
     background-color: $color-onco-blue;
 }
+
 .navbar-inverse .navbar-toggle {
-    border: none 
-}
-.header {
-    position: absolute;
-    width: 100%;    
+    border: none
 }
 
-.nav {
-    li {
-        a, :single-button {
-            font-size: 14px;
-                margin-top: 5px;
-            span {
-                padding-right: 5px;
-            }
-        }
+.navbar-items {
+    padding-right: 5px;
+    color: #fff;
+    margin-top: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    span {
+        margin-right: 5px;
+        color: #fff;
     }
 }
 
-.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+// removing bootstrap carat over photo
+.dropdown-toggle::after {
+    display: none
+}
+
+.navbar-inverse .navbar-collapse,
+.navbar-inverse .navbar-form {
     border-color: #0383c2;
 }
+
 .navbar-inverse .navbar-toggle {
     border-color: #fff;
 }
+
 .navbar-inverse .navbar-nav>li>a {
     color: $color-white;
 }
 
 .navbar-pic {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    margin-top: 15px;
-    margin-left:10px;
+    margin-left: 10px;
+    margin-right: 60px;
+    cursor: pointer;
 }
 
+.dropdown-item {
+    font-size: 12px;
+}
 
-
+.dropdown-menu {
+    min-width: 8rem;
+}
