@@ -1,17 +1,21 @@
-import { Component, OnInit , ElementRef} from '@angular/core';
+import { Component, OnInit , ElementRef, ViewChild } from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
-import { Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
   authenticated = false;
   user: any;
+  internalUser: any;
+
+  @ViewChild('LoginComponent') login;
 
   constructor( private stateService: StateService,
                private userService: UserService,
@@ -19,10 +23,42 @@ export class LandingComponent {
                private router: Router) {
     const eventStream = Observable.fromEvent(elementRef.nativeElement, 'mouseover')
             .map(() => this.authenticated)
-            .debounceTime(500)
+            .debounceTime(50)
             .subscribe(input => {
               console.log('mouseover move');
             });
+    // this.stateService.user
+    //     .subscribe(res => {
+    //       this.user = res;
+    //     });
+    // this.stateService.authenticated
+    //     .subscribe(res => {
+    //       this.authenticated = res;
+    //       if (this.authenticated) {
+    //         console.log('Passed OAuth.');
+    //         // if (this.user !== null) {
+    //           // this.userService.getUserIDByGmail(this.user.email)
+    //           //     .subscribe( res => {
+    //           //       if (typeof(res[0]) !== 'undefined') {
+    //           //         console.log('Found user', res[0]);
+    //           //       } else {
+    //           //         console.log('Couldn\'t find this user from user collection');
+    //           //         setTimeout(() => {
+    //           //           this.router.navigate(['/register']);
+    //           //         }, 100);
+    //           //       }
+    //           //     });
+    //         // }
+    //       } else {
+    //           this.router.navigate(['/landing']);
+    //       }
+    //     });
+    // this.stateService.internalUser
+    //     .subscribe(res => {
+    //       this.internalUser = res;
+    //     });
+  }
+  ngOnInit() {
     this.stateService.user
         .subscribe(res => {
           this.user = res;
@@ -49,8 +85,11 @@ export class LandingComponent {
               this.router.navigate(['/landing']);
           }
         });
+    this.stateService.internalUser
+        .subscribe(res => {
+          this.internalUser = res;
+        });
   }
-
   goDashboard() {
     if (this.authenticated === true) {
       this.router.navigate(['projects/', 'dashboard']);
@@ -58,7 +97,9 @@ export class LandingComponent {
       alert('Please Log in or register.');
     }
   }
-  goAdmin() {
-    this.router.navigate(['admin']);
+  goRegister() {
+    setTimeout(() => {
+      this.router.navigate(['/register']);
+    }, 1000);
   }
  }

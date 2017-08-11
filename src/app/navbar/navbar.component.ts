@@ -15,6 +15,7 @@ export class NavbarComponent {
   authenticated = false;
   user: any;
   internalUser: any;
+  @ViewChild('LoginComponent') login;
 
   constructor( private stateService: StateService,
                private userService: UserService,

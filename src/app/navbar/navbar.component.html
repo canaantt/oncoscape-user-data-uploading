@@ -34,10 +34,15 @@
               </a> -->
             </div>
           </li>
+          <li class="nav-item">
+              <app-login #login></app-login>
+              <a *ngIf='user && authenticated' type="button" class="btn landing-button"  (click)="login.googleLogOut()">
+                  Logout
+                  </a>
+            </li>
         </ul>
       </div>
     </div>
   </nav>
 </div>
-
 <router-outlet></router-outlet>

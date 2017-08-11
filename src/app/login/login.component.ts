@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
   authenticated = false;
   user: any;
+  internalUser: any;
 
   constructor(private stateService: StateService,
               private elementRef: ElementRef,
@@ -27,16 +28,21 @@ export class LoginComponent implements OnInit {
       hello.on('auth.login', this.authLogin.bind(this));
       hello.on('auth.logout', this.authLogout.bind(this));
       hello.on('auth.change', function() {alert('state changed!'); });
+      this.stateService.authenticated
+          .subscribe(res => {
+            this.authenticated = res;
+          });
+      this.stateService.user
+          .subscribe(res => {
+            this.user = res;
+          });
+      this.stateService.internalUser
+          .subscribe(res => {
+            this.internalUser = res;
+          });
   }
   ngOnInit() {
-    this.stateService.authenticated
-        .subscribe(res => {
-          this.authenticated = res;
-        });
-    this.stateService.user
-        .subscribe(res => {
-          this.user = res;
-        });
+    console.log('Login Component ngOnInit');
   }
   googleLogin(): any {
     this.googleLogOut();
@@ -61,20 +67,34 @@ export class LoginComponent implements OnInit {
   }
   updateUserInfo(v) {
     this.stateService.user.next(v);
-    this.userService.getUserIDByGmail(this.user.email)
-                  .subscribe( res => {
-                    if (typeof(res[0]) !== 'undefined') {
-                      console.log('Found user', res[0]);
-                    } else {
-                      console.log('Couldn\'t find this user from user collection');
-                      setTimeout(() => {
-                        this.router.navigate(['/register']);
-                      }, 100);
-                    }
-                  });
+    if (this.internalUser !== null) {
+      this.internalUser.Gmail = v.email;
+      this.stateService.internalUser.next(this.internalUser);
+      this.userService.create(this.internalUser)
+          .subscribe(() => console.log('Registered User Gmail is linked.'));
+    } else {
+      console.log('Couldn\'t find this user from user collection');
+      setTimeout(() => {
+        this.router.navigate(['/register']);
+      }, 100);
+    }
+    // this.userService.getUserIDByGmail(this.user.email)
+    //                 .subscribe( res => {
+    //                 if (typeof(res[0]) !== 'undefined') {
+    //                   console.log('Found user', res[0]);
+    //                 } else {
+    //                   console.log('Couldn\'t find this user from user collection');
+    //                   setTimeout(() => {
+    //                     this.router.navigate(['/register']);
+    //                   }, 100);
+    //                 }
+    //               });
 
   }
   updateAuth(v) {
     this.stateService.authenticated.next(v);
+  }
+  goRegister() {
+    this.router.navigate(['/register']);
   }
 }
