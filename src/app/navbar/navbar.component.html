@@ -14,7 +14,7 @@
         <a class="nav-item nav-link navbar-items active" href="http://resources.sttrcancer.org/oncoscape-contact"><span class="fa fa-comments"></span>Feedback</a>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img *ngIf='user && authenticated'  class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>
-          <div *ngIf='user && authenticated' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+          <div *ngIf='authenticated' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" (click)="toProfile()">Account</a>
             <div class="dropdown-item">
               <app-login></app-login>

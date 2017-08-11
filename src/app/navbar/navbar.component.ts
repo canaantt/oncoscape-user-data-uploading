@@ -27,19 +27,13 @@ export class NavbarComponent {
                       .subscribe(res => {
                         this.user = res;
                       });
+                  this.stateService.internalUser
+                      .subscribe(res => {
+                        this.internalUser = res;
+                      }); // not quiet useful
                   this.stateService.authenticated
                       .subscribe(res => {
                         this.authenticated = res;
-                        if (this.authenticated) {
-                          if (this.user !== null) {
-                            this.userService.getUserIDByGmail(this.user.email)
-                                .subscribe( res  => {
-                                  if (res[0] !== null) {
-                                    this.internalUser = res[0];
-                                  }
-                                });
-                          }
-                        }
                       });
               }
   goDashboard() {

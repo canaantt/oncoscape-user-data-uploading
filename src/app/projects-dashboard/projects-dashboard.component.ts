@@ -39,11 +39,12 @@ export class DateFormatter implements PipeTransform {
   styleUrls: ['./projects-dashboard.component.scss'],
   providers: [IrbService, UserService, PermissionService, FileService]
 })
-export class ProjectsDashboardComponent implements OnInit {
+export class ProjectsDashboardComponent {
   projects: any;
   selectedProject: Project;
   newProjectForm: FormGroup;
   user: any;
+  internalUser: any;
   userID: string;
   authenticated: boolean;
   projectIDs: any;
@@ -57,7 +58,21 @@ export class ProjectsDashboardComponent implements OnInit {
                private fileService: FileService,
                private userService: UserService,
                private stateService: StateService,
-               private router: Router) {}
+               private router: Router) {
+                this.stateService.authenticated
+                    .subscribe(res => {
+                      this.authenticated = res;
+                    });
+                this.stateService.user
+                    .subscribe(res => {
+                      this.getUserID(res.email);
+                      this.user = res;
+                    });
+                this.stateService.internalUser
+                    .subscribe(res => {
+                      this.internalUser = res;
+                    }); // not quiet useful
+               }
 
   onSelect(Project: Project): void {
     this.selectedProject = Project;
@@ -124,17 +139,5 @@ export class ProjectsDashboardComponent implements OnInit {
                          'Project': projectID};
     this.permissionService.create(newPermission)
         .subscribe(() => this.getPermissions(this.userID));
-  }
-
-  ngOnInit() {
-     this.stateService.authenticated
-        .subscribe(res => {
-          this.authenticated = res;
-        });
-    this.stateService.user
-        .subscribe(res => {
-          this.getUserID(res.email);
-          this.user = res;
-        });
   }
 }

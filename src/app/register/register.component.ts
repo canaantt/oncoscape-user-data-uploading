@@ -1,10 +1,11 @@
-import { Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, ViewChild} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
 import { StateService } from '../service/state.service';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import { Router } from '@angular/router';
 export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
   user: any;
+  @ViewChild('LoginComponent') login;
 
   constructor(
     private fb: FormBuilder,
@@ -25,8 +27,9 @@ export class RegisterComponent implements OnInit {
   }
 
   submit() {
+    const self = this;
     this.newUserForm.value.Consent = true;
-    this.newUserForm.value.Gmail = this.user.email;
+    this.newUserForm.value.Gmail = '';
     if (this.newUserForm.value.FirstName === '' ||
         this.newUserForm.value.LastName === '' ||
         this.newUserForm.value.Email === '' ||
@@ -40,14 +43,16 @@ export class RegisterComponent implements OnInit {
                 alert('This email has already been linked to existing user. Please check accuracy.');
                 return;
               } else {
-                this.userService.create(this.newUserForm.value).subscribe(() => {
-                  alert('New User is added into Database.');
+                this.stateService.internalUser.next(this.newUserForm.value);
+                // this.userService.create(this.newUserForm.value).subscribe(() => {
+                  // alert('New User is added into Database.');
                   // this.stateService.authenticated.next(false);
                   // this.stateService.user.next(null);
-                  this.stateService.authenticated.next(true);
-                  this.stateService.user.next(this.newUserForm.value);
-                  this.router.navigate(['/projects', 'dashboard']);
-                });
+                  // this.stateService.authenticated.next(true);
+                  // this.stateService.user.next(this.newUserForm.value);
+                  // self.login.googleLogin();
+                  // this.router.navigate(['/projects', 'dashboard']);
+                // });
               }
             });
       }

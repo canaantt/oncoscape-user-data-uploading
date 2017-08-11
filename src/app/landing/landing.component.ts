@@ -18,7 +18,7 @@ export class LandingComponent {
                private elementRef: ElementRef,
                private router: Router) {
     const eventStream = Observable.fromEvent(elementRef.nativeElement, 'mouseover')
-            .map(() => this.authenticated)
+            // .map(() => this.user)
             .debounceTime(500)
             .subscribe(input => {
               console.log('mouseover move');
@@ -30,35 +30,11 @@ export class LandingComponent {
     this.stateService.authenticated
         .subscribe(res => {
           this.authenticated = res;
-          if (this.authenticated) {
-            console.log('Passed OAuth.');
-            // if (this.user !== null) {
-              // this.userService.getUserIDByGmail(this.user.email)
-              //     .subscribe( res => {
-              //       if (typeof(res[0]) !== 'undefined') {
-              //         console.log('Found user', res[0]);
-              //       } else {
-              //         console.log('Couldn\'t find this user from user collection');
-              //         setTimeout(() => {
-              //           this.router.navigate(['/register']);
-              //         }, 100);
-              //       }
-              //     });
-            // }
-          } else {
-              this.router.navigate(['/landing']);
-          }
         });
   }
-
-  goDashboard() {
-    if (this.authenticated === true) {
-      this.router.navigate(['projects/', 'dashboard']);
-    } else {
-      alert('Please Log in or register.');
-    }
-  }
-  goAdmin() {
-    this.router.navigate(['admin']);
+  goRegister() {
+    setTimeout(() => {
+      this.router.navigate(['/register']);
+    }, 100);
   }
  }
