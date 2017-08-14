@@ -1,40 +1,51 @@
-import { Component, OnInit , ElementRef} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
+import { LoginService } from '../service/login.service';
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent {
-  authenticated = false;
-  user: any;
+  private authenticated: boolean;
+  private user: any;
+  private internalUser: any;
 
   constructor( private stateService: StateService,
                private userService: UserService,
-               private elementRef: ElementRef,
+               private loginService: LoginService,
                private router: Router) {
-    const eventStream = Observable.fromEvent(elementRef.nativeElement, 'mouseover')
-            // .map(() => this.user)
-            .debounceTime(500)
-            .subscribe(input => {
-              console.log('mouseover move');
-            });
-    this.stateService.user
-        .subscribe(res => {
-          this.user = res;
-        });
-    this.stateService.authenticated
-        .subscribe(res => {
-          this.authenticated = res;
-        });
+    // this.stateService.user
+    //     .subscribe(res => this.user = res );
+    // this.stateService.authenticated
+    //     .subscribe(res => this.authenticated );
+    // this.stateService.internalUser
+    //     .subscribe( res => this.internalUser);
   }
+
   goRegister() {
-    setTimeout(() => {
-      this.router.navigate(['/register']);
-    }, 100);
+    this.router.navigate(['/register']);
+  }
+  googleLogin() {
+    this.loginService.googleLogin();
+    this.loginService.loggedIn.subscribe(res => {
+      this.authenticated = res;
+      // this.router.navigate(['/projects', 'dashboard']);
+    });
+    this.loginService.userGoogleProfile.subscribe(res => {
+      this.user = res;
+      console.log('user info is ', res);
+    });
+  }
+  updateAuth(event) {
+    this.authenticated = event;
+  }
+  googleLogOut() {
+    this.loginService.googleLogOut();
   }
  }

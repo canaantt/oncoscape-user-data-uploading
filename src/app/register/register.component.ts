@@ -5,7 +5,7 @@ import { UserService } from '../service/user.service';
 import { StateService } from '../service/state.service';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
-import { LoginComponent } from '../login/login.component';
+import { LoginService } from '../service/login.service';
 
 @Component({
   selector: 'app-register',
@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private stateService: StateService,
+    private loginService: LoginService,
     private router: Router
   ) {
     this.stateService.user.subscribe(res => this.user = res);
@@ -44,15 +45,7 @@ export class RegisterComponent implements OnInit {
                 return;
               } else {
                 this.stateService.internalUser.next(this.newUserForm.value);
-                // this.userService.create(this.newUserForm.value).subscribe(() => {
-                  // alert('New User is added into Database.');
-                  // this.stateService.authenticated.next(false);
-                  // this.stateService.user.next(null);
-                  // this.stateService.authenticated.next(true);
-                  // this.stateService.user.next(this.newUserForm.value);
-                  // self.login.googleLogin();
-                  // this.router.navigate(['/projects', 'dashboard']);
-                // });
+                this.loginService.googleLogin();
               }
             });
       }
@@ -60,10 +53,10 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.newUserForm = this.fb.group({
-      FirstName: new FormControl(''),
-      LastName: new FormControl(''),
-      Email: new FormControl(''),
-      Institution: new FormControl('')
+      FirstName: new FormControl('', Validators.required),
+      LastName: new FormControl('', Validators.required),
+      Email: new FormControl('', Validators.required),
+      Institution: new FormControl('', Validators.required)
     });
   }
 

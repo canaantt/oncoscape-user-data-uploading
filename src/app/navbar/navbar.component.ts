@@ -1,12 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
-
-
-
+import { LoginService } from '../service/login.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +19,7 @@ export class NavbarComponent {
 
   constructor( private stateService: StateService,
                private userService: UserService,
-               private elementRef: ElementRef,
+               private loginService: LoginService,
                private router: Router) {
                   this.stateService.user
                       .subscribe(res => {
@@ -43,6 +41,11 @@ export class NavbarComponent {
       alert('Please Log in or register.');
     }
   }
+
+  googleLogOut() {
+    this.loginService.googleLogOut();
+  }
+
   toProfile() {
     this.router.navigate([`/users/${this.internalUser._id}/`]);
   }

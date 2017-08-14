@@ -6,7 +6,8 @@
                     <h4 class="landing-header">Oncoscape Data Portal</h4>
                     <div class="landing-wrapper">
                         <div class="btn-group">
-                            <app-login></app-login>
+                            <a (authenticated)="updateAuth($event)" (click)="googleLogin()">Login </a>
+                            <a (authenticated)="updateAuth($event)" (click)="googleLogOut()">Logout</a>
                             <div class="btn landing-button" (click)="goRegister()">Register</div>
                         </div>
                         <div class="col-xs-12">

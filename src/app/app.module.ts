@@ -21,7 +21,6 @@ import { ProjectsDashboardComponent, DateFormatter } from './projects-dashboard/
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { RegisterComponent } from './register/register.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { LoginComponent } from './login/login.component';
 import { PermissionsComponent, UserFullNamePipe } from './permissions/permissions.component';
 import { FilesComponent, Overlapping} from './files/files.component';
 import { UserService } from './service/user.service';
@@ -29,14 +28,13 @@ import { StateService } from './service/state.service';
 import { FileService } from './service/file.service';
 import { PermissionService } from './service/permission.service';
 import { ComponentNameComponent } from './component-name/component-name.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoginService } from './service/login.service';
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
     RegisterComponent,
-    LoginComponent,
     ProjectsComponent,
     NavbarComponent,
     ProjectsDashboardComponent,
@@ -61,6 +59,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     NgbModule.forRoot()
   ],
   providers: [UserService,
+              LoginService,
               StateService,
               FileService],
   bootstrap: [AppComponent]
