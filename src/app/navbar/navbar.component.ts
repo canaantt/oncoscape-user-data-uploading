@@ -21,18 +21,26 @@ export class NavbarComponent {
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
-                  this.stateService.user
-                      .subscribe(res => {
-                        this.user = res;
-                      });
+                  // this.stateService.user
+                  //     .subscribe(res => {
+                  //       this.user = res;
+                  //     });
                   this.stateService.internalUser
                       .subscribe(res => {
                         this.internalUser = res;
                       }); // not quiet useful
-                  this.stateService.authenticated
-                      .subscribe(res => {
-                        this.authenticated = res;
-                      });
+                  // this.stateService.authenticated
+                  //     .subscribe(res => {
+                  //       this.authenticated = res;
+                  //     });
+                  this.loginService.loggedIn.subscribe(res => {
+                    this.authenticated = res;
+                    // this.router.navigate(['/projects', 'dashboard']);
+                  });
+                  this.loginService.userGoogleProfile.subscribe(res => {
+                    this.user = res;
+                    console.log('user info is ', res);
+                  });
               }
   goDashboard() {
     if (this.authenticated === true) {
