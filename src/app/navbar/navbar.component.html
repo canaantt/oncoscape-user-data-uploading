@@ -1,13 +1,12 @@
 <div id="header" class="header">
   <nav class="navbar navbar-toggleable-sm navbar-inverse bg-faded fixed-top">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+    </button>
     <a class="navbar-brand" href="#">
-          <img alt='Brand' src='../assets/images/logo-white.png' class='navbar-logo-img d-inline-block align-top '>
-          <span class="navbar-logo-text">Oncoscape</span>
-        </a>
+      <img alt='Brand' src='../assets/images/logo-white.png' class='navbar-logo-img d-inline-block align-top '>
+      <span class="navbar-logo-text">Oncoscape</span>
+    </a>
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav float-left">
         <a class="navbar-items nav-item nav-link active " *ngIf='authenticated' (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a>
@@ -17,7 +16,8 @@
           <div *ngIf='authenticated' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" (click)="toProfile()">Account</a>
             <div class="dropdown-item">
-              <app-login></app-login>
+              <a *ngIf='!authenticated'  (click)="googleLogin()">Login </a>
+              <a *ngIf='authenticated'    (click)="googleLogOut()">Logout</a>
             </div>
           </div>
         </li>

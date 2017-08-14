@@ -43,13 +43,13 @@ export class UserDetailComponent implements OnInit {
 
   checking() {
       if (this.user.FirstName === '') {
-        this.error.fn = 'Should not be empty.'; 
+        this.error.fn = 'Should not be empty.';
       } else {
         this.error.fn = '';
       }
 
       if (this.user.LastName === '') {
-        this.error.ln = 'Should not be empty.'; 
+        this.error.ln = 'Should not be empty.';
       } else {
         this.error.ln = '';
       }

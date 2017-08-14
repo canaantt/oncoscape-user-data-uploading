@@ -1,9 +1,7 @@
-<a *ngIf='!authenticated'  (click)="googleLogin()">
-  Login 
-</a>
-<a *ngIf='authenticated'    (click)="googleLogOut()">
-Logout
-</a>
+<div #login>
+  <a *ngIf='!authenticated'  (click)="googleLogin()">Login </a>
+  <a *ngIf='authenticated'    (click)="googleLogOut()">Logout</a>
+</div>
 
 
 

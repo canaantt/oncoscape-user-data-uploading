@@ -76,12 +76,12 @@ export class LoginComponent {
             if (typeof(res[0]) !== 'undefined') {
               this.internalUser = res[0];
               this.stateService.internalUser.next(this.internalUser);
-              this.router.navigate(['projects', 'dashboard']);
-            } else {
-              alert('User is not registered yet. ');
               setTimeout(() => {
                 this.router.navigate(['projects', 'dashboard']);
               }, 1000);
+            } else {
+              alert('User is not registered yet. ');
+              this.router.navigate(['/landing']);
             }
           });
     }
