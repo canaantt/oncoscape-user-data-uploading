@@ -16,7 +16,7 @@ export class NavbarComponent {
   authenticated = false;
   user: any;
   internalUser: any;
-  
+
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
