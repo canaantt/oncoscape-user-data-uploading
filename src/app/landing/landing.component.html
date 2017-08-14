@@ -1,23 +1,26 @@
 <div class="landing">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="landing-form-login">
-                    <h4 class="landing-header">Oncoscape Data Portal</h4>
-                    <div class="landing-wrapper">
-                        <div class="btn-group">
-                            <a (authenticated)="updateAuth($event)" (click)="googleLogin()">Login </a>
-                            <a (authenticated)="updateAuth($event)" (click)="googleLogOut()">Logout</a>
-                            <div class="btn landing-button" (click)="goRegister()">Register</div>
-                        </div>
-                        <div class="col-xs-12">
-                            <p class="landing-center-format"><a class="landing-help">First Time User?&nbsp;</a> | <a class="landing-help">&nbsp;Support</a></p>
+    <div class="container">
+        <div class="wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="landing-form-login">
+                            <h4 class="landing-header">Oncoscape Data Portal</h4>
+                            <div class="landing-wrapper">
+                                <div class="btn-group">
+                                    <div class="btn landing-button">
+                                    <app-login></app-login>
+                                      </div>
+                                    <div class="btn landing-button">Register</div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <p class="landing-center-format"><a class="landing-help">First Time User?</a> |<a class="landing-help">&nbsp;Support</a></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 </div>
