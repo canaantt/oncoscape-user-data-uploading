@@ -12,29 +12,30 @@ export class LoginService {
     GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
 
     loggedIn: EventEmitter<any> ;
-    userGoogleProfile = new EventEmitter<any>();
+    userGoogleProfile: EventEmitter<any> ;
     constructor(private stateService: StateService,
                 private userService: UserService,
                 private router: Router) {
         this.loggedIn = new EventEmitter<any>();
+        this.userGoogleProfile = new EventEmitter<any>();
+
         hello.init({
-          google: this.GOOGLE_CLIENT_ID
+          google: this.GOOGLE_CLIENT_ID,
         }, {
           force: true,
-          redirect_uri: '/landing'});
-        hello.on('auth.login', this.authLogin.bind(this));
-        hello.on('auth.logout', this.authLogout.bind(this));
-        hello.on('auth.change', function() {alert('state changed!'); });
+          redirect_uri: '/landing',
+          display: 'popup',
+          response_type: 'token',
+          scope: 'email'
+        });
+          hello.on('auth.login', this.authLogin.bind(this));
+          hello.on('auth.logout', this.authLogout.bind(this));
+          hello.on('auth.change', function() {alert('state changed!'); });
     }
     googleLogin(): any {
       this.googleLogOut();
       this.stateService.user.next(null);
-      hello.login('google', {
-                   display: 'popup',
-                   response_type: 'token',
-                   scope: 'email',
-                   redirect_uri: '/landing'
-                }, this.updateAuth.bind(this, true));
+      hello.login('google');
     }
     googleLogOut(): any {
       hello.logout('google', {}, this.updateAuth.bind(this, false));
@@ -43,13 +44,14 @@ export class LoginService {
       hello('google').api('me').then( this.updateUserInfo.bind(this) );
     }
     authLogout(auth) {
+      alert("LOGOUIT");
       this.updateUserInfo.bind(this, null);
       this.updateAuth.bind(this, false);
       this.router.navigate(['/landing']);
     }
 
     updateUserInfo(v) {
-      console.log('In LOGIN Service, updateUserInfo... v is, ', v);
+    debugger;
       this.stateService.user.next(v);
       this.loggedIn.emit(true);
       this.userGoogleProfile.emit(v);
@@ -69,7 +71,7 @@ export class LoginService {
               if (typeof(res[0]) !== 'undefined') {
                 internalUser = res[0];
                 this.stateService.internalUser.next(internalUser);
-                this.router.navigate(['projects', 'dashboard']);
+                // this.router.navigate(['projects', 'dashboard']);
               } else {
                 alert('User is not registered yet. ');
                 this.router.navigate(['/landing']);
@@ -86,6 +88,7 @@ export class LoginService {
       });
     }
     updateAuth(v) {
+      debugger;
       this.stateService.authenticated.next(v);
     }
 }

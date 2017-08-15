@@ -9,13 +9,15 @@
                             <div class="landing-wrapper">
                                 <div class="btn-group">
                                     <div class="btn landing-button">
-                                        <a (authenticated)="updateAuth($event)" (click)="googleLogin()">Login </a>
+                                        <a *ngIf='!authenticated'  (click)="googleLogin()">Login </a>
                                         <a *ngIf='authenticated' (click)="googleLogOut()">Logout</a>
                                       </div>
+                                      
                                     <div class="btn landing-button" (click)="goRegister()">Register</div>
                                 </div>
                                 <div class="col-xs-12">
                                     <p class="landing-center-format"><a class="landing-help">First Time User?</a> |<a class="landing-help">&nbsp;Support</a></p>
+                                    <p  class="landing-center-format">authenticated {{authenticated}}</p>
                                 </div>
                             </div>
                         </div>

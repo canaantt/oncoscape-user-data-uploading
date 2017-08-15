@@ -20,27 +20,37 @@ export class LandingComponent {
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
-    // this.stateService.user
-    //     .subscribe(res => this.user = res );
-    // this.stateService.authenticated
-    //     .subscribe(res => this.authenticated );
-    // this.stateService.internalUser
-    //     .subscribe( res => this.internalUser);
+
+    this.stateService.user
+        .subscribe(res => {
+          
+          this.user = res 
+        });
+    this.stateService.authenticated
+        .subscribe(res => {
+
+          this.authenticated = res;
+        });
+    this.stateService.internalUser
+        .subscribe( res => this.internalUser);
   }
 
   goRegister() {
     this.router.navigate(['/register']);
   }
   googleLogin() {
-    this.loginService.googleLogin();
+    
     this.loginService.loggedIn.subscribe(res => {
       this.authenticated = res;
+      // console.log(this.authenticated);
       // this.router.navigate(['/projects', 'dashboard']);
     });
     this.loginService.userGoogleProfile.subscribe(res => {
       this.user = res;
       console.log('user info is ', res);
     });
+    this.loginService.googleLogin();
+    
   }
   updateAuth(event) {
     this.authenticated = event;

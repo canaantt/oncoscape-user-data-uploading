@@ -18,6 +18,7 @@
             <div class="dropdown-item">
               <a *ngIf='!authenticated'  (click)="googleLogin()">Login </a>
               <a *ngIf='authenticated'    (click)="googleLogOut()">Logout</a>
+              <!-- <a>{{authenticated}}</a> -->
             </div>
           </div>
         </li>

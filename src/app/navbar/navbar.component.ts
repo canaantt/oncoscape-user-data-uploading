@@ -51,6 +51,7 @@ export class NavbarComponent {
   }
 
   googleLogOut() {
+    console.log('trying to log out.');
     this.loginService.googleLogOut();
   }
 
