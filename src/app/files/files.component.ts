@@ -91,13 +91,17 @@ export class FilesComponent implements OnInit {
   }
 
   removeAllFiles() {
-    alert('Are you sure you want to delete all the files related to this dataset? ');
-    this.fileService.removeFilesByProjectID(this.id);
-    this.project.File = null;
-    console.log('test...');
-    this.uploadComplete('Being removed');
-    this.hasFiles = false;
-    this.uploader.queue = [];
+    const confirmDeletion = confirm('Are you sure you want to delete all the files related to this dataset? ');
+    if (confirmDeletion){
+      this.fileService.removeFilesByProjectID(this.id);
+      this.project.File = null;
+      console.log('test...');
+      this.uploadComplete('Being removed');
+      this.hasFiles = false;
+      this.uploader.queue = [];
+    }else{
+      console.log('file deletion is canceled.');
+    }
   }
   projectValidChecking(): boolean {
     this.errorMsg = 'Still working on this feature';

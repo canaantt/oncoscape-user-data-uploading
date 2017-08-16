@@ -32,7 +32,8 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
 });
 
 const corsOptions = {
-	origin: 'http://localhost:4200'
+    origin: ['http://localhost:4200',
+             'http://localhost:8080']
 }
 mongoose.connect("mongodb://localhost:27017/mydb");
 var db = mongoose.connection;
