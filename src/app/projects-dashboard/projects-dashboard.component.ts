@@ -104,13 +104,17 @@ export class ProjectsDashboardComponent {
         });
   }
   delete(project: Project): void {
-    alert('Are you sure you would like to delete the entire dataset?');
-    this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
-    const index = this.projectIDs.indexOf(project._id);
-    this.projectIDs.splice(index, 1);
-    this.getProjects();
-    this.fileService.removeFilesByProjectID(project._id);
-    this.permissionService.removePermisionsByProjectID(project._id);
+    const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
+    if (confirmDeletion) {
+      this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
+      const index = this.projectIDs.indexOf(project._id);
+      this.projectIDs.splice(index, 1);
+      this.getProjects();
+      this.fileService.removeFilesByProjectID(project._id);
+      this.permissionService.removePermisionsByProjectID(project._id);
+    }else {
+      console.log('Deletion cancled.');
+    }
   }
   add(): void {
     this.newProjectForm = this.fb.group({
