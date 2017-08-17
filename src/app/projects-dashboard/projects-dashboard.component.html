@@ -1,15 +1,20 @@
-<div class="dashboard"><div class="dashboard">
-        <div class="col-6">
-                <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button>
+<div class="dashboard">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <h5 class="dashboard-header">Datasets Dashboard</h5>
             </div>
-    <div class="container-fluid">
+            <div class="col-6">
+                 <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button> 
+            </div>
+        </div>
         <div *ngFor="let project of projects">
             <!--Card-->
             <div class="card card-cascade ">
 
                 <!--Card image-->
-                <div class="view gradient-card-header blue-gradient">
-                    <h2 style="color:#fff; font-weight:300; font-family:Lato; margin-top:10px;" class="h2-responsive text-center">{{project.Name}}</h2>
+                <div class="view gradient-card-header dashboard-blue-gradient">
+                    <h4 style="color:#fff; font-weight:300; font-family:Lato; margin-top:10px;" class="h2-responsive text-center">{{project.Name}}</h4>
                     <p style="color:#fff; font-weight:300; font-family:Lato;" class="text-center">{{project.Date | DateFormatter : 'Date'}} </p>
 
                 </div>
