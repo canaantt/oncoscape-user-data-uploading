@@ -61,7 +61,9 @@ export class ProjectsDashboardComponent implements OnInit{
                 this.stateService.user
                     .subscribe(res => {
                       this.user = res;
-                      this.getUserID(this.user.email);
+                      if (this.user !== null) {
+                        this.getUserID(this.user.email);
+                      }
                     });
                }
   ngOnInit () {
@@ -97,15 +99,20 @@ export class ProjectsDashboardComponent implements OnInit{
         });
   }
   delete(project: Project): void {
-    alert('Are you sure you would like to delete the entire dataset?');
-    this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
-    const index = this.projectIDs.indexOf(project._id);
-    this.projectIDs.splice(index, 1);
-    this.getProjects();
-    this.fileService.removeFilesByProjectID(project._id);
-    this.permissionService.removePermisionsByProjectID(project._id);
+    const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
+    if (confirmDeletion) {
+      this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
+      const index = this.projectIDs.indexOf(project._id);
+      this.projectIDs.splice(index, 1);
+      this.getProjects();
+      this.fileService.removeFilesByProjectID(project._id);
+      this.permissionService.removePermisionsByProjectID(project._id);
+    }else {
+      console.log('Deletion cancled.');
+    }
   }
   add(): void {
+    console.log('in add');
     this.newProjectForm = this.fb.group({
       Name: new FormControl('Name Your New Dataset', Validators.required),
       Description: new FormControl('The largest recorded snowflake was in MT during year 1887, 15 inches wide', Validators.minLength(4)),
@@ -115,6 +122,7 @@ export class ProjectsDashboardComponent implements OnInit{
     });
     this.projectService.create(this.newProjectForm.value)
         .subscribe(() => {
+          console.log('%%%%%', this.newProjectForm.value);
           this.getRecentAddedProject();
         });
   }
