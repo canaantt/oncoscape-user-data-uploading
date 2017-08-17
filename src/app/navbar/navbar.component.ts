@@ -49,7 +49,9 @@ export class NavbarComponent {
       alert('Please Log in or register.');
     }
   }
-
+  goHelp() {
+    this.router.navigate(['help']);
+  }
   googleLogOut() {
     this.loginService.googleLogOut();
   }
