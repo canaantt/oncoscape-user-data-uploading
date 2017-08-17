@@ -10,7 +10,7 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav float-left">
         <a class="navbar-items nav-item nav-link active " *ngIf='authenticated' (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a>
-        <a class="navbar-items nav-item nav-link active " *ngIf='authenticated' (click)='goHelp()'><span class="fa fa-dashboard"></span>Help</a>        
+        <a class="navbar-items nav-item nav-link active " *ngIf='authenticated' (click)='goHelp()'><span class="fa fa-question-circle"></span>Help</a>        
         <a class="nav-item nav-link navbar-items active" href="http://resources.sttrcancer.org/oncoscape-contact"><span class="fa fa-comments"></span>Feedback</a>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img *ngIf='user && authenticated'  class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>
