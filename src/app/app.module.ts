@@ -27,7 +27,6 @@ import { UserService } from './service/user.service';
 import { StateService } from './service/state.service';
 import { FileService } from './service/file.service';
 import { PermissionService } from './service/permission.service';
-import { ComponentNameComponent } from './component-name/component-name.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from './service/login.service';
 @NgModule({
@@ -46,8 +45,7 @@ import { LoginService } from './service/login.service';
     DateFormatter,
     UserFullNamePipe,
     Overlapping,
-    FileSelectDirective,
-    ComponentNameComponent
+    FileSelectDirective
   ],
   imports: [
     BrowserModule,

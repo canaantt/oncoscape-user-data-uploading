@@ -46,9 +46,10 @@ export class RegisterComponent implements OnInit {
                 return;
               } else {
                 // this.getRegisteredUser.emit(this.newUserForm.value);
-                // this.stateService.internalUser.next(this.newUserForm.value);
-                this.loginService.getInternalUser(this.newUserForm.value);
+                this.stateService.internalUser.next(this.newUserForm.value);
                 this.loginService.googleLogin();
+                // this.loginService.getInternalUser(this.newUserForm.value);
+                // this.router.navigate(['/landing']);
               }
             });
       }

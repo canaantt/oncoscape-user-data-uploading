@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LoginComponent } from '../login/login.component';
+// import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
@@ -24,18 +24,6 @@ export class NavbarComponent implements OnInit {
                       .subscribe(res => {
                         this.user = res;
                       });
-                  // this.stateService.internalUser
-                  //     .subscribe(res => {
-                  //       this.internalUser = res;
-                  //     }); // not quiet useful
-                  // this.stateService.authenticated
-                  //     .subscribe(res => {
-                  //       this.authenticated = res;
-                  //     });
-                  // this.loginService.loggedIn.subscribe(res => {
-                  //   this.authenticated = res;
-                  //   // this.router.navigate(['/projects', 'dashboard']);
-                  // });
               }
   goDashboard() {
     if (this.user) {
