@@ -1,6 +1,6 @@
 <div #login>
-  <a *ngIf='!authenticated'  (click)="googleLogin()">Login </a>
-  <a *ngIf='authenticated'    (click)="googleLogOut()">Logout</a>
+  <a *ngIf='!user'  (click)="googleLogin()">Login </a>
+  <a *ngIf='user'    (click)="googleLogOut()">Logout</a>
 </div>
 
 

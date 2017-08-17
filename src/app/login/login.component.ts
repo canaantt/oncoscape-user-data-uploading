@@ -20,12 +20,12 @@ export class LoginComponent {
               private elementRef: ElementRef,
               private userService: UserService,
               private router: Router) {
-      this.stateService.authenticated
-          .subscribe(res => this.authenticated = res);
+      // this.stateService.authenticated
+      //     .subscribe(res => this.authenticated = res);
       this.stateService.user
           .subscribe(res => this.user = res );
-      this.stateService.internalUser
-          .subscribe(res => this.internalUser = res);
+      // this.stateService.internalUser
+      //     .subscribe(res => this.internalUser = res);
       hello.init({
         google: this.GOOGLE_CLIENT_ID
       }, {
@@ -43,39 +43,41 @@ export class LoginComponent {
                  response_type: 'token',
                  scope: 'email',
                  redirect_uri: '/landing'
-              }, this.updateAuth.bind(this, true));
+                });
+              // }, this.updateAuth.bind(this, true));
   }
   googleLogOut(): any {
-    hello.logout('google', {}, this.updateAuth.bind(this, false));
+    hello.logout('google', {});
+    // hello.logout('google', {}, this.updateAuth.bind(this, false));
   }
   authLogin(auth) {
     hello('google').api('me').then( this.updateUserInfo.bind(this) );
   }
   authLogout(auth) {
     this.updateUserInfo.bind(this, null);
-    this.updateAuth.bind(this, false);
+    // this.updateAuth.bind(this, false);
     this.router.navigate(['/landing']);
   }
   updateUserInfo(v) {
     console.log('In LOGIN COMPONENT, updateUserInfo... v is, ', v);
     this.stateService.user.next(v);
     this.user = v;
-    if (this.internalUser !== null && this.internalUser.Gmail === '') {
-      console.log('This is the registration process.');
-      this.internalUser.Gmail = v.email;
-      this.stateService.internalUser.next(this.internalUser);
-      this.userService.create(this.internalUser)
-          .subscribe(() => {
-            setTimeout(() => {
-              this.router.navigate(['projects', 'dashboard']);
-            }, 1000);
-          });
-    } else {
+    // if (this.internalUser !== null && this.internalUser.Gmail === '') {
+    //   console.log('This is the registration process.');
+    //   this.internalUser.Gmail = v.email;
+    //   this.stateService.internalUser.next(this.internalUser);
+    //   this.userService.create(this.internalUser)
+    //       .subscribe(() => {
+    //         setTimeout(() => {
+    //           this.router.navigate(['projects', 'dashboard']);
+    //         }, 1000);
+    //       });
+    // } else {
       this.userService.getUserIDByGmail(v.email)
           .subscribe(res => {
             if (typeof(res[0]) !== 'undefined') {
               this.internalUser = res[0];
-              this.stateService.internalUser.next(this.internalUser);
+              // this.stateService.internalUser.next(this.internalUser);
               setTimeout(() => {
                 this.router.navigate(['projects', 'dashboard']);
               }, 1000);
@@ -84,9 +86,9 @@ export class LoginComponent {
               this.router.navigate(['/landing']);
             }
           });
-    }
+    // }
   }
-  updateAuth(v) {
-    this.stateService.authenticated.next(v);
-  }
+  // updateAuth(v) {
+  //   this.stateService.authenticated.next(v);
+  // }
 }

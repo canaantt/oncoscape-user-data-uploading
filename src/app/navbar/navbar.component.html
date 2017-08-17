@@ -9,15 +9,15 @@
     </a>
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav float-left">
-        <a class="navbar-items nav-item nav-link active " *ngIf='authenticated' (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a>
+        <a class="navbar-items nav-item nav-link active " *ngIf='user' (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a>
         <a class="nav-item nav-link navbar-items active" href="http://resources.sttrcancer.org/oncoscape-contact"><span class="fa fa-comments"></span>Feedback</a>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img *ngIf='user && authenticated'  class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>
-          <div *ngIf='authenticated' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img *ngIf='user'  class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>
+          <div *ngIf='user' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" (click)="toProfile()">Account</a>
             <div class="dropdown-item">
-              <a *ngIf='!authenticated'  (click)="googleLogin()">Login </a>
-              <a *ngIf='authenticated'    (click)="googleLogOut()">Logout</a>
+              <a *ngIf='!user'  (click)="googleLogin()">Login </a>
+              <a *ngIf='user' (click)="googleLogOut()">Logout</a>
               <!-- <a>{{authenticated}}</a> -->
             </div>
           </div>

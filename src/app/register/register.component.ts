@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, Input, OnInit, ViewChild, EventEmitter} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
   user: any;
   @ViewChild('LoginComponent') login;
-
+  getRegisteredUser: EventEmitter<any>;
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -25,6 +25,7 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) {
     this.stateService.user.subscribe(res => this.user = res);
+    this.getRegisteredUser = new EventEmitter<any>();
   }
 
   submit() {
@@ -44,7 +45,8 @@ export class RegisterComponent implements OnInit {
                 alert('This email has already been linked to existing user. Please check accuracy.');
                 return;
               } else {
-                this.stateService.internalUser.next(this.newUserForm.value);
+                this.getRegisteredUser.emit(this.newUserForm.value);
+                // this.stateService.internalUser.next(this.newUserForm.value);
                 this.loginService.googleLogin();
               }
             });

@@ -3,7 +3,7 @@ import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
-import { Observable} from 'rxjs/Observable';
+import { Observable, BehaviorSubject, Subject } from 'rxjs/Rx';
 import { LoginService } from '../service/login.service';
 
 @Component({
@@ -12,49 +12,39 @@ import { LoginService } from '../service/login.service';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent {
-  private authenticated: boolean;
+  private userObjectChange  = new Subject<any>();
+  userObjectChange$ = this.userObjectChange.asObservable();
   private user: any;
-  private internalUser: any;
-
+  @Input()
+  set userS (user: any) {
+    this.stateService.user
+    .subscribe(res => {
+      this.userObjectChange.next(res);
+      this.user = res;
+    });
+  }
+  get userS (): any {
+    return this.user;
+  }
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
-
     this.stateService.user
         .subscribe(res => {
-          
-          this.user = res 
+          this.user = res;
         });
-    this.stateService.authenticated
-        .subscribe(res => {
-
-          this.authenticated = res;
-        });
-    this.stateService.internalUser
-        .subscribe( res => this.internalUser);
   }
 
   goRegister() {
     this.router.navigate(['/register']);
   }
   googleLogin() {
-    
-    this.loginService.loggedIn.subscribe(res => {
-      this.authenticated = res;
-      // console.log(this.authenticated);
-      // this.router.navigate(['/projects', 'dashboard']);
-    });
-    this.loginService.userGoogleProfile.subscribe(res => {
-      this.user = res;
-      console.log('user info is ', res);
-    });
     this.loginService.googleLogin();
-    
   }
-  updateAuth(event) {
-    this.authenticated = event;
-  }
+  // updateAuth(event) {
+  //   this.authenticated = event;
+  // }
   googleLogOut() {
     this.loginService.googleLogOut();
   }

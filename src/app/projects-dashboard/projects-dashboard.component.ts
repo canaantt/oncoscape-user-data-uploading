@@ -59,21 +59,22 @@ export class ProjectsDashboardComponent implements OnInit{
                private userService: UserService,
                private stateService: StateService,
                private router: Router) {
-                this.stateService.authenticated
-                    .subscribe(res => {
-                      this.authenticated = res;
-                    });
+                // this.stateService.authenticated
+                //     .subscribe(res => {
+                //       this.authenticated = res;
+                //     });
                 this.stateService.user
                     .subscribe(res => {
                       // this.getUserID(res.email);
                       this.user = res;
                     });
-                this.stateService.internalUser
-                    .subscribe(res => {
-                      this.internalUser = res;
-                    }); // not quiet useful
+                // this.stateService.internalUser
+                //     .subscribe(res => {
+                //       this.internalUser = res;
+                //     }); // not quiet useful
                }
   ngOnInit () {
+    console.log('deleted authenticated and internalUser');
     if (this.authenticated) {
       this.getUserID(this.user.email);
     }
