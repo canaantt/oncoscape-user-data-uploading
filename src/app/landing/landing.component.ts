@@ -41,9 +41,6 @@ export class LandingComponent {
   googleLogin() {
     this.loginService.googleLogin();
   }
-  // updateAuth(event) {
-  //   this.authenticated = event;
-  // }
   googleLogOut() {
     this.loginService.googleLogOut();
   }

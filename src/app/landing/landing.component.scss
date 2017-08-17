@@ -6,15 +6,15 @@
     font-family: $font-family;
 }
 
-// .landing-title {
-//     font-weight: 400;
-//     letter-spacing: 25px;
-//     font-size: 30px;
-//     padding-top: 10px;
-//     padding-bottom: 20px;
-//     text-transform: uppercase;
-//     color: $color-onco-blue;
-// }
+.landing-title {
+    font-weight: 400;
+    letter-spacing: 25px;
+    font-size: 30px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    text-transform: uppercase;
+    color: $color-onco-blue;
+}
 
 .landing-button {
     background: $color-onco-blue;
@@ -37,13 +37,13 @@
     border-bottom-width: 2px;
     padding-bottom: 15px;
     text-align: center;
+    position: relative;
 }
 
 a.landing-help {
     text-decoration: none;
-    color: $color-onco-blue;
-    // letter-spacing: 1px;
-    margin-top:10px;
+    color: $color-onco-blue; // letter-spacing: 1px;
+    margin-top: 10px;
     font-size: 14px;
     cursor: pointer;
 }
@@ -54,25 +54,11 @@ a.landing-help {
     padding-bottom: 40px;
     padding-left: 80px;
     padding-right: 80px;
-    border-radius: 15px;
     border-color: #d2d2d2;
     border-width: 5px;
-    box-shadow: 0 1px 0 #cfcfcf;
     margin-top: 110px;
+    border-radius: 2px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
-.landing-wrapper {
-    text-align: center;
-    margin-top: 15px;   
-}
-.landing-center-format{
-    margin-top: 10px;
-}
-.wrapper{
-left:25%;
-// top:20%;
-position:absolute;
-}
-.content{
-position:relative;
-}
+

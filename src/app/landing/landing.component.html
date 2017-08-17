@@ -1,26 +1,19 @@
 <div class="landing">
     <div class="container">
-        <div class="wrapper">
-            <div class="content">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="landing-form-login">
-                            <h4 class="landing-header">Oncoscape Data Portal</h4>
-                            <div class="landing-wrapper">
-                                <div class="btn-group">
-                                    <div class="btn landing-button">
-                                        <a *ngIf='!user'  (click)="googleLogin()">Login </a>
-                                        <a *ngIf='user' (click)="googleLogOut()">Logout</a>
-                                      </div>
-                                      
-                                    <div class="btn landing-button" (click)="goRegister()">Register</div>
-                                </div>
-                                <div class="col-xs-12">
-                                    <p class="landing-center-format"><a class="landing-help">First Time User?</a> |<a class="landing-help">&nbsp;Support</a></p>
-                                    <!-- <p  class="landing-center-format">user: {{user.name}}</p> -->
-                                </div>
-                            </div>
+        <div class="col-xs-12">
+            <div class="landing-wrapper">
+                <div class="landing-form-login">
+                    <h4 class="landing-header">Data Portal</h4>
+
+                    <div class="btn-group">
+                        <div class="btn landing-button">
+                            <a *ngIf='!user'  (click)="googleLogin()">Login </a>
+                            <a *ngIf='user' (click)="googleLogOut()">Logout</a>
                         </div>
+                        <div class="btn landing-button" (click)="goRegister()">Register</div>
+                    </div>
+                    <div class="col-xs-12">
+                        <p class="landing-center-format"><a class="landing-help">First Time User?</a> |<a class="landing-help">&nbsp;Support</a></p>
                     </div>
                 </div>
             </div>

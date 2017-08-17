@@ -9,6 +9,8 @@ import { ProjectsDashboardComponent } from '../projects-dashboard/projects-dashb
 import { ProjectDetailComponent } from '../project-detail/project-detail.component';
 import { RegisterComponent } from '../register/register.component';
 import { UserDetailComponent } from '../user-detail/user-detail.component';
+import { HelpComponent } from '../help/help.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -26,6 +28,9 @@ const routes: Routes = [
   }, {
     path: 'register',
     component: RegisterComponent
+  }, {
+    path: 'help',
+    component: HelpComponent
   }, {
     path: 'projects',
     component: ProjectsComponent,

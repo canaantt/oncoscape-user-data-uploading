@@ -38,6 +38,9 @@ export class NavbarComponent implements OnInit {
       console.log('@@@user info is ', res);
     });
   }
+  goHelp() {
+    this.router.navigate(['help']);
+  }
   googleLogOut() {
     console.log('trying to log out.');
     this.loginService.googleLogOut();

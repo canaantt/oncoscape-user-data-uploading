@@ -31,7 +31,7 @@
     "csvtojson": "^1.1.6",
     "excel-as-json": "^2.0.1",
     "excel-parser": "^0.2.2",
-    "express": "^4.15.2",
+    "express": "^4.15.4",
     "express-fileupload": "^0.1.2",
     "file-browser": "0.0.5",
     "file-loader": "^0.11.1",

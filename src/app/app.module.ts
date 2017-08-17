@@ -29,6 +29,7 @@ import { FileService } from './service/file.service';
 import { PermissionService } from './service/permission.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from './service/login.service';
+import { HelpComponent } from './help/help.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +46,8 @@ import { LoginService } from './service/login.service';
     DateFormatter,
     UserFullNamePipe,
     Overlapping,
-    FileSelectDirective
+    FileSelectDirective,
+    HelpComponent
   ],
   imports: [
     BrowserModule,
