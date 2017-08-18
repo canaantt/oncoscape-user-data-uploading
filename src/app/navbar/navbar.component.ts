@@ -33,7 +33,6 @@ export class NavbarComponent implements OnInit {
   seeWatch() {
     this.watchTest.subscribe((data) => {
         this.user = data;
-        console.log('!!!!!!!in Nav!!!!', data);
     });
   }
   goDashboard() {

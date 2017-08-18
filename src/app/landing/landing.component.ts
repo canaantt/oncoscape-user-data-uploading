@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
@@ -10,31 +10,37 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, DoCheck {
   user: any;
+  user$: BehaviorSubject<any> = new BehaviorSubject({});
   newForm: FormGroup;
   constructor( private fb: FormBuilder,
                private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
-               private router: Router,
-               private ref: ChangeDetectorRef ) {
-                this.stateService.user.subscribe(data => {
-                  this.user = data;
-                });
-                console.log('Landing component is being called.');
+               private router: Router ) {
+                this.stateService.user
+                    .subscribe(data => {
+                      this.user = data;
+                    });
+                 console.log('Landing component is being called.');
                }
   ngOnInit() {
-    this.newForm = this.fb.group({
-      FirstName: new FormControl('', Validators.required),
-      LastName: new FormControl('', Validators.required)
-    });
-    this.OnChanges();
+    // this.newForm = this.fb.group({
+    //   FirstName: new FormControl('', Validators.required),
+    //   LastName: new FormControl('', Validators.required)
+    // });
+    // this.OnChanges();
   }
-  OnChanges(): void {
-    this.newForm.valueChanges.subscribe(val =>
-    console.log(val));
+  ngDoCheck() {
+    console.log('ngDoCheck is trigger.');
   }
+  // OnChanges(): void {
+  //   this.newForm.valueChanges.subscribe(val =>
+  //   console.log(val));
+  //   this.loginService.userGoogleProfile
+  //       .distinctUntilChanged().subscribe(res => this.user);
+  // }
   submit() {
     console.log(this.newForm.value);
   }
