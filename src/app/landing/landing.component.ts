@@ -12,25 +12,22 @@ import { LoginService } from '../service/login.service';
 })
 export class LandingComponent {
   user: any;
-  public test;
   public watchTest;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
-    this.stateService.user
-        .subscribe(res => {
-          this.user = res;
-        });
-    this.setWatch();
-    this.seeWatch();
-  }
+                 this.setWatch();
+                 this.seeWatch();
+               }
   setWatch() {
-    this.watchTest = Observable.of(this.user);
- }
- seeWatch() {
-    this.watchTest.subscribe(() => console.log('in see Watch'));
- }
+    this.watchTest = this.stateService.user;
+  }
+  seeWatch() {
+    this.watchTest.subscribe((data) => {
+        this.user = data;
+    });
+  }
   goRegister() {
     this.router.navigate(['/register']);
   }

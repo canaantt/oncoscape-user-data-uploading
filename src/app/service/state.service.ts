@@ -10,5 +10,4 @@ export class StateService {
     this.user = new BehaviorSubject(null);
     this.internalUser = new BehaviorSubject(null);
    }
-
 }

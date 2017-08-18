@@ -10,12 +10,10 @@ import { User } from '../models/user';
 export class LoginService {
     GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
 
-    loggedIn: EventEmitter<any> ;
     userGoogleProfile: EventEmitter<any> ;
     constructor(private stateService: StateService,
                 private userService: UserService,
                 private router: Router) {
-        this.loggedIn = new EventEmitter<any>();
         this.userGoogleProfile = new EventEmitter<any>();
         hello.init({
           google: this.GOOGLE_CLIENT_ID,
@@ -41,27 +39,20 @@ export class LoginService {
       this.userGoogleProfile.emit(null);
     }
     authLogin(auth) {
-      console.log('Logged in !!!');
       hello('google').api('me').then( this.updateUserInfo.bind(this));
     }
     authLogout(auth) {
-      console.log('LOGOUIT');
       this.updateUserInfo.bind(this, null);
       this.router.navigate(['/landing']);
     }
-
     updateUserInfo(v) {
       this.stateService.internalUser.subscribe(res => {
         const internalUser = res;
         if (internalUser !== null && internalUser.Gmail === '') {
-          console.log('^^^This is the registration process.');
-          console.log('internalUser is:', internalUser);
           internalUser.Gmail = v.email;
-          console.log('^^^^^^^', internalUser);
           this.userService.create(internalUser)
               .subscribe(() => alert('New User is added to database'));
         } else {
-          console.log('***');
           this.userService.getUserIDByGmail(v.email)
               .subscribe(r => {
                 if (typeof(r[0]) !== 'undefined') {

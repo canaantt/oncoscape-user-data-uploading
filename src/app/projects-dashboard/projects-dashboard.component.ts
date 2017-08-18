@@ -39,7 +39,7 @@ export class DateFormatter implements PipeTransform {
   styleUrls: ['./projects-dashboard.component.scss'],
   providers: [IrbService, UserService, PermissionService, FileService]
 })
-export class ProjectsDashboardComponent implements OnInit{
+export class ProjectsDashboardComponent implements OnInit {
   projects: any;
   selectedProject: Project;
   newProjectForm: FormGroup;
@@ -122,7 +122,6 @@ export class ProjectsDashboardComponent implements OnInit{
     });
     this.projectService.create(this.newProjectForm.value)
         .subscribe(() => {
-          console.log('%%%%%', this.newProjectForm.value);
           this.getRecentAddedProject();
         });
   }

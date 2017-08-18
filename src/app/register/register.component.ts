@@ -14,9 +14,7 @@ import { LoginService } from '../service/login.service';
 })
 export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
-  user: any;
   @ViewChild('LoginComponent') login;
-  getRegisteredUser: EventEmitter<any>;
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -24,8 +22,7 @@ export class RegisterComponent implements OnInit {
     private loginService: LoginService,
     private router: Router
   ) {
-    this.stateService.user.subscribe(res => this.user = res);
-    this.getRegisteredUser = new EventEmitter<any>();
+    this.loginService.googleLogOut();
   }
 
   submit() {
@@ -45,11 +42,8 @@ export class RegisterComponent implements OnInit {
                 alert('This email has already been linked to existing user. Please check accuracy.');
                 return;
               } else {
-                // this.getRegisteredUser.emit(this.newUserForm.value);
                 this.stateService.internalUser.next(this.newUserForm.value);
                 this.loginService.googleLogin();
-                // this.loginService.getInternalUser(this.newUserForm.value);
-                // this.router.navigate(['/landing']);
               }
             });
       }

@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-// import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
@@ -12,19 +11,25 @@ import { LoginService } from '../service/login.service';
   styleUrls: ['./navbar.component.scss']
 })
 
-export class NavbarComponent implements OnInit {
-  // authenticated = false;
+export class NavbarComponent {
   user: any;
-
+  public watchTest;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
-                  this.stateService.user
-                      .subscribe(res => {
-                        this.user = res;
-                      });
+                  this.setWatch();
+                  this.seeWatch();
               }
+  setWatch() {
+    this.watchTest = this.loginService.userGoogleProfile;
+  }
+  seeWatch() {
+    this.watchTest.subscribe((data) => {
+        this.user = data;
+        console.log('!!!!!!!in Nav!!!!', data);
+    });
+  }
   goDashboard() {
     if (this.user) {
       this.router.navigate(['projects/', 'dashboard']);
@@ -32,17 +37,10 @@ export class NavbarComponent implements OnInit {
       alert('Please Log in or register.');
     }
   }
-  ngOnInit() {
-    this.loginService.userGoogleProfile.subscribe(res => {
-      this.user = res;
-      console.log('@@@user info is ', res);
-    });
-  }
   goHelp() {
     this.router.navigate(['help']);
   }
   googleLogOut() {
-    console.log('trying to log out.');
     this.loginService.googleLogOut();
   }
 
