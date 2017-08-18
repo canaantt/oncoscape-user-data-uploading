@@ -11,20 +11,9 @@ import { LoginService } from '../service/login.service';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent {
-  private userObjectChange  = new Subject<any>();
-  userObjectChange$ = this.userObjectChange.asObservable();
-  private user: any;
-  @Input()
-  set userS (user: any) {
-    this.stateService.user
-    .subscribe(res => {
-      this.userObjectChange.next(res);
-      this.user = res;
-    });
-  }
-  get userS (): any {
-    return this.user;
-  }
+  user: any;
+  public test;
+  public watchTest;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
@@ -33,8 +22,15 @@ export class LandingComponent {
         .subscribe(res => {
           this.user = res;
         });
+    this.setWatch();
+    this.seeWatch();
   }
-
+  setWatch() {
+    this.watchTest = Observable.of(this.user);
+ }
+ seeWatch() {
+    this.watchTest.subscribe(() => console.log('in see Watch'));
+ }
   goRegister() {
     this.router.navigate(['/register']);
   }

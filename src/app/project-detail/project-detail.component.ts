@@ -74,7 +74,9 @@ export class ProjectDetailComponent implements  OnInit {
     private fb: FormBuilder) {
       this.id = this.route.snapshot.params['id'];
       this.stateService.user.subscribe(res => {
-        this.getUserID(res.email, this.id);
+        if (res !== null) {
+          this.getUserID(res.email, this.id);
+        }
       });
       this.projectService.getProjectByID(this.route.snapshot.params['id'])
                          .subscribe(res0 => {
