@@ -2,6 +2,8 @@
  *  If you want to override some bootstrap variables, you have to change values here.
  *  The list of variables are listed here bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
  */
+
+//  SCSS Variables
 @import url(https://fonts.googleapis.com/css?family=Lato);
 $color-gray-light: #EAEAEA;
 $color-gray: #bbb;
@@ -9,28 +11,25 @@ $color-black: #000;
 $color-white: #FFFFFF;
 $color-blue-light: #c1e9fe;
 $color-onco-blue: #039BE5;
-$color-blue: #039BE5;
-$link-color: $color-blue;
-$link-hover-color: $color-blue;
 $box-shaddow: 0 2px 3px #bbb;
-$input-border: $color-gray-light;
-$btn-default-border: $color-gray-light;
-$btn-primary-bg: $color-blue;
 $input-border-radius: 0;
 $border-radius-base: 0;
-$navbar-inverse-bg:$color-blue;
-$navbar-inverse-link-color: $color-white;
-$navbar-inverse-brand-hover-bg: $color-blue; 
-$navbar-inverse-link-active-bg: $color-blue; 
-$navbar-inverse-link-hover-bg: $color-blue; 
-$navbar-inverse-brand-color: $color-white;
-$navbar-inverse-brand-hover-color: $color-white;
 $navbar-height: 60px;
-// $font-size-base: 13px;
-// $headings-font-weight: 300 !default;
 $font-family: 'Lato';
 $font-weight: 300;
 
+$link-color: $color-onco-blue;
+$link-hover-color: $color-onco-blue;
+$input-border: $color-gray-light;
+$btn-default-border: $color-gray-light;
+$btn-primary-bg: $color-onco-blue;
+$navbar-inverse-bg:$color-onco-blue;
+$navbar-inverse-link-color: $color-white;
+$navbar-inverse-brand-hover-bg: $color-onco-blue; 
+$navbar-inverse-link-active-bg: $color-onco-blue; 
+$navbar-inverse-link-hover-bg: $color-onco-blue; 
+$navbar-inverse-brand-color: $color-white;
+$navbar-inverse-brand-hover-color: $color-white;
 
 /**
  *  Do not remove the comments below. It's the markers used by wiredep to inject
@@ -59,19 +58,7 @@ body {
     background: #f5f5f5;
 }
 
-button {
-    font-weight: 300;
-}
-
-label {
-    // display: inline-block;
-    // max-width: 100%;
-    // margin-bottom: 5px;
-    // letter-spacing: 3px;
-    font-weight: 300;
-    
-}
-
+// SCSS Extends
 .container-fluid {
     padding-left: 20px;
     padding-right: 20px;
@@ -101,15 +88,34 @@ label {
  
 }
 .btn-primary {
-    color: #fff;
-    background-color: #039BE5;
-    // border-color: #fff;
+    color: $color-white;
+    background: $color-onco-blue;
     text-decoration: none;
+    border-radius: 0;
+    padding: 10px;
+    width: 120px;
+    height: 40px;
+    line-height: 20px;
+    margin-right: 10px;
+    font-weight: $font-weight;
+
 }
-.btn-link {
+
+.link-primary {
+    text-decoration: none;
     color: $color-onco-blue;
-    font-size: 12px;
+    font-size: 13px;
+    cursor: pointer;
 }
+.header-primary {
+    font-weight: $font-weight;
+    color: $color-onco-blue;
+    margin-bottom: 50px;
+    margin-top: 0;
+    letter-spacing: 1px;
+}
+
+
 
 // Bootstrap needs to be placed in index.scss for overides
 

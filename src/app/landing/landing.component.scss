@@ -1,64 +1,27 @@
 // import global variable
 @import '/../index';
 .landing {
-    padding-top: 150px;
+    padding-top: 225px;
     font-weight: $font-weight;
     font-family: $font-family;
 }
 
 .landing-title {
-    font-weight: 400;
-    letter-spacing: 25px;
+    font-weight: $font-weight;
+    letter-spacing: 10px;
     font-size: 30px;
     padding-top: 10px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     text-transform: uppercase;
     color: $color-onco-blue;
 }
 
 .landing-button {
-    background: $color-onco-blue;
-    color: #FFF;
-    border-radius: 0;
-    padding: 10px;
-    width: 120px;
-    height: 40px;
-    line-height: 20px;
-    margin: 3px;
+    @extend .btn-primary;
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
 
-.landing-header {
-    letter-spacing: 2px;
-    color: $color-onco-blue;
-    font-weight: $font-weight;
-    font-size: 25px;
-    padding-top: 25px;
-    border: 0 solid #fff;
-    border-bottom-width: 2px;
-    padding-bottom: 15px;
-    text-align: center;
-    position: relative;
+a.landing-link {
+    @extend .link-primary;
 }
-
-a.landing-help {
-    text-decoration: none;
-    color: $color-onco-blue; // letter-spacing: 1px;
-    margin-top: 10px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.landing-form-login {
-    background-color: #fafafa;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    padding-left: 80px;
-    padding-right: 80px;
-    border-color: #d2d2d2;
-    border-width: 5px;
-    margin-top: 110px;
-    border-radius: 2px;
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-}
-
-
