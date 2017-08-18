@@ -1,37 +1,47 @@
-<div *ngIf="user">
-  <hr>
-  <h3>User Detail Section</h3>
-  <div>
-    <label>First name: </label>
-    <input [(ngModel)]="user.FirstName" placeholder="First Name"/>
-    <p *ngIf="error.fn !==''"><small  class="text-danger">{{error.fn}}</small></p>
+<div class="user-detail">
+  <div *ngIf="user">
+    <div class="container">
+      <h5 class="user-title">User Detail</h5> 
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">First name </label>
+        <div class="col-sm-10">
+          <input class="form-control" [(ngModel)]="user.FirstName" placeholder="First Name" />
+          <p *ngIf="error.fn !==''"><small class="text-danger">{{error.fn}}</small></p>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Last name </label>
+        <div class="col-sm-10">
+          <input class="form-control" [(ngModel)]="user.LastName" placeholder="Last Name" />
+          <p *ngIf="error.fn !==''"><small class="text-danger">{{error.fn}}</small></p>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+          <input [(ngModel)]="user.Email" class="form-control" placeholder="Email">
+          <p *ngIf="error.email.empty !=='' || error.email.format !=='' || error.email.duplicate !==''">
+            <small class="text-danger">{{error.email.empty}}{{error.email.format}}{{error.email.duplicate}}
+                    </small></p>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Institution</label>
+        <div class="col-sm-10">
+          <input class="form-control" [(ngModel)]="user.Institution" placeholder="Institution" />
+          <p *ngIf="error.fn !==''"><small class="text-danger">{{error.fn}}</small></p>
+        </div>
+      </div>
+      <div>
+        <div>
+          <label>Member since:  </label>
+          <span>{{user.Date | DateFormatter : 'Date'}}</span>
+        </div>
+        <label>Database ID </label>
+        <span> {{user._id}}</span>
+      </div>
+      <button class='btn btn-primary' (click)="update(user)">Update</button>
+      <button class='btn btn-primary' (click)="goHomepage()">Go Back</button>
+    </div>
   </div>
-  <div>
-    <label>Last name: </label>
-    <input [(ngModel)]="user.LastName" placeholder="Last Name"/>
-    <p *ngIf="error.ln!==''"><small  class="text-danger">{{error.ln}}</small></p>
-  </div>
-  <div>
-    <label>Email: </label>
-    <input [(ngModel)]="user.Email" placeholder=" "/>
-    <p *ngIf="error.email.empty !=='' || error.email.format !=='' || error.email.duplicate !==''">
-      <small  class="text-danger">{{error.email.empty}}{{error.email.format}}{{error.email.duplicate}}
-        </small></p>
-  </div>
-  <div>
-    <label>Institution: </label>
-    <input [(ngModel)]="user.Institution" placeholder=" "/>
-    <p *ngIf="error.in !==''"><small  class="text-danger">{{error.in}}</small></p>
-  </div>
-  <div>
-    <label>Member since:  </label>
-    <span>{{user.Date | DateFormatter : 'Date'}}</span>
-  </div>
-  <!-- <div>
-    <label>Database ID:  </label>
-    <span> {{user._id}}</span>
-  </div> -->
-  <button class='btn btn-primary'  (click)="update(user)">Update</button>
-  <!-- <button class='btn btn-primary'  (click)="goHomepage()">Go Back</button> -->
- 
 </div>

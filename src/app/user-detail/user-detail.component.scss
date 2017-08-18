@@ -1,1 +1,9 @@
 @import '/../index';
+
+.user-detail {
+    margin-top:100px;
+}
+
+.user-title {
+    @extend .header-primary;
+}
