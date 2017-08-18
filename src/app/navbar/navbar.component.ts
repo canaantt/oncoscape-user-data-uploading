@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LoginComponent } from '../login/login.component';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
@@ -13,49 +12,43 @@ import { LoginService } from '../service/login.service';
 })
 
 export class NavbarComponent {
-  authenticated = false;
   user: any;
-  internalUser: any;
-
+  public watchTest;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
-                  // this.stateService.user
-                  //     .subscribe(res => {
-                  //       this.user = res;
-                  //     });
-                  this.stateService.internalUser
-                      .subscribe(res => {
-                        this.internalUser = res;
-                      }); // not quiet useful
-                  // this.stateService.authenticated
-                  //     .subscribe(res => {
-                  //       this.authenticated = res;
-                  //     });
-                  this.loginService.loggedIn.subscribe(res => {
-                    this.authenticated = res;
-                    // this.router.navigate(['/projects', 'dashboard']);
-                  });
-                  this.loginService.userGoogleProfile.subscribe(res => {
-                    this.user = res;
-                    console.log('user info is ', res);
-                  });
+                  this.setWatch();
+                  this.seeWatch();
               }
+  setWatch() {
+    this.watchTest = this.loginService.userGoogleProfile;
+  }
+  seeWatch() {
+    this.watchTest.subscribe((data) => {
+        this.user = data;
+        console.log('!!!!!!!in Nav!!!!', data);
+    });
+  }
   goDashboard() {
-    if (this.authenticated === true) {
+    if (this.user) {
       this.router.navigate(['projects/', 'dashboard']);
     } else {
       alert('Please Log in or register.');
     }
   }
-
+  goHelp() {
+    this.router.navigate(['help']);
+  }
   googleLogOut() {
     this.loginService.googleLogOut();
   }
 
   toProfile() {
-    this.router.navigate([`/users/${this.internalUser._id}/`]);
+      this.userService.getUserIDByGmail(this.user.email)
+        .subscribe(res => {
+          this.router.navigate([`/users/${res[0]._id}/`]);
+        });
   }
  }
 

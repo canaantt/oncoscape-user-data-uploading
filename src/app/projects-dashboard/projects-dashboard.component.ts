@@ -39,12 +39,11 @@ export class DateFormatter implements PipeTransform {
   styleUrls: ['./projects-dashboard.component.scss'],
   providers: [IrbService, UserService, PermissionService, FileService]
 })
-export class ProjectsDashboardComponent {
+export class ProjectsDashboardComponent implements OnInit {
   projects: any;
   selectedProject: Project;
   newProjectForm: FormGroup;
   user: any;
-  internalUser: any;
   userID: string;
   authenticated: boolean;
   projectIDs: any;
@@ -59,21 +58,17 @@ export class ProjectsDashboardComponent {
                private userService: UserService,
                private stateService: StateService,
                private router: Router) {
-                this.stateService.authenticated
-                    .subscribe(res => {
-                      this.authenticated = res;
-                    });
                 this.stateService.user
                     .subscribe(res => {
-                      this.getUserID(res.email);
                       this.user = res;
+                      if (this.user !== null) {
+                        this.getUserID(this.user.email);
+                      }
                     });
-                this.stateService.internalUser
-                    .subscribe(res => {
-                      this.internalUser = res;
-                    }); // not quiet useful
                }
-
+  ngOnInit () {
+    console.log('Dashboard Component Init');
+  }
   onSelect(Project: Project): void {
     this.selectedProject = Project;
     const id = this.selectedProject._id;
@@ -117,6 +112,7 @@ export class ProjectsDashboardComponent {
     }
   }
   add(): void {
+    console.log('in add');
     this.newProjectForm = this.fb.group({
       Name: new FormControl('Name Your New Dataset', Validators.required),
       Description: new FormControl('The largest recorded snowflake was in MT during year 1887, 15 inches wide', Validators.minLength(4)),

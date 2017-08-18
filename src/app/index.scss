@@ -26,8 +26,8 @@ $navbar-inverse-link-hover-bg: $color-blue;
 $navbar-inverse-brand-color: $color-white;
 $navbar-inverse-brand-hover-color: $color-white;
 $navbar-height: 60px;
-$font-size-base: 13px;
-$headings-font-weight: 300 !default;
+// $font-size-base: 13px;
+// $headings-font-weight: 300 !default;
 $font-family: 'Lato';
 $font-weight: 300;
 
@@ -110,115 +110,56 @@ label {
     color: $color-onco-blue;
     font-size: 12px;
 }
-// Bootstrap needs to be placed in index.scss for overides
-.panel.panel-horizontal {
-    display:table;
-    width:100%;
-}
-.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-body, .panel.panel-horizontal > .panel-footer >  .panel-body-desc,{
-    display:table-cell;
-}
-.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-footer {
-    width: 25%;
-    border:0;
-    vertical-align: middle;
-}
-.panel.panel-horizontal > .panel-heading {
-    // border-right: px solid $color-onco-blue;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 4px;
-}
-.panel-default>.panel-heading {
-    color: #333;
-    background-color: #fff;
-    border-color: #ddd;
-}
-.panel-body{
-    width:50%;
-    padding: 10px 10px;
-    border-left: 1px solid #ddd;
-}
+
 // Bootstrap needs to be placed in index.scss for overides
 
 
-/* Small devices (tablets, 768px and up) */
+// .sro {
+//     // Screen Readers Only
+//     display: none !important;
+// }
 
-@media (min-width: 768px) {}
-
-
-/* Medium devices (desktops, 992px and up) */
-
-@media (min-width: 992px) {
-    .container-fluid {
-        padding-left: 70px;
-        padding-right: 70px;
-    }
-}
-
-
-/* Large devices (large desktops, 1200px and up) */
-
-@media (min-width: 1200px) {}
-
-h1 {
-    font-size: 24px;
-}
-
-h2 {
-    font-size: 24px;
-}
-
-h3 {
-    font-size: 16px;
-}
-
-
-.sro {
-    // Screen Readers Only
-    display: none !important;
-}
-
-.dropdown-menu {
-    li {
-        padding: 0px 5px;
-    }
-    li:hover {
-        background-color: $color-gray-light;
-    }
-}
+// .dropdown-menu {
+//     li {
+//         padding: 0px 5px;
+//     }
+//     li:hover {
+//         background-color: $color-gray-light;
+//     }
+// }
 
 
 
 
-/* Overrides */
+// /* Overrides */
 
-.bs-dropdown {
-    width: 100%;
-    button {
-        width: 100%;
-        text-align: left;
-        height: 34px;
-        line-height: 14px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-weight: 300;
-        position: relative;
-        .caret {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-        }
-    }
-    ul {
-        li {
-            padding: 5px;
-        }
-    }
-}
+// .bs-dropdown {
+//     width: 100%;
+//     button {
+//         width: 100%;
+//         text-align: left;
+//         height: 34px;
+//         line-height: 14px;
+//         overflow: hidden;
+//         text-overflow: ellipsis;
+//         font-weight: 300;
+//         position: relative;
+//         .caret {
+//             position: absolute;
+//             right: 15px;
+//             top: 15px;
+//         }
+//     }
+//     ul {
+//         li {
+//             padding: 5px;
+//         }
+//     }
+// }
 
-button .fa {
-    color: $color-white;
-}
+// button .fa {
+//     color: $color-white;
+// }
 
 // .round-button {
 //     width: 20%;
@@ -243,38 +184,38 @@ button .fa {
 
 // injector
 // endinjector
-@media print {
-    @page {
-        margin: 0;
-        size: A4 landscape;
-    }
-    button {
-        display: none;
-    }
-    #main {
-        padding-top: 0px;
-    }
-    .tray-label {
-        display: none !important;
-    }
-    .header {
-        display: none;
-    }
-    .tray {
-        background: none;
-        border: none;
-        box-shadow: none
-    }
-    .fa-angle-down {
-        display: none;
-    }
-    .fa-lock {
-        display: none;
-    }
-    .caret {
-        display: none;
-    }
-    .tray-right {
-        display: block !important;
-    }
-}
+// @media print {
+//     @page {
+//         margin: 0;
+//         size: A4 landscape;
+//     }
+//     button {
+//         display: none;
+//     }
+//     #main {
+//         padding-top: 0px;
+//     }
+//     .tray-label {
+//         display: none !important;
+//     }
+//     .header {
+//         display: none;
+//     }
+//     .tray {
+//         background: none;
+//         border: none;
+//         box-shadow: none
+//     }
+//     .fa-angle-down {
+//         display: none;
+//     }
+//     .fa-lock {
+//         display: none;
+//     }
+//     .caret {
+//         display: none;
+//     }
+//     .tray-right {
+//         display: block !important;
+//     }
+// }

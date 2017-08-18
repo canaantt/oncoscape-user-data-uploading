@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, Input, OnInit, ViewChild, EventEmitter} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
@@ -14,9 +14,7 @@ import { LoginService } from '../service/login.service';
 })
 export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
-  user: any;
   @ViewChild('LoginComponent') login;
-
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -24,7 +22,7 @@ export class RegisterComponent implements OnInit {
     private loginService: LoginService,
     private router: Router
   ) {
-    this.stateService.user.subscribe(res => this.user = res);
+    this.loginService.googleLogOut();
   }
 
   submit() {
