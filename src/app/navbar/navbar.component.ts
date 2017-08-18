@@ -11,16 +11,22 @@ import { LoginService } from '../service/login.service';
   styleUrls: ['./navbar.component.scss']
 })
 
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   user: any;
   public watchTest;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
                private router: Router) {
+                  console.log('in Nav Constructor');
                   this.setWatch();
                   this.seeWatch();
               }
+  ngOnInit() {
+    console.log('in Nav OnInit');
+    this.setWatch();
+    this.seeWatch();
+  }
   setWatch() {
     this.watchTest = this.loginService.userGoogleProfile;
   }

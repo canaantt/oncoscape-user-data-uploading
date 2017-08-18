@@ -39,7 +39,7 @@ export class DateFormatter implements PipeTransform {
   styleUrls: ['./projects-dashboard.component.scss'],
   providers: [IrbService, UserService, PermissionService, FileService]
 })
-export class ProjectsDashboardComponent implements OnInit {
+export class ProjectsDashboardComponent {
   projects: any;
   selectedProject: Project;
   newProjectForm: FormGroup;
@@ -58,6 +58,7 @@ export class ProjectsDashboardComponent implements OnInit {
                private userService: UserService,
                private stateService: StateService,
                private router: Router) {
+                console.log('Dashboard Component constructor');
                 this.stateService.user
                     .subscribe(res => {
                       this.user = res;
@@ -66,9 +67,6 @@ export class ProjectsDashboardComponent implements OnInit {
                       }
                     });
                }
-  ngOnInit () {
-    console.log('Dashboard Component Init');
-  }
   onSelect(Project: Project): void {
     this.selectedProject = Project;
     const id = this.selectedProject._id;

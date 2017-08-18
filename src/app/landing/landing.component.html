@@ -15,6 +15,24 @@
                         <p class="landing-center-format"><a class="landing-help">First Time User?</a> |<a class="landing-help">&nbsp;Support</a></p>
                     </div>
                 </div>
+                <form [formGroup]="newForm">
+                    <div class="form-inline" style="padding-bottom: 20px">
+                        <!-- <label>Required: </label> -->
+                        <div class="form-group">
+                            <!--<label for="firstName">First Name</label>-->
+                            <input type="text" class="form-control" id="firstName" formControlName="FirstName" placeholder="First Name">
+                            <label><span class="text-danger">*</span></label>
+                        </div>
+                        <div class="form-group">
+                            <!--<label for="lastName">Last Name</label>-->
+                            <input type="text" class="form-control" id="lastName" formControlName="LastName"  placeholder="Last Name">
+                            <label><span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" (click)="submit()" class="btn" value="AGREE" >
+                    </div>
+                </form>
             </div>
         </div>
     </div>

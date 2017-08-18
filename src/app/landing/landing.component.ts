@@ -1,33 +1,44 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, Subject } from 'rxjs/Rx';
 import { LoginService } from '../service/login.service';
-
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
   user: any;
-  public watchTest;
-  constructor( private stateService: StateService,
+  newForm: FormGroup;
+  constructor( private fb: FormBuilder,
+               private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
-               private router: Router) {
-                 this.setWatch();
-                 this.seeWatch();
+               private router: Router,
+               private ref: ChangeDetectorRef ) {
+                this.stateService.user.subscribe(data => {
+                  this.user = data;
+                });
+                console.log('Landing component is being called.');
                }
-  setWatch() {
-    this.watchTest = this.stateService.user;
-  }
-  seeWatch() {
-    this.watchTest.subscribe((data) => {
-        this.user = data;
+  ngOnInit() {
+    this.newForm = this.fb.group({
+      FirstName: new FormControl('', Validators.required),
+      LastName: new FormControl('', Validators.required)
     });
+    this.OnChanges();
   }
+  OnChanges(): void {
+    this.newForm.valueChanges.subscribe(val =>
+    console.log(val));
+  }
+  submit() {
+    console.log(this.newForm.value);
+  }
+
   goRegister() {
     this.router.navigate(['/register']);
   }
