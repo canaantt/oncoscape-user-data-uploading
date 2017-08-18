@@ -5,11 +5,7 @@
     font-family: $font-family;
 }
 .dashboard-header{
-    font-weight: 300;
-    color: #039BE5;
-    // letter-spacing: 1px;
-    margin-bottom: 50px;
-    margin-top: 0;
+  @extend .header-primary;
  }
 
  .dashboard-title {

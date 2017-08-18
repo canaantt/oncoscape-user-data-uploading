@@ -1,18 +1,22 @@
 <div class="landing">
-    <div class="container">
-        <div class="col-xs-12">
-            <div class="landing-wrapper">
-                <div class="landing-form-login">
-                    <h4 class="landing-header">Data Portal</h4>
-                    <div class="btn-group">
-                        <div class="btn landing-button">
-                            <a *ngIf='!user'  (click)="googleLogin()">Login </a>
-                            <a *ngIf='user' (click)="googleLogOut()">Logout</a>
-                        </div>
-                        <div class="btn landing-button" (click)="goRegister()">Register</div>
+    <div class="container py-5 text-center">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card rounded-2">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0 landing-title">Data Portal</h3>
                     </div>
-                    <div class="col-xs-12">
-                        <p class="landing-center-format"><a class="landing-help">First Time User?</a> |<a class="landing-help">&nbsp;Support</a></p>
+                    <div class="text-center card-body">
+                        <div class="btn-group">
+                            <div class="btn landing-button">
+                                <a class="text-center" *ngIf='!user' (click)="googleLogin()">Login </a>
+                                <a class="text-center" *ngIf='user' (click)="googleLogOut()">Logout</a>
+                            </div>
+                            <div class="btn landing-button" (click)="goRegister()">Register</div>
+                        </div>
+                        <div class="col-12">
+                            <p><a class="landing-link">First Time User? &nbsp;See Help</a></p>
+                        </div>
                     </div>
                 </div>
                 <form [formGroup]="newForm">
