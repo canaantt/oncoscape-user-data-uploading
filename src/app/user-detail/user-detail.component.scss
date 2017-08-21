@@ -1,9 +1,10 @@
 @import '/../index';
 
 .user-detail {
-    margin-top:100px;
+    margin-top:150px;
 }
 
-.user-title {
-    @extend .header-primary;
+.user-static {
+    font-size: 12px;
+    margin-bottom: 10px;
 }

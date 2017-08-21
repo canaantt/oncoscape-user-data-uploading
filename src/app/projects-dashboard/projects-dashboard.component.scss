@@ -1,44 +1,48 @@
 // import global variable
 @import '/../index';
-
 .dashboard {
     font-family: $font-family;
+    font-weight: $font-weight;
 }
-.dashboard-header{
-  @extend .header-primary;
- }
 
- .dashboard-title {
-     padding-bottom:10px;
-     font-size: 19px; 
-     font-weight: 300; 
-     margin-top:0px;
- }
+.dashboard-header {
+    @extend .header-primary;
+}
 
- .dashboard-lists {
-     padding-bottom: 5px;
- }
+.dashboard-title {
+    padding-bottom: 10px;
+    font-size: 19px;
+    font-weight: 300;
+    margin-top: 0px;
+}
 
- .dashboard-description {
-     margin-top:10px;
-     margin-bottom: 25px;
- }
+.dashboard-lists {
+    padding-bottom: 5px;
+}
 
-.dashboard{
+.dashboard-description {
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.dashboard {
     .btn {
         width: 110px;
         margin-right: 5px;
-        // margin-bottom: 10px;
         float: right;
     }
 }
 
 .dashboard-blue-gradient {
- background: linear-gradient(135deg,#039BE5 2%,#042a68);
-}
-p.card-text {
-    margin: 10px;
-    font-size: 14px;
+    background: linear-gradient(135deg, #039BE5 2%, #042a68);
 }
 
-
+.dashboard-dotted {
+    background-image: -webkit-repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 1px, transparent 1px, transparent 100%);
+    background-image: -moz-repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 1px, transparent 1px, transparent 100%);
+    background-image: -ms-repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 1px, transparent 1px, transparent 100%);
+    background-image: repeating-radial-gradient(center center, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2) 1px, transparent 1px, transparent 100%);
+    -webkit-background-size: 3px 3px;
+    -moz-background-size: 3px 3px;
+    background-size: 3px 3px;
+}

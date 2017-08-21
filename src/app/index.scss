@@ -11,23 +11,23 @@ $color-black: #000;
 $color-white: #FFFFFF;
 $color-blue-light: #c1e9fe;
 $color-onco-blue: #039BE5;
+$color-link:#03ADFF;
 $box-shaddow: 0 2px 3px #bbb;
 $input-border-radius: 0;
 $border-radius-base: 0;
 $navbar-height: 60px;
 $font-family: 'Lato';
 $font-weight: 300;
-
-$link-color: $color-onco-blue;
-$link-hover-color: $color-onco-blue;
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
 $input-border: $color-gray-light;
 $btn-default-border: $color-gray-light;
 $btn-primary-bg: $color-onco-blue;
 $navbar-inverse-bg:$color-onco-blue;
 $navbar-inverse-link-color: $color-white;
-$navbar-inverse-brand-hover-bg: $color-onco-blue; 
-$navbar-inverse-link-active-bg: $color-onco-blue; 
-$navbar-inverse-link-hover-bg: $color-onco-blue; 
+$navbar-inverse-brand-hover-bg: $color-onco-blue;
+$navbar-inverse-link-active-bg: $color-onco-blue;
+$navbar-inverse-link-hover-bg: $color-onco-blue;
 $navbar-inverse-brand-color: $color-white;
 $navbar-inverse-brand-hover-color: $color-white;
 
@@ -39,8 +39,8 @@ $navbar-inverse-brand-hover-color: $color-white;
 // bower:scss
 // endbower
 html {
-  font-family: $font-family;
-  font-weight: $font-weight;
+    font-family: $font-family;
+    font-weight: $font-weight;
 }
 
 body {
@@ -58,11 +58,21 @@ body {
     background: #f5f5f5;
 }
 
+
 // SCSS Extends
 .container-fluid {
     padding-left: 20px;
     padding-right: 20px;
 }
+
+// all links
+#{$a-tags} {
+    color:  $color-onco-blue;
+    text-decoration: none;
+  }
+  #{$a-tags-hover} {
+    color: $color-link;
+  }
 
 .tooltip {
     z-index: 99999 !important;
@@ -85,8 +95,8 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
- 
 }
+
 .btn-primary {
     color: $color-white;
     background: $color-onco-blue;
@@ -98,7 +108,6 @@ body {
     line-height: 20px;
     margin-right: 10px;
     font-weight: $font-weight;
-
 }
 
 .link-primary {
@@ -107,6 +116,7 @@ body {
     font-size: 13px;
     cursor: pointer;
 }
+
 .header-primary {
     font-weight: $font-weight;
     color: $color-onco-blue;
@@ -115,72 +125,29 @@ body {
     letter-spacing: 1px;
 }
 
+.page-primary {
+    padding-top: 225px;
+    font-weight: $font-weight;
+    font-family: $font-family;
+}
 
 
 // Bootstrap needs to be placed in index.scss for overides
+.card-header {
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: $color-white 
+}
 
-
-// .sro {
-//     // Screen Readers Only
-//     display: none !important;
-// }
-
-// .dropdown-menu {
-//     li {
-//         padding: 0px 5px;
-//     }
-//     li:hover {
-//         background-color: $color-gray-light;
-//     }
-// }
-
-
-
-
-// /* Overrides */
-
-// .bs-dropdown {
-//     width: 100%;
-//     button {
-//         width: 100%;
-//         text-align: left;
-//         height: 34px;
-//         line-height: 14px;
-//         overflow: hidden;
-//         text-overflow: ellipsis;
-//         font-weight: 300;
-//         position: relative;
-//         .caret {
-//             position: absolute;
-//             right: 15px;
-//             top: 15px;
-//         }
-//     }
-//     ul {
-//         li {
-//             padding: 5px;
-//         }
-//     }
-// }
-
-// button .fa {
-//     color: $color-white;
-// }
-
-// .round-button {
-//     width: 20%;
-//     padding-bottom: 10%;
-//     border-radius: 50%;
-//     border: 2px solid #f5f5f5;
-//     overflow: hidden;
-//     background: $color-white;
-//     box-shadow: 0 0 3px gray;
-//     margin: 10 10 10 10;
-// }
-// .round-button:hover {
-//     background:lightblue;
-// }
-
+.card-footer {
+    padding: .75rem 1.25rem;
+    background-color: $color-white; 
+    border-top: 1px solid lightgray; 
+}
+p.card-text {
+    margin: 12px;
+    font-size: 14px;
+}
 
 
 /**
@@ -190,38 +157,3 @@ body {
 
 // injector
 // endinjector
-// @media print {
-//     @page {
-//         margin: 0;
-//         size: A4 landscape;
-//     }
-//     button {
-//         display: none;
-//     }
-//     #main {
-//         padding-top: 0px;
-//     }
-//     .tray-label {
-//         display: none !important;
-//     }
-//     .header {
-//         display: none;
-//     }
-//     .tray {
-//         background: none;
-//         border: none;
-//         box-shadow: none
-//     }
-//     .fa-angle-down {
-//         display: none;
-//     }
-//     .fa-lock {
-//         display: none;
-//     }
-//     .caret {
-//         display: none;
-//     }
-//     .tray-right {
-//         display: block !important;
-//     }
-// }

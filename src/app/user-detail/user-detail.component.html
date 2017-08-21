@@ -1,16 +1,15 @@
 <div class="user-detail">
   <div *ngIf="user">
     <div class="container">
-      <h5 class="user-title">User Detail</h5> 
       <div class="form-group row">
-        <label class="col-sm-2 col-form-label">First name </label>
+        <label class="col-sm-2 col-form-label">First Name </label>
         <div class="col-sm-10">
           <input class="form-control" [(ngModel)]="user.FirstName" placeholder="First Name" />
           <p *ngIf="error.fn !==''"><small class="text-danger">{{error.fn}}</small></p>
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Last name </label>
+        <label class="col-sm-2 col-form-label">Last Name </label>
         <div class="col-sm-10">
           <input class="form-control" [(ngModel)]="user.LastName" placeholder="Last Name" />
           <p *ngIf="error.fn !==''"><small class="text-danger">{{error.fn}}</small></p>
@@ -32,13 +31,15 @@
           <p *ngIf="error.fn !==''"><small class="text-danger">{{error.fn}}</small></p>
         </div>
       </div>
-      <div>
-        <div>
-          <label>Member since:  </label>
+      <div class="row user-static">
+        <div class="col-12">
+          <label>Member since </label>
           <span>{{user.Date | DateFormatter : 'Date'}}</span>
         </div>
+          <div class="col-12">
         <label>Database ID </label>
         <span> {{user._id}}</span>
+      </div>
       </div>
       <button class='btn btn-primary' (click)="update(user)">Update</button>
       <button class='btn btn-primary' (click)="goHomepage()">Go Back</button>
