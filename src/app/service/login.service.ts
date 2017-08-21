@@ -58,7 +58,7 @@ export class LoginService {
                 if (typeof(r[0]) !== 'undefined') {
                   this.stateService.user.next(v);
                   this.userGoogleProfile.emit(v);
-                  // this.router.navigate(['/projects', 'dashboard']);
+                  this.router.navigate(['/projects', 'dashboard']);
                 } else {
                   alert('User is not registered yet. Please register. Please turn on the browser pop-up window.');
                   this.router.navigate(['/landing']);

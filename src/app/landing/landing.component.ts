@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { StateService } from '../service/state.service';
 import { UserService } from '../service/user.service';
 import { Router } from '@angular/router';
@@ -10,41 +10,37 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent implements OnInit, DoCheck {
+export class LandingComponent implements OnInit {
   user: any;
-  user$: BehaviorSubject<any> = new BehaviorSubject({});
-  newForm: FormGroup;
+  auth: boolean;
+  user$: Observable<any>;
   constructor( private fb: FormBuilder,
                private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
+               private ref: ChangeDetectorRef,
+               private zone: NgZone,
                private router: Router ) {
-                this.stateService.user
-                    .subscribe(data => {
-                      this.user = data;
-                    });
-                 console.log('Landing component is being called.');
+                this.getUser();
                }
+  getUser(): void {
+    this.stateService.user.subscribe(res => {
+      this.zone.run(() => { this.user = res; });
+    });
+  }
   ngOnInit() {
-    // this.newForm = this.fb.group({
-    //   FirstName: new FormControl('', Validators.required),
-    //   LastName: new FormControl('', Validators.required)
-    // });
-    // this.OnChanges();
+    this.getUser();
+    const timer = Observable.timer(10, 30);
+    timer.subscribe(() => this.getUser());
   }
-  ngDoCheck() {
-    console.log('ngDoCheck is trigger.');
+  update() {
+    this.stateService.user.subscribe(res => {
+      this.user = res;
+      console.log('in update');
+      this.ref.markForCheck();
+      console.log('after ref.markForCheck');
+    });
   }
-  // OnChanges(): void {
-  //   this.newForm.valueChanges.subscribe(val =>
-  //   console.log(val));
-  //   this.loginService.userGoogleProfile
-  //       .distinctUntilChanged().subscribe(res => this.user);
-  // }
-  submit() {
-    console.log(this.newForm.value);
-  }
-
   goRegister() {
     this.router.navigate(['/register']);
   }
