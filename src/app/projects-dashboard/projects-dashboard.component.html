@@ -8,28 +8,23 @@
                  <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button> 
             </div>
         </div>
-        <div *ngFor="let project of projects">
+        <div class="mb-5" *ngFor="let project of projects">
             <!--Card-->
             <div class="card card-cascade ">
-
                 <!--Card image-->
                 <div class="view gradient-card-header dashboard-blue-gradient">
-                    <h4 style="color:#fff; font-weight:300; font-family:Lato; margin-top:10px;" class="h2-responsive text-center">{{project.Name}}</h4>
+                    <h5 style="color:#fff; font-weight:300; font-family:Lato; margin-top:10px;" class="h2-responsive text-center">{{project.Name}}</h5>
                     <p style="color:#fff; font-weight:300; font-family:Lato;" class="text-center">{{project.Date | DateFormatter : 'Date'}} </p>
-
                 </div>
                 <!--/Card image-->
-
                 <!--Card content-->
-                <div class="card-body text-center">
-
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus, ex, recusandae. Facere modi sunt,
-                        quod quibusdam dignissimos neque rem nihil ratione est placeat vel, natus non quos laudantium veritatis
-                        sequi.Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.
+                <div class="card-body ">
+                    <p class="card-text"> 
+                       {{project.Description}}
                     </p>
                 </div>
                 <!--/.Card content-->
-                <div class="card-footer text-center">
+                <div class="col-12 dashboard-dotted card-footer text-center">
                     <!-- <a href='projects/{{project._id}}' [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</a>  -->
                     <button type="button" [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</button>
                     <button (click)="delete(project)" class=" btn btn-primary ">Delete</button>
@@ -37,59 +32,5 @@
             </div>
             <!--/.Card-->
         </div>
-
-
-
-        <!-- <div class="row">
-            <div class="col-6">
-                <h5 class="dashboard-header">Datasets Dashboard</h5>
-            </div>
-            <div class="col-6">
-                <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button>
-            </div>
-        </div> -->
-        <!-- <div class="row">
-            <div class="col-xs-12">
-                <h3>Adding a new project?</h3>
-                <h4>Legal Document</h4>
-                <h5>What is Lorem Ipsum?</h5>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
-                    it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                    typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                    sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-                    PageMaker including versions of Lorem Ipsum.</p>
-                <h5>Why do we use it?</h5>
-                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking
-                    at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,
-                    as opposed to using 'Content here, content here', making it look like readable English. Many desktop
-                    publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search
-                    for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over
-                    the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
-            </div>
-        </div> -->
-        <!-- <div class="row">
-            <div class="col-12"> -->
-        <!-- <div *ngFor="let project of projects">
-                    <div class="panel panel-default panel-horizontal">
-                        <div class="panel-heading">
-                            <h3 class="dashboard-title">{{project.Name}}</h3>
-                            <div class="dashboard-lists">Created: {{project.Date | DateFormatter : 'Date'}} </div>
-                        </div>
-                        <div class="row panel-body">
-                            <div class="col-12">
-                                <div class="dashboard-description">{{project.Description}}</div>
-                            </div>
-                            <div class="col-12"> -->
-        <!-- <a href='projects/{{project._id}}' [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</a> -->
-        <!-- <button type="button" [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</button>
-                                <button (click)="delete(project)" class=" btn btn-primary ">Delete</button>
-                            </div>
-                        </div>
-                    </div> -->
-        <!-- </div>
-            </div>
-
-        </div> -->
     </div>
 </div>

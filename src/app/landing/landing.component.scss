@@ -1,9 +1,9 @@
 // import global variable
 @import '/../index';
+
+//full page wrapper
 .landing {
-    padding-top: 225px;
-    font-weight: $font-weight;
-    font-family: $font-family;
+    @extend .page-primary;
 }
 
 .landing-title {

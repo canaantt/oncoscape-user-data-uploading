@@ -1,0 +1,13 @@
+// import global variable
+@import '/../index';
+
+//full page wrapper
+.help {
+    @extend .page-primary;
+    padding-top: 150px;
+}
+
+.help-header {
+    @extend .header-primary;
+}
+
