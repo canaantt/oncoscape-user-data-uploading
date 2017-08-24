@@ -214,15 +214,18 @@ db.once("open", function (callback) {
         var clinicalColleciton = mongoose.model(projectID + "_data_clinical", File.schema);
         var uploadingSummaryCollection = mongoose.model(projectID + "_uploadingSummary", File.schema);
 		upload(req, res, function (err) {
+            console.log("This section is triggered");
 			if (err) {
                 console.log(err);
 				//res.json({ error_code: 1, err_desc: err }).end();
 				return;
 			} else {
+                console.log('%%%%%%%%%received file');
+                console.time();
                 var workbook = XLSX.readFile(res.req.file.path);
+                console.timeEnd();            
                 var allSheetNames =  Object.keys(workbook.Sheets);
                 console.log(allSheetNames);
-                console.log('test1');
                 if (allSheetNames.indexOf("PATIENT") === -1) {
                    err = "PATIENT Sheet is missing!";
                    res.json({ error_code: 1, err_desc: err }).end(); 
@@ -236,28 +239,33 @@ db.once("open", function (callback) {
                     var sheetObj = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {header:1});
                     var arr = [];
                     var header = sheetObj[0];
-                    console.log(sheetObj);
-                    
                     if(sheet.split("-")[0] === "MOLECULAR"){
-                        console.log("It's a molecular sheet.");
                         var allSamples = header.splice(1, header.length);
                         sheetObjData = sheetObj.splice(1, sheetObj.length);
                         var dataType = sheet.split("-")[1];
                         var allMarkers = sheetObjData.map(function(m){return m[0].trim()});
-                        UploadingSummary.push({"sheet" : sheet,
+                        UploadingSummary.push({ "sheet" : sheet,
                                                 "samples" : allSamples,
                                                 "markers" : allMarkers});
-                        
+                        var molecularCollectionName = projectID + '_data_molecular';
+                        var counter = 0;
+                        console.log('test$3');
+                        console.time()
                         sheetObjData.forEach(function(record){
+                            console.log(counter);
                             var obj = {};
                             obj.type = dataType;
                             obj.marker = record[0];
                             obj.data = record.splice(1, record.length);
-                            arr.push(obj);
-                        })
-                        db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
-                                                if (err) console.log(err);
-                                            });
+                            // arr.push(obj);
+                            db.collection(molecularCollectionName).insert(obj, function(err, result){
+                                if(err) console.log(err);
+                            })
+                        });
+                        console.timeEnd()
+                        // db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
+                        //                         if (err) console.log(err);
+                        //                     });
                     } else { 
                         sheetObjData = sheetObj.splice(1, sheetObjData.length);
                         if(sheet === "PATIENT") {
@@ -319,18 +327,15 @@ db.once("open", function (callback) {
                                    remaining_fields.forEach(function(field){
                                     Other[camelToDash(field)] = m[header.indexOf(field)];
                                    });
-                                });
-                                
-                                arr_clinical.push({"id" : p,
-                                          "samples" : samples,
-                                          "enums" : enumObj,
-                                          "time": timeObj,
-                                          "nums": numObj,
-                                          "boolean": booleanObj,
-                                          "metadata": metaObj,
-                                          "events": []
-                                        });
-                                      
+                                });                               
+                                arr_clinical.push({ "id" : p,
+                                                    "samples" : samples,
+                                                    "enums" : enumObj,
+                                                    "time": timeObj,
+                                                    "nums": numObj,
+                                                    "boolean": booleanObj,
+                                                    "metadata": metaObj,
+                                                    "events": [] });
                                 return arr_clinical;
                                 }, []);
                                 UploadingSummary.push({"sheet" : sheet,
@@ -390,13 +395,8 @@ db.once("open", function (callback) {
                                 db.collection(projectID+"_uploadingSummary").insertMany(UploadingSummary, function(err, result){
                                                                 if (err) console.log(err);
                                                             });
-                                }    
-                            
-                        });
-
-                    
-                    
-                
+                                } 
+                        });  
             }
 		});
         res.status(200).end();
