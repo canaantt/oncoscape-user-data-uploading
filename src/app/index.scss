@@ -3,33 +3,7 @@
  *  The list of variables are listed here bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
  */
 
-//  SCSS Variables
-@import url(https://fonts.googleapis.com/css?family=Lato);
-$color-gray-light: #EAEAEA;
-$color-gray: #bbb;
-$color-black: #000;
-$color-white: #FFFFFF;
-$color-blue-light: #c1e9fe;
-$color-onco-blue: #039BE5;
-$color-link:#03ADFF;
-$box-shaddow: 0 2px 3px #bbb;
-$input-border-radius: 0;
-$border-radius-base: 0;
-$navbar-height: 60px;
-$font-family: 'Lato';
-$font-weight: 300;
-$a-tags: 'a, a:active, a:hover, a:visited';
-$a-tags-hover: 'a:active, a:hover';
-$input-border: $color-gray-light;
-$btn-default-border: $color-gray-light;
-$btn-primary-bg: $color-onco-blue;
-$navbar-inverse-bg:$color-onco-blue;
-$navbar-inverse-link-color: $color-white;
-$navbar-inverse-brand-hover-bg: $color-onco-blue;
-$navbar-inverse-link-active-bg: $color-onco-blue;
-$navbar-inverse-link-hover-bg: $color-onco-blue;
-$navbar-inverse-brand-color: $color-white;
-$navbar-inverse-brand-hover-color: $color-white;
+@import 'vars'; 
 
 /**
  *  Do not remove the comments below. It's the markers used by wiredep to inject
@@ -38,13 +12,13 @@ $navbar-inverse-brand-hover-color: $color-white;
 
 // bower:scss
 // endbower
-html {
-    font-family: $font-family;
-    font-weight: $font-weight;
-}
 
-body {
+body,
+html {
+    font-family: $font-family; 
+    font-size: $font-size;
     font-weight: $font-weight;
+    background: #fff;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -54,11 +28,8 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: $font-family;
-    background: #f5f5f5;
+  
 }
-
-
 // SCSS Extends
 .container-fluid {
     padding-left: 20px;
@@ -67,12 +38,13 @@ body {
 
 // all links
 #{$a-tags} {
-    color:  $color-onco-blue;
+    color: $color-onco-blue;
     text-decoration: none;
-  }
-  #{$a-tags-hover} {
+}
+
+#{$a-tags-hover} {
     color: $color-link;
-  }
+}
 
 .tooltip {
     z-index: 99999 !important;
@@ -96,59 +68,6 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
-
-.btn-primary {
-    color: $color-white;
-    background: $color-onco-blue;
-    text-decoration: none;
-    border-radius: 0;
-    padding: 10px;
-    width: 120px;
-    height: 40px;
-    line-height: 20px;
-    margin-right: 10px;
-    font-weight: $font-weight;
-}
-
-.link-primary {
-    text-decoration: none;
-    color: $color-onco-blue;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.header-primary {
-    font-weight: $font-weight;
-    color: $color-onco-blue;
-    margin-bottom: 50px;
-    margin-top: 0;
-    letter-spacing: 1px;
-}
-
-.page-primary {
-    padding-top: 225px;
-    font-weight: $font-weight;
-    font-family: $font-family;
-}
-
-
-// Bootstrap needs to be placed in index.scss for overides
-.card-header {
-    padding: .75rem 1.25rem;
-    margin-bottom: 0;
-    background-color: $color-white 
-}
-
-.card-footer {
-    padding: .75rem 1.25rem;
-    background-color: $color-white; 
-    border-top: 1px solid lightgray; 
-}
-p.card-text {
-    margin: 12px;
-    font-size: 14px;
-}
-
 
 /**
  *  Do not remove the comments below. It's the markers used by gulp-inject to inject

@@ -1,9 +1,9 @@
 // import global variable
-@import '/../index';
-.dashboard {
-    font-family: $font-family;
-    font-weight: $font-weight;
-}
+@import '../vars'; 
+// .dashboard {
+//     font-family: $font-family;
+//     font-weight: $font-weight;
+// }
 
 .dashboard-header {
     @extend .header-primary;

@@ -1,9 +1,9 @@
 // import global variable
-@import '/../index';
+@import '../vars'; 
 
-// .detail {
-//     @extend .page-primary;
-// }
+.detail {
+    padding-top: 0px;
+}
 
 .detail-header {
     @extend .header-primary;

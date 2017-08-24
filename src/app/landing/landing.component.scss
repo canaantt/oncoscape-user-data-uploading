@@ -1,9 +1,9 @@
 // import global variable
-@import '/../index';
+@import '../vars'; 
 
-//full page wrapper
+// full page wrapper
 .landing {
-    @extend .page-primary;
+    margin-top:225px;
 }
 
 .landing-title {

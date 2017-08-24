@@ -1,7 +1,120 @@
 <div class="detail">
-  <div class="container">
-    <div class="row">
-      <div *ngIf="project">
+  <div *ngIf="project">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h5 class="detail-header">Dataset Detail</h5>
+          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
+          <label [(ngModel)]="project.Name" name="projectName" class="pull-right">{{statusMsg}}</label>
+          <form>
+            <div class="form-group">
+              <label>Dataset Name<span class="text-danger">*</span></label>
+              <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea [(ngModel)]="project.Description" name="projectDescription" class="form-control" rows="5"></textarea>
+            </div>
+            <div #annotations>
+              <label>Dataset Annotations</label>
+              <div *ngIf='project.Annotations.length > 0'>
+                <table>
+                  <thead>
+                    <tr>
+                      <td>Key<span class="text-danger">*</span></td>
+                      <td>Value<span class="text-danger">*</span></td>
+                      <td>Remove/Add</td>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let annot of project.Annotations; let i = index">
+                    <tr>
+                      <td><input [(ngModel)]="annot.key" placeholder="Sample Size" class="form-control"></td>
+                      <td><input [(ngModel)]="annot.value" placeholder="110" class="form-control"></td>
+                      <td><span type="button" class="fa fa-minus-circle" (click)="project.Annotations.splice(i,1)"></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <form class='submitForm' [formGroup]="newAnnotationForm" (ngSubmit)="submitAnnotations()">
+                <div class="form-group">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td><input class="form-control" type="text" formControlName="key" placeholder="Sample Size"></td>
+                        <td><input class="form-control" type="text" formControlName="value" placeholder="110"></td>
+                        <td><button type="submit" class="fa fa-plus-circle detail-submission-btn" [disabled]="newAnnotationForm.invalid"></button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="form-group">
+              <label for="exampleInputFile">File input</label>
+              <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+              <small id="fileHelp" class="form-text text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
+            </div>
+
+
+
+            <fieldset class="form-group">
+              <legend>Radio buttons</legend>
+              <div class="form-check">
+                <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                Option one is this and that&mdash;be sure to include why it's great
+              </label>
+              </div>
+
+
+
+
+              <div class="form-check">
+                <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="option2">
+                Option two can be something else and selecting it will deselect option one
+              </label>
+              </div>
+              <div class="form-check disabled">
+                <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+                Option three is disabled
+              </label>
+              </div>
+            </fieldset>
+            <div class="form-check">
+              <label class="form-check-label">
+              <input type="checkbox" class="form-check-input">
+              Check me out
+            </label>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!--         
+        
         <h5 class="detail-header">Dataset Detail</h5>
         <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
         <label class="pull-right">{{statusMsg}}</label> 
@@ -82,7 +195,7 @@
                   
                 </td>
               </div>
-              <!-- <tr>
+              <! <tr>
                 <input type="radio" value="huirb" name="humanStudyWithIRB" [(ngModel)]="project.DataCompliance.ComplianceOption" (click)="collectDataCompliance('huirb')" [disabled]="project.DataCompliance.IRBNumber===''">
                 A.1 If data are derieved from humans and IRB has been approved.
                 <input [(ngModel)]="project.DataCompliance.IRBNumber" placeholder="IRB#" rows="1">
@@ -92,14 +205,10 @@
                 A.2 If data are derieved from humans and IEC number is ready. 
                 <input [(ngModel)]="project.DataCompliance.IECNumber" placeholder="IEC#" rows="1">
               </tr> -->
-            
+<!--             
         </div>
         <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project" (uploaded)="fileUpdates($event)"></app-files>
         </div>
         <div class="form-group">
           <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+        </div>  -->

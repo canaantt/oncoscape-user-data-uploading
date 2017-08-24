@@ -17,8 +17,8 @@
           <div *ngIf='user' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" (click)="toProfile()">Account</a>
             <div class="dropdown-item">
-              <a *ngIf='!user'  (click)="googleLogin()">Login </a>
-              <a *ngIf='user' (click)="googleLogOut()">Logout</a>
+              <a *ngIf='!user'  (click)="googleLogin()">Login</a>
+              <a *ngIf='user' (click)="googleLogOut()">Sign out</a>
             </div>
           </div>
         </li>

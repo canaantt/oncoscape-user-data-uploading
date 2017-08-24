@@ -1,9 +1,8 @@
 // import global variable
-@import '/../index';
+@import '../vars'; 
 
 //full page wrapper
 .help {
-    @extend .page-primary;
     padding-top: 150px;
 }
 
