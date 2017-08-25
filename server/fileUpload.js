@@ -5,8 +5,22 @@ const _ = require("underscore");
 const asyncLoop = require('node-async-loop');
 const XLSX =require("xlsx");
 const mongoose = require('mongoose');
-mongoose.connect("mongodb://localhost:27017/mydb");
+var option = {
+    server: {
+        socketOptions: {
+            keepAlive: 30000000,
+            connectTimeoutMS: 3000000
+        }
+    }
+}
+mongoose.connect("mongodb://localhost:27017/mydb", option)
+        .then(function(){
+            console.log("Child Process MongoDB connect success!");
+        }, function (err){
+            console.log("Child Process  MongoDB connect error: ", err);
+        });
 const db = mongoose.connection;
+
 const HugoGenes = require('../HugoGenes.json');
 
 var checkHugoGeneSymbols = function (geneArr) {
@@ -57,6 +71,7 @@ const writingXLSX2Mongo = (msg) => {
                                     "samples" : allSamples,
                                     "markers" : allMarkers});
             var molecularCollectionName = projectID + '_data_molecular';
+            var counter = 0; 
             sheetObjData.forEach(function(record){
                 var obj = {};
                 obj.type = dataType;
@@ -65,6 +80,7 @@ const writingXLSX2Mongo = (msg) => {
                 // arr.push(obj);
                 db.collection(molecularCollectionName).insert(obj, function(err, result){
                     if(err) console.log(err);
+                    console.log(counter++);
                 })
             });
             // db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
@@ -204,7 +220,9 @@ const writingXLSX2Mongo = (msg) => {
 }
 
 process.on('message', (filePath, HugoGenes, db) => {
-    writingXLSX2Mongo(filePath, HugoGenes, db);
-    process.send("DONE from child");
+    // db.once("open", function (callback) {
+        writingXLSX2Mongo(filePath, HugoGenes, db);
+        process.send("DONE from child");
+    // });
 });
 

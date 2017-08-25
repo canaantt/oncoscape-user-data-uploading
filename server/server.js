@@ -28,7 +28,7 @@ var HugoGenes;
 request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apikey=password', function(err, resp, body){
     GeneSymbolLookupTable = JSON.parse(body);
     HugoGenes = GeneSymbolLookupTable.map(function(m){return m.hugo;});
-    jsonfile.writeFile("server/HugoGenes.json", HugoGenes, {spaces: 2}, function(err){ console.error(err);});  
+    jsonfile.writeFile("HugoGenes.json", HugoGenes, {spaces: 2}, function(err){ console.error(err);});  
     if(err) console.log(err);
     console.log("**********");
     console.log(HugoGenes.length);
@@ -223,7 +223,9 @@ db.once("open", function (callback) {
 				//res.json({ error_code: 1, err_desc: err }).end();
 				return;
 			} else {
-                const writing2Mongo = fork('server/fileUpload.js');
+                const writing2Mongo = fork('server/fileUpload.js', 
+                { execArgv: ['--max-old-space-size=4096']});
+                
                 console.log('test***');
                 writing2Mongo.send({filePath: res.req.file.path, projectID: projectID });
                 console.log('test@@@');
