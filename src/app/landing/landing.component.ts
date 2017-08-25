@@ -32,7 +32,7 @@ export class LandingComponent implements OnInit {
   }
   ngOnInit() {
     // this.getUser();
-    const timer = Observable.timer(10, 300).take(10);
+    const timer = Observable.timer(10, 500).take(50);
     timer.subscribe(() => this.getUser());
   }
   update() {
