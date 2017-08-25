@@ -1,7 +1,9 @@
-<h3>Files Management</h3>
-<div class='well well-lg'>
+<br>
+<br>
+<h5>Upload Dataset</h5>
   <div class="row">
-    <div class="col-md-12" *ngIf="project.File">
+    <div class="col-12">
+    <div *ngIf="project.File">
       <label>Existing File meta data</label>
       <button type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
           <span class="glyphicon glyphicon-minor"></span>Remove
@@ -20,7 +22,7 @@
       </table>
       <hr>
     </div>
-    <div class="col-md-12" *ngIf="hasFiles">
+    <div class="col-12" *ngIf="hasFiles">
       <label>File summary</label>
       
       <table>
@@ -54,11 +56,22 @@
       </table>
 
     </div>
-    <input #fileInput type="file" class="form-control col-md-5" name="single" 
+    
+
+    <!-- <div class="form-group">
+        <label for="exampleInputFile">File input</label>
+        <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+        <small id="fileHelp" class="form-text text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
+      </div> -->
+    
+      <div class="form-group">
+          <label for="exampleInputFile"></label>
+    <input #fileInput type="file" class="form-control-file " name="single" id="exampleInputFile" aria-describedby="fileHelp"
                         ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])"/>
+                      </div>              
     <!-- <span *ngIf="uploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i>Uploaded</span>
     <span *ngIf="uploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i>Error</span>
      -->
-    
+    </div>
   </div>
-</div>
+ 
