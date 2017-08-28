@@ -13,6 +13,14 @@
 .detail-label {
     font-weight:400;
 }
+.detail-fa {
+    margin-top:10px;
+    color: $color-onco-blue;
+    &:hover {
+        color:$color-link;;
+    }
+
+}
 
 
 

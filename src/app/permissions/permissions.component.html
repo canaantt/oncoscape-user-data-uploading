@@ -6,7 +6,7 @@
     <div *ngFor="let permission of permissions$ | async">
       <div class="row">
         <div class="col-12">
-          <h6 *ngIf="project.Author === permission.User">Dataset Administrator:&nbsp;<span>{{permission.User | userFullName | async }}</span></h6>
+          <h6 *ngIf="project.Author === permission.User">Dataset Administrator:&nbsp;<span style="font-style:italic;">{{permission.User | userFullName | async }}</span></h6>
         </div>
       </div>
       <br>
@@ -30,8 +30,7 @@
             </div>
           </div>
           <div class="col-2">
-            <!-- <button type="submit" (click)="submitPermissions()" class="fa fa-plus-circle "></button> -->
-            <div class="fa fa-plus-circle" (click)="submitPermissions()"></div>
+            <div class="fa fa-plus-circle permissions-fa" (click)="submitPermissions()"></div>
           </div>
         </div>
       </form>

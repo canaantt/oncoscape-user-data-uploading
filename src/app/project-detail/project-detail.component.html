@@ -4,11 +4,11 @@
       <div class="row ">
         <div class="col-12 ">
           <h5 class="detail-header">Dataset Details</h5>
-          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
           <label class="pull-right">{{statusMsg}}</label> 
+          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
           <form>
             <div class="row ">
-            <div class="col-12">
+            <div class="col-10">
               <div class="form-group ">
               <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
               <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
@@ -41,7 +41,7 @@
                       <p>{{annot.value}}</p>
                     </div>
                     <div class="col-2">
-                      <div class="fa fa-minus-circle" style="margin-left: 9px;" (click)="project.Annotations.splice(i,1)"></div>
+                      <div class="fa fa-minus-circle detail-fa" (click)="project.Annotations.splice(i,1)"></div>
                     </div>
                   </div>
                 </div>
@@ -60,8 +60,7 @@
                     <input class="form-control" type="text" formControlName="value" placeholder="e.g. 110">
                   </div>
                   <div class="col-2">
-                    <div class="fa fa-plus-circle" style="margin-left: 9px;" (click)="submitAnnotations()"></div>
-                    <!-- <button type="submit" class="fa fa-plus-circle" [disabled]="newAnnotationForm.invalid"></button> -->
+                    <div class="fa fa-plus-circle detail-fa" (click)="submitAnnotations()"></div>
                   </div>
                 </div>
               </form>

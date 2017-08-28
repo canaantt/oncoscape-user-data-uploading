@@ -6,9 +6,13 @@
   margin-bottom: 0px;
 }
 
-// .permission-hr {
-//     @extend .hr-primary;
-// }
+.permissions-fa {
+    margin-top:10px;
+    color: $color-onco-blue;
+    &:hover {
+        color:$color-link;;
+    }
+}
 
 
 
