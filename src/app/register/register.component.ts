@@ -29,6 +29,7 @@ export class RegisterComponent implements OnInit {
     const self = this;
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = '';
+    this.loginService.googleLogOut();
     if (this.newUserForm.value.FirstName === '' ||
         this.newUserForm.value.LastName === '' ||
         this.newUserForm.value.Email === '' ||

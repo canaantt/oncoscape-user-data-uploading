@@ -48,6 +48,7 @@
     "multer-gridfs-storage": "^1.0.1",
     "node-async-loop": "^1.2.2",
     "node-tsv-json": "^0.2.1",
+    "nodemailer": "^4.1.0",
     "path": "^0.12.7",
     "promise": "^7.1.1",
     "read-chunk": "^2.0.0",

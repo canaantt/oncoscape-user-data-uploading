@@ -47,6 +47,7 @@ export class IrbDetailService implements PipeTransform {
 })
 export class ProjectDetailComponent implements  OnInit {
   project: any;
+  user: any;
   authenticated: boolean;
   userID: any;
   id: string;
@@ -75,6 +76,7 @@ export class ProjectDetailComponent implements  OnInit {
       this.id = this.route.snapshot.params['id'];
       this.stateService.user.subscribe(res => {
         if (res !== null) {
+          this.user = res;
           this.getUserID(res.email, this.id);
         }
       });

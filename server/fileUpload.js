@@ -77,22 +77,23 @@ const writingXLSX2Mongo = (msg) => {
                 obj.type = dataType;
                 obj.marker = record[0];
                 obj.data = record.splice(1, record.length);
-                db.collection(molecularCollectionName).insert(obj, function(err, result){
-                    if(err) console.log(err);
-                })
+                arr.push(obj);
+                // db.collection(molecularCollectionName).insert(obj, function(err, result){
+                //     if(err) console.log(err);
+                // })
             });
+            db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
+                                    if (err) console.log(err);
+                                });
             console.timeEnd("Writing to MongoDB one record at a time");
-            // db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
-            //                         if (err) console.log(err);
-            //                     });
         } else { 
             sheetObjData = sheetObj.splice(1, sheetObjData.length);
             if(sheet === "PATIENT") {
                 console.log("PATIENT sheet");
-                PatientIDs = _.uniq(sheetObjData.map(function(m){
+                Samples = _.uniq(sheetObjData.map(function(m){
                     return m[0];
                 }));
-                Samples = _.uniq(sheetObjData.map(function(m){
+                PatientIDs = _.uniq(sheetObjData.map(function(m){
                     return m[1];
                 }));
                 var enum_fields = [];
@@ -128,9 +129,9 @@ const writingXLSX2Mongo = (msg) => {
                     var timeObj = {};
                     var Other = {};
                     sheetObjData.filter(function(record){
-                        return record[0] === p;
+                        return record[1] === p;
                     }).forEach(function(m){
-                       samples.push({id: m[1]});
+                       samples.push({id: m[0]});
                        enum_fields.forEach(function(field){
                         enumObj[camelToDash(field)] = m[header.indexOf(field+"-String")]; 
                        }); 

@@ -94,7 +94,7 @@
               </tr> -->
             
         </div>
-        <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project" (uploaded)="fileUpdates($event)"></app-files>
+        <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project" [user]="user" (uploaded)="fileUpdates($event)"></app-files>
         </div>
         <div class="form-group">
           <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>

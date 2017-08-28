@@ -50,12 +50,6 @@ var transporter = nodemailer.createTransport({
     }
   });
   
-  var mailOptions = {
-    from: 'jennylouzhang@gmail.com',
-    to: 'jennylouzhang@gmail.com',
-    subject: 'testing Sending Email using Node.js',
-    text: 'Data are in database, ready to share.'
-  };
 function processResult(req, res, next , query){
     return function(err, data){
         if (err) {
@@ -74,20 +68,20 @@ function routerFactory(Model)
     router.use(bodyParser.urlencoded({ extended: true }));
 
     router.get('/', function(req, res){	
-        Model.find({}, processResult(req,res) );
+        Model.find({}, processResult(req,res));
     });
     router.post('/', function(req, res) {
         Model.create(req.body, processResult(req,res));
     });
     router.route('/:id')
     .get(function(req, res){
-        Model.findById(req.params.id, processResult(req,res) );
+        Model.findById(req.params.id, processResult(req,res));
     })
     .put(function(req, res){
-        Model.findOneAndUpdate({_id: req.params.id}, req.body, {upsert: false}, processResult(req,res) );
+        Model.findOneAndUpdate({_id: req.params.id}, req.body, {upsert: false}, processResult(req,res));
     })
     .delete(function(req, res){
-        Model.remove({_id: req.params.id}, processResult(req,res) );
+        Model.remove({_id: req.params.id}, processResult(req,res));
     });
     return router;
 }
@@ -122,6 +116,7 @@ function fileRouterFactory(){
                 
                 if(projectCollections.length === 0){
                     res.status(404).send("Not Found").end();
+                    // res.send('Not Find').end();
                 } else {
                     var arr = [];
 
@@ -223,9 +218,17 @@ db.once("open", function (callback) {
 	app.use('/files', fileRouterFactory());
 	app.use('/irbs', routerFactory(IRB));
 	app.use('/permissions', routerFactory(Permission));
-	app.post('/upload/:id', function (req, res) {
+	app.post('/upload/:id/:email', function (req, res) {
         console.log(req.params.id);
         var projectID = req.params.id;
+        var userEmail = req.params.email;
+        console.log('##################### user: ', userEmail);
+        var mailOptions = {
+            from: 'jennylouzhang@gmail.com',
+            to: userEmail,
+            subject: 'Notification from Oncoscape Data Uploading App',
+            text: 'Data are in database, ready to share.'
+          };
         var molecularColleciton = mongoose.model(projectID + "_data_molecular", File.schema);
         var sampleMapCollection = mongoose.model(projectID + "_data_samples", File.schema);
         var clinicalColleciton = mongoose.model(projectID + "_data_clinical", File.schema);

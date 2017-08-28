@@ -37,6 +37,7 @@ export class FilesComponent implements OnInit {
     'allPatientsUploaded': []
   };
   @Input() project: any;
+  @Input() user: any;
   @Output()
     uploaded: EventEmitter<string> = new EventEmitter();
 
@@ -45,11 +46,12 @@ export class FilesComponent implements OnInit {
   }
   constructor(private fb: FormBuilder,
               private fileService: FileService) {
+                console.log('IN FILE COMPONENT, project is: ', this.project);
    }
 
   ngOnInit(): void {
     this.id = this.project._id;
-    this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id });
+    this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
     this.filerefresh();
   }
   filerefresh() {
@@ -82,6 +84,9 @@ export class FilesComponent implements OnInit {
     };
     this.uploadComplete('Being uploaded');
     this.filerefresh();
+    if (fileitem.file.size >= 10000000) {
+      alert('File size is big. An email will be sent shortly after the operation is complete.');
+    }
   }
   cancelUpdate(fileitem: any) {
     const len = this.uploader.queue.length;
