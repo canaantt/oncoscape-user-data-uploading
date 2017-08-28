@@ -1,12 +1,14 @@
 // import global variable
 @import '/../index';
 
-.detail-header {
-    padding-bottom: 25px;
-    font-weight: 400;
-    color: $color-onco-blue;
-    letter-spacing: 4px;
+.permissions-header {
+  @extend .header-primary;
+  margin-bottom: 0px;
 }
+
+// .permission-hr {
+//     @extend .hr-primary;
+// }
 
 
 

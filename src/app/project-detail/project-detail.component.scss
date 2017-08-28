@@ -1,13 +1,21 @@
 // import global variable
-@import '../vars'; 
+@import '/../index';
 
 .detail {
-    padding-top: 0px;
+    padding-top: 0px; 
 }
 
 .detail-header {
     @extend .header-primary;
+    margin-bottom:25px;
 }
+
+.detail-label {
+    font-weight:400;
+}
+
+
+
 
 
   
