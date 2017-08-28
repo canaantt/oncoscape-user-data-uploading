@@ -14,6 +14,7 @@ export class LandingComponent implements OnInit {
   user: any;
   auth: boolean;
   user$: Observable<any>;
+  counter = 0;
   constructor( private fb: FormBuilder,
                private stateService: StateService,
                private userService: UserService,
@@ -24,13 +25,14 @@ export class LandingComponent implements OnInit {
                 this.getUser();
                }
   getUser(): void {
+    // console.log('Landing getUser being called', this.counter++);
     this.stateService.user.subscribe(res => {
       this.zone.run(() => { this.user = res; });
     });
   }
   ngOnInit() {
-    this.getUser();
-    const timer = Observable.timer(10, 30);
+    // this.getUser();
+    const timer = Observable.timer(10, 500).take(50);
     timer.subscribe(() => this.getUser());
   }
   update() {

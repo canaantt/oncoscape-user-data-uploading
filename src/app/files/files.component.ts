@@ -37,6 +37,7 @@ export class FilesComponent implements OnInit {
     'allPatientsUploaded': []
   };
   @Input() project: any;
+  @Input() user: any;
   @Output()
     uploaded: EventEmitter<string> = new EventEmitter();
 
@@ -45,11 +46,12 @@ export class FilesComponent implements OnInit {
   }
   constructor(private fb: FormBuilder,
               private fileService: FileService) {
+                console.log('IN FILE COMPONENT, project is: ', this.project);
    }
 
   ngOnInit(): void {
     this.id = this.project._id;
-    this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id });
+    this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
     this.filerefresh();
   }
   filerefresh() {
@@ -68,7 +70,6 @@ export class FilesComponent implements OnInit {
         });
   }
   private handleError(error: any): Promise<any> {
-    // console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
   updateStatus(fileitem: any) {
@@ -83,23 +84,25 @@ export class FilesComponent implements OnInit {
     };
     this.uploadComplete('Being uploaded');
     this.filerefresh();
+    if (fileitem.file.size >= 10000000) {
+      alert('File size is big. An email will be sent shortly after the operation is complete.');
+    }
   }
   cancelUpdate(fileitem: any) {
     const len = this.uploader.queue.length;
     this.uploader.queue.pop();
     this.uploadComplete('Being canceled');
   }
-
   removeAllFiles() {
     const confirmDeletion = confirm('Are you sure you want to delete all the files related to this dataset? ');
-    if (confirmDeletion){
+    if (confirmDeletion) {
       this.fileService.removeFilesByProjectID(this.id);
       this.project.File = null;
       console.log('test...');
       this.uploadComplete('Being removed');
       this.hasFiles = false;
       this.uploader.queue = [];
-    }else{
+    } else {
       console.log('file deletion is canceled.');
     }
   }
