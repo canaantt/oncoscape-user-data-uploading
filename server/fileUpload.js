@@ -42,10 +42,10 @@ const writingXLSX2Mongo = (msg) => {
     projectID = msg.projectID;
     console.log('%%%%%%%%%received file');
     console.log('projectID is: ', msg);
-    console.time();
+    console.time("Reading XLSX file");
     var workbook = XLSX.readFile(filePath);
     console.log('%%%%%%%%%XLSX.readFile(filePath): ', filePath);
-    console.timeEnd();            
+    console.timeEnd("Reading XLSX file");           
     var allSheetNames =  Object.keys(workbook.Sheets);
     console.log(allSheetNames);
     if (allSheetNames.indexOf("PATIENT") === -1) {
@@ -58,7 +58,6 @@ const writingXLSX2Mongo = (msg) => {
     var UploadingSummary = [];
     allSheetNames.forEach(function(sheet){
         console.log(sheet);
-        console.log("%%%%%%%%%%%%%%%%%test1");
         var sheetObj = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {header:1});
         var arr = [];
         var header = sheetObj[0];
@@ -72,17 +71,17 @@ const writingXLSX2Mongo = (msg) => {
                                     "markers" : allMarkers});
             var molecularCollectionName = projectID + '_data_molecular';
             var counter = 0; 
+            console.time("Writing to MongoDB one record at a time");
             sheetObjData.forEach(function(record){
                 var obj = {};
                 obj.type = dataType;
                 obj.marker = record[0];
                 obj.data = record.splice(1, record.length);
-                // arr.push(obj);
                 db.collection(molecularCollectionName).insert(obj, function(err, result){
                     if(err) console.log(err);
-                    console.log(counter++);
                 })
             });
+            console.timeEnd("Writing to MongoDB one record at a time");
             // db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
             //                         if (err) console.log(err);
             //                     });
@@ -174,8 +173,6 @@ const writingXLSX2Mongo = (msg) => {
                     })
                     var o = {};
                     o.id = id;
-                    // o.start = record[1];
-                    // o.end = record[2];
                     header.forEach(function(h){
                         o[h] = record[header.indexOf(h)];
                     });

@@ -68,7 +68,6 @@ export class FilesComponent implements OnInit {
         });
   }
   private handleError(error: any): Promise<any> {
-    // console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
   updateStatus(fileitem: any) {
@@ -89,17 +88,16 @@ export class FilesComponent implements OnInit {
     this.uploader.queue.pop();
     this.uploadComplete('Being canceled');
   }
-
   removeAllFiles() {
     const confirmDeletion = confirm('Are you sure you want to delete all the files related to this dataset? ');
-    if (confirmDeletion){
+    if (confirmDeletion) {
       this.fileService.removeFilesByProjectID(this.id);
       this.project.File = null;
       console.log('test...');
       this.uploadComplete('Being removed');
       this.hasFiles = false;
       this.uploader.queue = [];
-    }else{
+    } else {
       console.log('file deletion is canceled.');
     }
   }

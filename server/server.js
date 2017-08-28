@@ -5,11 +5,12 @@ const _ = require("underscore");
 const cors = require('cors');
 const mongoose = require('mongoose');
 const asyncLoop = require('node-async-loop');
-const tsv = require("node-tsv-json");
-const csv=require('csvtojson');
-var convertExcel = require('excel-as-json').processFile;
+const nodemailer = require('nodemailer');
+// const tsv = require("node-tsv-json");
+// const csv=require('csvtojson');
+// var convertExcel = require('excel-as-json').processFile;
 var XLSX =require("xlsx");
-var excelParser = require('excel-parser');
+// var excelParser = require('excel-parser');
 const fs = require("fs");
 var path = require('path');
 var jsonfile = require("jsonfile");
@@ -41,7 +42,20 @@ mongoose.connect("mongodb://localhost:27017/mydb");
 var db = mongoose.connection;
 // Grid.mongo = mongoose.mongo;
 // var gfs = Grid(db.db);
-
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'jennylouzhang@gmail.com',
+      pass: 'oncoscape'
+    }
+  });
+  
+  var mailOptions = {
+    from: 'jennylouzhang@gmail.com',
+    to: 'jennylouzhang@gmail.com',
+    subject: 'testing Sending Email using Node.js',
+    text: 'Data are in database, ready to share.'
+  };
 function processResult(req, res, next , query){
     return function(err, data){
         if (err) {
@@ -220,18 +234,23 @@ db.once("open", function (callback) {
             console.log("This section is triggered");
 			if (err) {
                 console.log(err);
-				//res.json({ error_code: 1, err_desc: err }).end();
 				return;
 			} else {
                 const writing2Mongo = fork('server/fileUpload.js', 
                 { execArgv: ['--max-old-space-size=4096']});
-                
                 console.log('test***');
                 writing2Mongo.send({filePath: res.req.file.path, projectID: projectID });
                 console.log('test@@@');
                 writing2Mongo.on('message', () => {
                     res.end('Writing is done');
                     console.log("*********************!!!!!!!********************");
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                          console.log(error);
+                        } else {
+                          console.log('Email sent: ' + info.response);
+                        }
+                      });
                 });
             }
 		});
