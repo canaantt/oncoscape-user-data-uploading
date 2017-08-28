@@ -1,13 +1,29 @@
 // import global variable
 @import '/../index';
 
-// .detail {
-//     @extend .page-primary;
-// }
+.detail {
+    padding-top: 0px; 
+}
 
 .detail-header {
     @extend .header-primary;
+    margin-bottom:25px;
 }
+
+.detail-label {
+    font-weight:400;
+}
+.detail-fa {
+    margin-top:10px;
+    color: $color-onco-blue;
+    &:hover {
+        color:$color-link;;
+    }
+
+}
+
+
+
 
 
   
