@@ -29,10 +29,11 @@ export class LandingComponent implements OnInit {
     this.stateService.user.subscribe(res => {
       this.zone.run(() => { this.user = res; });
     });
+    console.log(this.counter++, this.user);
   }
   ngOnInit() {
     // this.getUser();
-    const timer = Observable.timer(10, 500).take(50);
+    const timer = Observable.timer(10, 2000);
     timer.subscribe(() => this.getUser());
   }
   update() {

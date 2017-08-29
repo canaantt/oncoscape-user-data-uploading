@@ -30,6 +30,7 @@ import { PermissionService } from './service/permission.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from './service/login.service';
 import { HelpComponent } from './help/help.component';
+import { UpdateEmitService } from './service/update-emit.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,6 +62,7 @@ import { HelpComponent } from './help/help.component';
   providers: [UserService,
               LoginService,
               StateService,
+              UpdateEmitService,
               FileService],
   bootstrap: [AppComponent]
 })

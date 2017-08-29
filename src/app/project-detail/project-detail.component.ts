@@ -20,7 +20,7 @@ import { PermissionsComponent } from '../permissions/permissions.component';
 import { FilesComponent } from '../files/files.component';
 import { StateService } from '../service/state.service';
 import { DateFormatter } from '../projects-dashboard/projects-dashboard.component';
-
+import { UpdateEmitService } from '../service/update-emit.service';
 enum roles {'full-access', 'read-only'}
 @Pipe({
   name: 'IrbDetailService'
@@ -72,6 +72,7 @@ export class ProjectDetailComponent implements  OnInit {
     private userService: UserService,
     private stateService: StateService,
     private elementRef: ElementRef,
+    private updateEmitService: UpdateEmitService,
     private fb: FormBuilder) {
       this.id = this.route.snapshot.params['id'];
       this.stateService.user.subscribe(res => {
@@ -171,6 +172,7 @@ export class ProjectDetailComponent implements  OnInit {
     this.statusMsg = 'Saving updates...';
     setTimeout(() => this.statusMsg = '', 1000);
     this.lastModifiedTime = Date();
+    setTimeout(() => this.updateEmitService.updateState());
   }
   fileUpdates(event) {
     this.update(this.project);
