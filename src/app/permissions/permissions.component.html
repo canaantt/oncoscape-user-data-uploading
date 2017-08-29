@@ -1,48 +1,93 @@
-<div #permissions  class="permissions">
+<div #permissions class="permissions">
   <hr>
-  <h5 class="permissions-header">User Permissions</h5>
+  <h5 class="permissions-header">Permissions</h5>
   <br>
+  <!-- START of title row -->
+  <div class="row ">
+    <div class="col-3">
+      <h6>Current User</h6>
+    </div>
+    <div class="col-3 ">
+      <h6>Permissions</h6>
+    </div>
+    <div class="col-2">
+      <h6>Remove/Add</h6>
+    </div>
+  </div>
+  <!-- END of title row -->
+  <!-- START of admin -->
   <div *ngIf="role === 'admin'">
     <div *ngFor="let permission of permissions$ | async">
-      <div class="row">
-        <div class="col-12">
-          <h6 *ngIf="project.Author === permission.User">Dataset Administrator:&nbsp;<span style="font-style:italic;">{{permission.User | userFullName | async }}</span></h6>
-          <span *ngIf="project.Author !== permission.User">
-            <span class="detail-users">{{permission.User | userFullName | async }}</span>
-            <select [(ngModel)]="permission.Role" (change)="updatePermission(permission, $event.target.value)">
-              <option *ngFor="let role of roles" [value]="role">{{role}}</option>
-            </select>
-          </span>
-          <span *ngIf="project.Author !== permission.User" type="button" class="btn glyphicon glyphicon-minus-sign" (click)="deletePermission(permission)"></span>
+      <div *ngIf="project.Author === permission.User" class="row">
+        <div class="col-3">
+          <p>{{permission.User | userFullName | async }}</p>
+        </div>
+        <div class="col-3">
+          <p>Dataset Administrator</p>
         </div>
       </div>
-    </div> 
-    <form class='submitForm' [formGroup]="newPermissionForm">
-      <div class="form-group">
-          <table>
-            <tbody>
-              <tr>
-                <td><input class="form-control" type="text" formControlName="Email" placeholder="Enter Collaborator's Institutional Email"></td>
-                <td><select formControlName="Role">
-                          <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
-                        </select></td>
-                <td><button (click)="submitPermissions()" class="btn glyphicon glyphicon-plus-sign detail-submission-btn"></button></td>
-                <td><small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small></td>
-              </tr>
-            </tbody>
-          </table>
+    
+      <!-- START of current users -->
+      <div *ngIf="project.Author !== permission.User">
+        <div class="row">
+          <div class="col-3">
+            <p>{{permission.User | userFullName | async }}</p>
+          </div>
+          <div class="col-3">
+            <select [(ngModel)]="permission.Role" (change)="updatePermission(permission, $event.target.value)" class="form-control">
+              <option *ngFor="let role of roles" [value]="role">{{role}}</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <span *ngIf="project.Author !== permission.User" class="fa fa-minus-circle permission-fa" (click)="deletePermission(permission)"></span>
+          </div>
+        </div>
       </div>
+    </div>
+    <!-- END of current users -->
+    <br>
+    <br>
+    <!-- START of new users -->
+    <div class="row">
+      <div class="col-12">
+        <h6>Add New Users</h6>
+      </div>
+    </div>
+
+    <form class='submitForm' [formGroup]="newPermissionForm">
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col-3">
+            <input class="form-control" type="text" formControlName="Email" placeholder="Enter Collaborator's Institutional Email">
+          </div>
+          <div class="col-3">
+            <select formControlName="Role" class="form-control">
+                          <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+                        </select>
+          </div>
+          <div class="col-2">
+            <button (click)="submitPermissions()" class="fa fa-plus-circle permission-fa"></button>
+          </div>
+        </div>
+          <small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small>
+        
+      </div>
+
     </form>
-    <small  class="text-danger">{{emailError}}</small>
-  </div> 
-  <div *ngIf="role !== 'admin'">
-    <table>
-      <tbody class="form-group row" *ngFor="let permission of permissions$ | async">
-        <tr>
-           <td><span class="detail-users">{{permission.User | userFullName | async }}</span></td>
-           <td><span>{{permission.Role}}</span></td>
-        </tr>
-      </tbody>
-    </table>
+   
+    <small class="text-danger">{{emailError}}</small>
+     <!-- END of new users -->
   </div>
+    <!-- END of admin ngIf -->
+    
+    <!-- START different view if not an admin -->
+  <div *ngIf="role !== 'admin'">
+    <div class="form-group row" *ngFor="let permission of permissions$ | async">
+      <span class="detail-users">{{permission.User | userFullName | async }}</span>
+      <span>{{permission.Role}}</span>
+    </div>
+  </div>
+<!-- END different view if not an admin -->
 </div>
+<hr>
