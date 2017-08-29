@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
 import { Observable } from 'rxjs/Observable';
