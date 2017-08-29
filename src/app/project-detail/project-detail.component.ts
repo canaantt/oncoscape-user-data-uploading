@@ -3,6 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 import { Project } from '../models/project';
 import { ProjectService } from '../service/project.service';
 import { PermissionService } from '../service/permission.service';
@@ -72,6 +73,7 @@ export class ProjectDetailComponent implements  OnInit {
     private userService: UserService,
     private stateService: StateService,
     private elementRef: ElementRef,
+    private slimLoadingBarService: SlimLoadingBarService,
     private fb: FormBuilder) {
       this.id = this.route.snapshot.params['id'];
       this.stateService.user.subscribe(res => {
@@ -99,6 +101,24 @@ export class ProjectDetailComponent implements  OnInit {
               this.update(this.project);
             });
      }
+
+
+     startLoading() {
+          this.slimLoadingBarService.start(() => {
+              console.log('Loading complete');
+          });
+      }
+
+      stopLoading() {
+          this.slimLoadingBarService.stop();
+      }
+
+      completeLoading() {
+          this.slimLoadingBarService.complete();
+      }
+
+
+
   getUserID(id: string, projectID: string): void {
     this.userService.getUserIDByGmail(id)
               .subscribe(res => {
@@ -168,8 +188,9 @@ export class ProjectDetailComponent implements  OnInit {
                           });
   }
   statusReport() {
-    this.statusMsg = 'Saving updates...';
-    setTimeout(() => this.statusMsg = '', 1000);
+    // this.statusMsg = 'Saving updates...';
+    this.completeLoading();
+    setTimeout(() => this.completeLoading(), 500);
     this.lastModifiedTime = Date();
   }
   fileUpdates(event) {

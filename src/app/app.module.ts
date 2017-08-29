@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { AppComponent } from './app.component';
+import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 import { AppRouterModule } from './router/app-router.module';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
@@ -56,8 +57,10 @@ import { HelpComponent } from './help/help.component';
     ReactiveFormsModule,
     HttpModule,
     RouterModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    SlimLoadingBarModule.forRoot()
   ],
+  exports: [SlimLoadingBarModule],
   providers: [UserService,
               LoginService,
               StateService,
