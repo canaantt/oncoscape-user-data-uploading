@@ -1,9 +1,9 @@
 <h5 class="file-header">Upload Dataset</h5>
-  <div class="row">
-    <div class="col-12">
+<div class="row">
+  <div class="col-12">
     <div *ngIf="project.File">
       <label>Existing File meta data</label>
-      <button type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
+      <button  *ngIf="permission.Role==='admin' || permission.Role==='read-write'" type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
           <span class="glyphicon glyphicon-minor"></span>Remove
       </button>
       <table>
@@ -20,16 +20,16 @@
       </table>
       <hr>
     </div>
+
     <div class="col-12" *ngIf="hasFiles">
       <label>File summary</label>
-      
       <table>
-         <thead>
+          <thead>
           <td>Clinical Sheet Name</td>
           <td>Patient Size</td>
           <td>Sample Size</td>
-         </thead>
-         <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryClinical">
+          </thead>
+          <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryClinical">
             <tr>
               <td><span>{{sum.sheet}}</span></td>  
               <td><span *ngIf="sum.patients">{{sum.patients.length}}</span></td>
@@ -39,12 +39,12 @@
       </table>
       <hr>
       <table>
-         <thead>
+          <thead>
           <td>Molecular Sheet Name</td>
           <td>Sample Size</td>
           <td>Biomarker Size</td>
-         </thead>
-         <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryMolecular">
+          </thead>
+          <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryMolecular">
             <tr>
               <td><span>{{sum.sheet}}</span></td>  
               <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
@@ -52,24 +52,13 @@
             </tr>
           </tbody>
       </table>
-
     </div>
     
-
-    <!-- <div class="form-group">
-        <label for="exampleInputFile">File input</label>
-        <input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-        <small id="fileHelp" class="form-text text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
-      </div> -->
-    
-      <div class="form-group">
-          <label for="exampleInputFile"></label>
-    <input #fileInput type="file" class="form-control-file " name="single" id="exampleInputFile" aria-describedby="fileHelp"
-                        ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])"/>
-                      </div>              
-    <!-- <span *ngIf="uploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i>Uploaded</span>
-    <span *ngIf="uploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i>Error</span>
-     -->
-    </div>
+    <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" class="form-group">
+      <label for="exampleInputFile"></label>
+      <input #fileInput type="file" class="form-control-file " name="single" id="exampleInputFile" aria-describedby="fileHelp"
+                          ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])"/>
+    </div>             
   </div>
+</div>
  

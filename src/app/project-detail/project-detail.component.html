@@ -104,7 +104,7 @@
                 </div>
                 <hr>
               </div>
-              <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project"  [user]="user" (uploaded)="fileUpdates($event)"></app-files>
+              <app-files [project]="project"  [user]="user" [permission]="permission" (uploaded)="fileUpdates($event)"></app-files>
             </div>
         
             

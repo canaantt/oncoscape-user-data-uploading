@@ -38,6 +38,7 @@ export class FilesComponent implements OnInit {
   };
   @Input() project: any;
   @Input() user: any;
+  @Input() permission: any;
   @Output()
     uploaded: EventEmitter<string> = new EventEmitter();
 
