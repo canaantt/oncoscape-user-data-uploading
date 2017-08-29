@@ -1,141 +1,129 @@
 <div class="detail">
-  <div *ngIf="project">
-    <div class="container">
-      <div class="row ">
-        <div class="col-12 ">
-          <h5 class="detail-header">Dataset Details</h5>
-          <label class="pull-right">{{statusMsg}}</label> 
-          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
-          <form>
-            <div class="row ">
-            <div class="col-10">
-              <div class="form-group ">
-              <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
-              <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
-            </div>
-            <div class="form-group">
-              <label class="detail-label ">Description</label>
-              <textarea [(ngModel)]="project.Description" name="projectDescription" class="form-control" rows="5"></textarea>
-            </div>
-          </div>
-        </div>
-            <div #annotations>
-              <div *ngIf='project.Annotations.length > 0'>
-                <div class="row ">
-                  <div class="col-3">
-                    <h6>Key Annotation<span class="text-danger">*</span></h6>
+    <div *ngIf="project">
+      <div class="container">
+        <div class="row ">
+          <div class="col-12 ">
+            <h5 class="detail-header">Dataset Details</h5>
+            <label class="pull-right">{{statusMsg}}</label> 
+            <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
+            <form>
+              <div class="row ">
+                <div class="col-10">
+                  <div class="form-group ">
+                    <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
+                    <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
                   </div>
-                  <div class="col-3 ">
-                    <h6>Value Annotation<span class="text-danger">*</span></h6>
-                  </div>
-                  <div class="col-2">
-                    <h6>Remove/Add</h6>
+                  <div class="form-group">
+                    <label class="detail-label ">Description</label>
+                    <textarea [(ngModel)]="project.Description" name="projectDescription" class="form-control" rows="5"></textarea>
                   </div>
                 </div>
-                <div *ngFor="let annot of project.Annotations; let i = index">
-                  <div class="row">
+              </div>
+              <div #annotations>
+                <div *ngIf='project.Annotations.length > 0'>
+                  <div class="row ">
                     <div class="col-3">
-                      <p>{{annot.key}}</p>
+                      <h6>Key Annotation<span class="text-danger">*</span></h6>
                     </div>
                     <div class="col-3 ">
-                      <p>{{annot.value}}</p>
+                      <h6>Value Annotation<span class="text-danger">*</span></h6>
                     </div>
                     <div class="col-2">
-                      <div class="fa fa-minus-circle detail-fa" (click)="project.Annotations.splice(i,1)"></div>
+                      <h6>Remove/Add</h6>
+                    </div>
+                  </div>
+                  <div *ngFor="let annot of project.Annotations; let i = index">
+                    <div class="row">
+                      <div class="col-3">
+                        <p>{{annot.key}}</p>
+                      </div>
+                      <div class="col-3 ">
+                        <p>{{annot.value}}</p>
+                      </div>
+                      <div class="col-2">
+                        <div class="fa fa-minus-circle detail-fa" (click)="project.Annotations.splice(i,1)"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <h6>Add New Annotation</h6>
-                </div>
-              </div>
-              <form class='submitForm' [formGroup]="newAnnotationForm" (ngSubmit)="submitAnnotations()">
-                <div class="row ">
-                  <div class="col-3">
-                    <input class="form-control" type="text" formControlName="key" placeholder="e.g. Sample Size">
-                  </div>
-                  <div class="col-3">
-                    <input class="form-control" type="text" formControlName="value" placeholder="e.g. 110">
-                  </div>
-                  <div class="col-2">
-                    <div class="fa fa-plus-circle detail-fa" (click)="submitAnnotations()"></div>
+                <div class="row">
+                  <div class="col-12">
+                    <h6>Add New Annotation</h6>
                   </div>
                 </div>
-              </form>
-            </div>
-          </form>
-          <div *ngIf="permission">
-            <app-permissions [role]="permission.Role" [project]="project"></app-permissions>
-            <div class="well form-group">
-              <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
-              <p>Is this data derived from Human Subjects?</p>
-              <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
-              <td>
-                <tr>
-                  <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">Yes
-                  <input type="radio" value="non-human" name="non-human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('non-human')">No
-                </tr>
-              </td>
-              <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
+                <form class='submitForm' [formGroup]="newAnnotationForm" (ngSubmit)="submitAnnotations()">
+                  <div class="row ">
+                    <div class="col-3">
+                      <input class="form-control" type="text" formControlName="key" placeholder="e.g. Sample Size">
+                    </div>
+                    <div class="col-3">
+                      <input class="form-control" type="text" formControlName="value" placeholder="e.g. 110">
+                    </div>
+                    <div class="col-2">
+                      <div class="fa fa-plus-circle detail-fa" (click)="submitAnnotations()"></div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </form>
 
-                <tr><input type="radio" value="IRBChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">IRB</tr>
-                <tr><input type="radio" value="IECChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">IEC</tr>
-                <tr><input type="radio" value="ExemptedCheckedWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">Exempted
-                  With Waiver Document</tr>
-                <tr><input type="radio" value="ExemptedChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">Exempted</tr>
+            <div *ngIf="permission">
+              <app-permissions [role]="permission.Role" [project]="project"></app-permissions>
+              <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" class="well form-group">
+                <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
+                <p>Is this data derived from Human Subjects?</p>
+                <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
                 <td>
-                  <div *ngIf="project.DataCompliance.HumanStudy === 'IRBChecked'">
-                    <label>IRB Number</label>
-                    <input name="IRBNumber" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1">
-                  </div>
-                  <div *ngIf="project.DataCompliance.HumanStudy  === 'IECChecked'">
-                    <label>IEC Number </label>
-                    <input name="IECNumber" [(ngModel)]="project.DataCompliance.IECNumber" rows="1">
-                  </div>
-                  <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptedCheckedWithWaiver'">
-                    <label>Waiver Number </label>
-                    <input name="exempted" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
-                  </div>
-
+                  <tr>
+                    <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">Yes
+                    <input type="radio" value="non-human" name="non-human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('non-human')">No
+                  </tr>
                 </td>
+                <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
+  
+                  <tr><input type="radio" value="IRBChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">IRB</tr>
+                  <tr><input type="radio" value="IECChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">IEC</tr>
+                  <tr><input type="radio" value="ExemptedCheckedWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">Exempted
+                    With Waiver Document</tr>
+                  <tr><input type="radio" value="ExemptedChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">Exempted</tr>
+                  <td>
+                    <div *ngIf="project.DataCompliance.HumanStudy === 'IRBChecked'">
+                      <label>IRB Number</label>
+                      <input name="IRBNumber" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1">
+                    </div>
+                    <div *ngIf="project.DataCompliance.HumanStudy  === 'IECChecked'">
+                      <label>IEC Number </label>
+                      <input name="IECNumber" [(ngModel)]="project.DataCompliance.IECNumber" rows="1">
+                    </div>
+                    <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptedCheckedWithWaiver'">
+                      <label>Waiver Number </label>
+                      <input name="exempted" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
+                    </div>
+  
+                  </td>
+                </div>
+                <hr>
               </div>
-
-              <hr>
-
-
-              <!-- <input type="radio" value="huirb" name="humanStudyWithIRB" [(ngModel)]="project.DataCompliance.ComplianceOption" (click)="collectDataCompliance('huirb')" [disabled]="project.DataCompliance.IRBNumber===''">
-                      <p>If data was derieved from human subjects, please list approved IRB</p>
-                      <input [(ngModel)]="project.DataCompliance.IRBNumber" placeholder="IRB#" rows="1">
-                  
-                    <tr>
-                      <input type="radio" value="huiec" name="humanStudyWithIEC" [(ngModel)]="project.DataCompliance.ComplianceOption" (click)="collectDataCompliance('huiec')" [disabled]="project.DataCompliance.IECNumber===''">
-                      <p>If data was derieved from human subject and the IEC number is available, please list.</p> 
-                      <input [(ngModel)]="project.DataCompliance.IECNumber" placeholder="IEC#" rows="1">
-                    </tr>  -->
-
+              <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project"  [user]="user" (uploaded)="fileUpdates($event)"></app-files>
             </div>
-            <app-files *ngIf="permission.Role==='admin' || permission.Role==='read-write'" [project]="project" (uploaded)="fileUpdates($event)"></app-files>
+        
+            
+            <div class="form-group">
+              <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
+            </div>
+           
+  
           </div>
-      
-          
-          <div class="form-group">
-            <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
-          </div>
-         
-
         </div>
       </div>
     </div>
   </div>
-</div>
-
-
-
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
