@@ -99,20 +99,15 @@
                       <label>Waiver Number </label>
                       <input name="exempted" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
                     </div>
-  
                   </td>
                 </div>
                 <hr>
               </div>
               <app-files [project]="project"  [user]="user" [permission]="permission" (uploaded)="fileUpdates($event)"></app-files>
-            </div>
-        
-            
+            </div> 
             <div class="form-group">
               <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
             </div>
-           
-  
           </div>
         </div>
       </div>

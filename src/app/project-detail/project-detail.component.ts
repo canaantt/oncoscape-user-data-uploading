@@ -147,7 +147,7 @@ export class ProjectDetailComponent implements  OnInit {
                 this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
                 return false;
           } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
-              && this.project.DataCompliance.IECBNumber === '') {
+              && this.project.DataCompliance.IECNumber === '') {
                 this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
                 return false;
           } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
