@@ -39,6 +39,7 @@ export class FilesComponent implements OnInit {
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
+  @Input() errorMessage: any;
   @Output()
     uploaded: EventEmitter<string> = new EventEmitter();
 
@@ -58,7 +59,7 @@ export class FilesComponent implements OnInit {
   filerefresh() {
     console.log('in File component refresh()');
     this.fileService.uploadingValidation(this.id + '_uploadingSummary')
-        .catch(this.handleError)
+        // .catch(this.handleError)
         .subscribe(res => {
           if (res[0].length  > 0 ) {
             this.hasFiles = true;
@@ -74,19 +75,22 @@ export class FilesComponent implements OnInit {
     return Promise.reject(error.message || error);
   }
   updateStatus(fileitem: any) {
-    // this.fileService.sendProjectID(this.id);
-    fileitem.upload();
-    this.uploadedstring = 'Uploaded';
-    console.log(fileitem.file);
-    this.project.File = {
-      'filename': fileitem.file.name,
-      'size' : fileitem.file.size,
-      'timestamp' : Date()
-    };
-    this.uploadComplete('Being uploaded');
-    this.filerefresh();
-    if (fileitem.file.size >= 10000000) {
-      alert('File size is big. An email will be sent shortly after the operation is complete.');
+    if (this.errorMessage.Name !== '' || this.errorMessage.DataCompliance !== '') {
+      alert('Please fill all the required fields before proceeding with data uploading.');
+    } else {
+      fileitem.upload();
+      this.uploadedstring = 'Uploaded';
+      console.log(fileitem.file);
+      this.project.File = {
+        'filename': fileitem.file.name,
+        'size' : fileitem.file.size,
+        'timestamp' : Date()
+      };
+      this.uploadComplete('Being uploaded');
+      this.filerefresh();
+      if (fileitem.file.size >= 10000000) {
+        alert('File size is big. An email will be sent shortly after the operation is complete.');
+      }
     }
   }
   cancelUpdate(fileitem: any) {

@@ -118,7 +118,6 @@ export class ProjectDetailComponent implements  OnInit {
         value: new FormControl('', Validators.required)
       });
   }
-
   update(project: Project): void {
     if ( !this.updatePreChecking(project)) {
       console.log('Please see the error message in red.');
@@ -130,7 +129,6 @@ export class ProjectDetailComponent implements  OnInit {
       });
     }
   }
-
   updatePreChecking (project: Project): boolean {
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
@@ -138,7 +136,9 @@ export class ProjectDetailComponent implements  OnInit {
       } else {
         this.errorMessage.Name = '';
         if (this.project.DataCompliance.ComplianceOption === 'human'
-          && this.project.DataCompliance.HumanStudy === '') {
+          && this.project.DataCompliance.IRBNumber === null
+          && this.project.DataCompliance.IECNumber === null
+          && this.project.DataCompliance.Waiver === null) {
             this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
             return false;
       } else {
@@ -161,7 +161,6 @@ export class ProjectDetailComponent implements  OnInit {
       }
     }
   }
-
   refresh() {
     this.projectService.getProjectByID(this.route.snapshot.params['id'])
                         .subscribe(res0 => {

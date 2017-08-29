@@ -103,7 +103,7 @@
                 </div>
                 <hr>
               </div>
-              <app-files [project]="project"  [user]="user" [permission]="permission" (uploaded)="fileUpdates($event)"></app-files>
+              <app-files [project]="project"  [user]="user" [permission]="permission" [errorMessage]="errorMessage" (uploaded)="fileUpdates($event)"></app-files>
             </div> 
             <div class="form-group">
               <label>Date Created {{project.Date | DateFormatter: 'WithTime'}}</label>
