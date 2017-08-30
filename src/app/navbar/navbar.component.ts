@@ -39,6 +39,7 @@ export class NavbarComponent implements OnInit {
         });
   }
   startLoading() {
+    this.slimLoadingBarService.interval = 50;
       this.slimLoadingBarService.start(() => {
           console.log('Loading complete');
       });

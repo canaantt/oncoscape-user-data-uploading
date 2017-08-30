@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, Input, Output, Pipe, PipeTransform, NgZone } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -57,6 +57,7 @@ export class ProjectsDashboardComponent {
                private fileService: FileService,
                private userService: UserService,
                private stateService: StateService,
+               private zone: NgZone,
                private router: Router) {
                 console.log('Dashboard Component constructor');
                 this.stateService.user
@@ -64,6 +65,7 @@ export class ProjectsDashboardComponent {
                       this.user = res;
                       if (this.user !== null) {
                         this.getUserID(this.user.email);
+                        console.log('test1');
                       }
                     });
                }
@@ -77,6 +79,7 @@ export class ProjectsDashboardComponent {
               .subscribe(res => {
                 this.getPermissions(res[0]._id);
                 this.userID = res[0]._id;
+                console.log('test2');
               });
   }
   getPermissions(id: string): void {
@@ -84,17 +87,23 @@ export class ProjectsDashboardComponent {
         .subscribe(res => {
           this.getProjectIDs(res);
           this.permissions = res;
+          console.log('test4');
         });
   }
   getProjectIDs(permissions: any): void {
     this.projectIDs = _.uniq(permissions.map(function(r){return r.Project; }));
+    console.log('test3');
     this.getProjects();
   }
   getProjects(): void {
     this.projectService.getProjectsByIDs(this.projectIDs)
         .subscribe(res => {
-          this.projects = res;
+          this.zone.run(() => { this.projects = res; });
         });
+        // .subscribe(res => {
+        //   this.projects = res;
+        //   console.log('test5');
+        // });
   }
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
@@ -122,6 +131,7 @@ export class ProjectsDashboardComponent {
         .subscribe(() => {
           this.getRecentAddedProject();
         });
+    this.getProjects();
   }
   getRecentAddedProject(): void {
     this.projectService.getRecentProject(this.userID)
