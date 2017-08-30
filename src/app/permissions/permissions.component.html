@@ -25,8 +25,10 @@
         <div class="col-3">
           <p>Dataset Administrator</p>
         </div>
+        <div class="col-2">
+          <p class="fa fa-ban" style="color:#cdcdcd;"></p>
+        </div>
       </div>
-    
       <!-- START of current users -->
       <div *ngIf="project.Author !== permission.User">
         <div class="row">
@@ -53,13 +55,11 @@
         <h6>Add New Users</h6>
       </div>
     </div>
-
     <form class='submitForm' [formGroup]="newPermissionForm">
-
       <div class="form-group">
         <div class="row">
           <div class="col-3">
-            <input class="form-control" type="text" formControlName="Email" placeholder="Enter Collaborator's Institutional Email">
+            <input class="form-control" type="text" formControlName="Email" placeholder="Enter Registered Users Email">
           </div>
           <div class="col-3">
             <select formControlName="Role" class="form-control">
@@ -67,24 +67,29 @@
                         </select>
           </div>
           <div class="col-2">
-            <button (click)="submitPermissions()" class="fa fa-plus-circle permission-fa"></button>
+            <span (click)="submitPermissions()" class="fa fa-plus-circle permission-fa"></span>
           </div>
         </div>
-          <small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small>
+        <small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small>
       </div>
     </form>
     <small class="text-danger">{{emailError}}</small>
-     <!-- END of new users -->
+    <!-- END of new users -->
   </div>
-    <!-- END of admin ngIf -->
-    
-    <!-- START different view if not an admin -->
+  <!-- END of admin ngIf -->
+  <!-- START different view if not an admin -->
   <div *ngIf="role !== 'admin'">
-    <div class="form-group row" *ngFor="let permission of permissions$ | async">
-      <span class="detail-users">{{permission.User | userFullName | async }}</span>
-      <span>{{permission.Role}}</span>
+    <div class="form-group" *ngFor="let permission of permissions$ | async">
+      <div class="row">
+        <div class="col-3">
+          <p class="detail-users">{{permission.User | userFullName | async }}</p>
+        </div>
+        <div class="col-3">
+          <p>{{permission.Role}}</p>
+        </div>
+      </div>
     </div>
   </div>
-<!-- END different view if not an admin -->
+  <!-- END different view if not an admin -->
 </div>
 <hr>
