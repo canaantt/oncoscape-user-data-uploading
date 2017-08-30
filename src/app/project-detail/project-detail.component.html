@@ -70,7 +70,7 @@
 
             <div *ngIf="permission">
               <app-permissions [role]="permission.Role" [project]="project"></app-permissions>
-              <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" class="well form-group">
+              <div *ngIf="permission.Role==='admin'" class="well form-group">
                 <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
                 <p>Is this data derived from Human Subjects?</p>
                 <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
