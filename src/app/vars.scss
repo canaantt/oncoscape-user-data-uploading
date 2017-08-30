@@ -54,6 +54,14 @@ $navbar-inverse-brand-hover-color: $color-white;
     margin-top: 0;
     letter-spacing: 0px;
 }
+.primary-fa {
+    margin-top:10px;
+    color: $color-onco-blue;
+    &:hover {
+        color:$color-link;;
+    }
+
+}
 
 // Bootstrap needs to be placed in index.scss for overides
 .card-header {

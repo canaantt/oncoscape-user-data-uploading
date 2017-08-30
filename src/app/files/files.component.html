@@ -3,10 +3,10 @@
 <div class="row">
   <div class="col-12">
     <div *ngIf="project.File">
-      <label>Existing File meta data</label>
-      <button *ngIf="permission.Role==='admin' || permission.Role==='read-write'" type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
+      <!-- <label>Uploaded Files</label> -->
+      <!-- <button *ngIf="permission.Role==='admin' || permission.Role==='read-write'" type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
           <span class="fa fa-minus-circle"></span>Remove
-      </button>
+      </button> -->
       <div class="row">
         <div class="col-3">
           <h6>File Name</h6>
@@ -17,6 +17,9 @@
         <div class="col-3">
           <h6>Timestamp</h6>
         </div>
+        <div class="col-2">
+            <h6>Remove</h6>
+          </div>
       </div>
       <div class="row">
         <div class="col-3">
@@ -28,10 +31,12 @@
         <div class="col-3">
           <p>{{project.File.timestamp}}</p>
         </div>
+        <div class="col-2">
+            <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'"  (click)="removeAllFiles()" class="fa fa-minus-circle files-fa"></div>
       </div>
-
-      <hr>
     </div>
+    </div>
+
 
     <div class="col-12" *ngIf="hasFiles">
       <label>File summary</label>
@@ -66,10 +71,12 @@
       </table>
     </div>
 
-    <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" class="form-group">
+    <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" >
       <label for="exampleInputFile"></label>
-      <input #fileInput type="file" class="form-control-file " name="single" id="exampleInputFile" aria-describedby="fileHelp"
+      <input #fileInput type="file" class="form-control-file" name="single" id="exampleInputFile" aria-describedby="fileHelp"
         ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])" />
     </div>
+    <br>
+    <br>
   </div>
 </div>
