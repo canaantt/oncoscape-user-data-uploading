@@ -59,7 +59,7 @@ export class FilesComponent implements OnInit {
   filerefresh() {
     console.log('in File component refresh()');
     this.fileService.uploadingValidation(this.id + '_uploadingSummary')
-        // .catch(this.handleError)
+        .catch(this.handleError)
         .subscribe(res => {
           if (res[0].length  > 0 ) {
             this.hasFiles = true;
@@ -88,9 +88,9 @@ export class FilesComponent implements OnInit {
       };
       this.uploadComplete('Being uploaded');
       this.filerefresh();
-      if (fileitem.file.size >= 10000000) {
-        alert('File size is big. An email will be sent shortly after the operation is complete.');
-      }
+      // if (fileitem.file.size >= 10000000) {
+        alert('An email will be sent shortly after the operation is complete.');
+      // }
     }
   }
   cancelUpdate(fileitem: any) {

@@ -10,11 +10,11 @@ import { User } from '../models/user';
 export class LoginService {
     GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
 
-    userGoogleProfile: EventEmitter<any> ;
+    // userGoogleProfile: EventEmitter<any> ;
     constructor(private stateService: StateService,
                 private userService: UserService,
                 private router: Router) {
-        this.userGoogleProfile = new EventEmitter<any>();
+        // this.userGoogleProfile = new EventEmitter<any>();
         hello.init({
           google: this.GOOGLE_CLIENT_ID,
         }, {
@@ -36,7 +36,7 @@ export class LoginService {
     googleLogOut(): any {
       hello.logout('google', {});
       this.stateService.user.next(null);
-      this.userGoogleProfile.emit(null);
+      // this.userGoogleProfile.emit(null);
     }
     authLogin(auth) {
       hello('google').api('me').then( this.updateUserInfo.bind(this));
@@ -57,7 +57,7 @@ export class LoginService {
               .subscribe(r => {
                 if (typeof(r[0]) !== 'undefined') {
                   this.stateService.user.next(v);
-                  this.userGoogleProfile.emit(v);
+                  // this.userGoogleProfile.emit(v);
                   this.router.navigate(['/projects', 'dashboard']);
                 } else {
                   alert('User is not registered yet. Please register. Please turn on the browser pop-up window.');

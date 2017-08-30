@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { AppComponent } from './app.component';
-import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
+import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { AppRouterModule } from './router/app-router.module';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
@@ -31,6 +31,7 @@ import { PermissionService } from './service/permission.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from './service/login.service';
 import { HelpComponent } from './help/help.component';
+import { UpdateEmitService } from './service/update-emit.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,6 +65,7 @@ import { HelpComponent } from './help/help.component';
   providers: [UserService,
               LoginService,
               StateService,
+              UpdateEmitService,
               FileService],
   bootstrap: [AppComponent]
 })
