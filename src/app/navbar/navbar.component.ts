@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
 import { LoginService } from '../service/login.service';
 import { UpdateEmitService } from '../service/update-emit.service';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 @Component({
   selector: 'app-navbar',
@@ -14,10 +15,14 @@ import { UpdateEmitService } from '../service/update-emit.service';
 
 export class NavbarComponent implements OnInit {
   user: any;
+  colors = ['red', 'orange', 'blue', '#9fe25a', 'purple', '#88c26e', '#70936c', '#40e0d0', '#99d5cf'];
+  color: string;
+  counter = 0 ;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
                private updateEmitService: UpdateEmitService,
+               private slimLoadingBarService: SlimLoadingBarService,
                private router: Router) {
                   console.log('in Nav Constructor');
                   this.stateService.user.subscribe((data) => {
@@ -29,8 +34,24 @@ export class NavbarComponent implements OnInit {
         .subscribe((res) => {
           console.log(res);
           console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+          this.color = this.colors[(this.counter++ % 9)];
+          this.completeLoading();
         });
   }
+  startLoading() {
+      this.slimLoadingBarService.start(() => {
+          console.log('Loading complete');
+      });
+  }
+
+  stopLoading() {
+      this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+      this.slimLoadingBarService.complete();
+  }
+
   goDashboard() {
     if (this.user) {
       this.router.navigate(['projects/', 'dashboard']);

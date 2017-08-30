@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { AppComponent } from './app.component';
-import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
+import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { AppRouterModule } from './router/app-router.module';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';

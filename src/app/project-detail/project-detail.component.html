@@ -1,16 +1,9 @@
 <div class="detail">
-
-    <div *ngIf="project">
+   <div *ngIf="project">
       <div class="container">
         <div class="row ">
           <div class="col-12 ">
             <h5 class="detail-header">Dataset Details</h5>
-            <!-- <p>{{statusMsg}}</p> -->
-            <!-- <button (click)="startLoading()">Start Loading</button>
-            <button (click)="stopLoading()">Stop Loading</button>
-            <button (click)="completeLoading()">Complete Loading</button> -->
-            <ng2-slim-loading-bar></ng2-slim-loading-bar>
-            <ng2-slim-loading-bar [color]="'red'" [height]="'4px'"></ng2-slim-loading-bar> 
             <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
             <form>
               <div class="row ">
