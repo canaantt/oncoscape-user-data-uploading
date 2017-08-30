@@ -65,7 +65,6 @@ export class ProjectsDashboardComponent {
                       this.user = res;
                       if (this.user !== null) {
                         this.getUserID(this.user.email);
-                        console.log('test1');
                       }
                     });
                }
@@ -79,7 +78,6 @@ export class ProjectsDashboardComponent {
               .subscribe(res => {
                 this.getPermissions(res[0]._id);
                 this.userID = res[0]._id;
-                console.log('test2');
               });
   }
   getPermissions(id: string): void {
@@ -87,12 +85,10 @@ export class ProjectsDashboardComponent {
         .subscribe(res => {
           this.getProjectIDs(res);
           this.permissions = res;
-          console.log('test4');
         });
   }
   getProjectIDs(permissions: any): void {
     this.projectIDs = _.uniq(permissions.map(function(r){return r.Project; }));
-    console.log('test3');
     this.getProjects();
   }
   getProjects(): void {
@@ -100,10 +96,6 @@ export class ProjectsDashboardComponent {
         .subscribe(res => {
           this.zone.run(() => { this.projects = res; });
         });
-        // .subscribe(res => {
-        //   this.projects = res;
-        //   console.log('test5');
-        // });
   }
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
