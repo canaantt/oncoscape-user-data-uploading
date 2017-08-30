@@ -1,64 +1,75 @@
 <h5 class="file-header">Upload Dataset</h5>
+<br>
 <div class="row">
   <div class="col-12">
     <div *ngIf="project.File">
       <label>Existing File meta data</label>
-      <button  *ngIf="permission.Role==='admin' || permission.Role==='read-write'" type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
-          <span class="glyphicon glyphicon-minor"></span>Remove
+      <button *ngIf="permission.Role==='admin' || permission.Role==='read-write'" type="button" class="btn btn-danger btn-xs" (click)="removeAllFiles()">
+          <span class="fa fa-minus-circle"></span>Remove
       </button>
-      <table>
-        <thead>
-          <td>File Name</td>
-          <td>Size</td>
-          <td>Timestamp</td>
-        </thead>
-        <tbody>
-          <td>{{project.File.filename}}</td>
-          <td>{{project.File.size}}</td>
-          <td>{{project.File.timestamp}}</td>
-        </tbody>
-      </table>
+      <div class="row">
+        <div class="col-3">
+          <h6>File Name</h6>
+        </div>
+        <div class="col-3">
+          <h6>Size</h6>
+        </div>
+        <div class="col-3">
+          <h6>Timestamp</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3">
+          <p>{{project.File.filename}}</p>
+        </div>
+        <div class="col-3">
+          <p>{{project.File.size}}</p>
+        </div>
+        <div class="col-3">
+          <p>{{project.File.timestamp}}</p>
+        </div>
+      </div>
+
       <hr>
     </div>
 
     <div class="col-12" *ngIf="hasFiles">
       <label>File summary</label>
       <table>
-          <thead>
+        <thead>
           <td>Clinical Sheet Name</td>
           <td>Patient Size</td>
           <td>Sample Size</td>
-          </thead>
-          <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryClinical">
-            <tr>
-              <td><span>{{sum.sheet}}</span></td>  
-              <td><span *ngIf="sum.patients">{{sum.patients.length}}</span></td>
-              <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
-            </tr>
-          </tbody>
+        </thead>
+        <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryClinical">
+          <tr>
+            <td><span>{{sum.sheet}}</span></td>
+            <td><span *ngIf="sum.patients">{{sum.patients.length}}</span></td>
+            <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
+          </tr>
+        </tbody>
       </table>
       <hr>
       <table>
-          <thead>
+        <thead>
           <td>Molecular Sheet Name</td>
           <td>Sample Size</td>
           <td>Biomarker Size</td>
-          </thead>
-          <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryMolecular">
-            <tr>
-              <td><span>{{sum.sheet}}</span></td>  
-              <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
-              <td><span *ngIf="sum.markers">{{sum.markers.length}}</span></td>
-            </tr>
-          </tbody>
+        </thead>
+        <tbody class="form-group row" *ngFor="let sum of uploadStatus.uploadSummaryMolecular">
+          <tr>
+            <td><span>{{sum.sheet}}</span></td>
+            <td><span *ngIf="sum.samples">{{sum.samples.length}}</span></td>
+            <td><span *ngIf="sum.markers">{{sum.markers.length}}</span></td>
+          </tr>
+        </tbody>
       </table>
     </div>
-    
+
     <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" class="form-group">
       <label for="exampleInputFile"></label>
       <input #fileInput type="file" class="form-control-file " name="single" id="exampleInputFile" aria-describedby="fileHelp"
-                          ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])"/>
-    </div>             
+        ng2FileSelect [uploader]="uploader" (change)="updateStatus(uploader.queue[0])" />
+    </div>
   </div>
 </div>
- 

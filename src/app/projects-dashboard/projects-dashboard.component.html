@@ -5,32 +5,39 @@
                 <h5 class="dashboard-header">Datasets Dashboard</h5>
             </div>
             <div class="col-6">
-                 <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button> 
+                <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button>
             </div>
         </div>
         <div class="mb-5" *ngFor="let project of projects">
-            <!--Card-->
+            <!--START card-->
             <div class="card card-cascade ">
-                <!--Card image-->
+                <!--START card header-->
                 <div class="view gradient-card-header dashboard-blue-gradient">
-                    <h5 style="color:#fff; font-weight:300; font-family:Lato; margin-top:10px;" class="h2-responsive text-center">{{project.Name}}</h5>
-                    <p style="color:#fff; font-weight:300; font-family:Lato;" class="text-center">{{project.Date | DateFormatter : 'Date'}} </p>
+                    <h5  class="dashboard-title text-center">{{project.Name}}</h5>
                 </div>
-                <!--/Card image-->
-                <!--Card content-->
+                <!--END card header-->
+                <!--START card body-->
                 <div class="card-body ">
-                    <p class="card-text"> 
-                       {{project.Description}}
+                    <p class="card-text">
+                        {{project.Description}}
                     </p>
                 </div>
-                <!--/.Card content-->
-                <div class="col-12 dashboard-dotted card-footer text-center">
-                    <!-- <a href='projects/{{project._id}}' [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</a>  -->
-                    <button type="button" [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</button>
-                    <button (click)="delete(project)" class=" btn btn-primary ">Delete</button>
+                <!--END card body-->
+                <!-- START card footer -->
+                <div class="dashboard-dotted card-footer">
+                    <div class="row">
+                        <div class="col-4 text-left">
+                            <p class="text-left mt-2">Created {{project.Date | DateFormatter: 'WithTime'}}</p>
+                        </div>
+                        <div class="col-8 text right">
+                            <button type="button" [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</button>
+                            <button (click)="delete(project)" class=" btn btn-primary ">Delete</button>
+                        </div>
+                    </div>
                 </div>
+                <!-- END card footer -->
             </div>
-            <!--/.Card-->
+            <!--END card-->
         </div>
     </div>
 </div>
