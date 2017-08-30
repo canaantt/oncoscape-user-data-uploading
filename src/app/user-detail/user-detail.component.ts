@@ -6,12 +6,14 @@ import { UserService } from '../service/user.service';
 import { Observable } from 'rxjs/Observable';
 import { DateFormatter } from '../projects-dashboard/projects-dashboard.component';
 import { UserEmailValidators } from '../validators/userEmail.validator';
+import { UpdateEmitService } from '../service/update-emit.service';
+
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss']
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent {
   // @Input() user: User;
   id: any;
   user: any;
@@ -26,6 +28,7 @@ export class UserDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private elementRef: ElementRef,
+              private updateEmitService: UpdateEmitService,
               private userService: UserService) {
                 this.id = this.route.snapshot.params['id'];
                 this.userService.getUsersByID(this.id)
@@ -37,12 +40,13 @@ export class UserDetailComponent implements OnInit {
                     .map(() => this.user)
                     .debounceTime(500)
                     .subscribe(input => {
-                      this.checking();
-                      // this.update(this.user);
+                      // console.log(this.user);
+                      // this.updatePreChecking(this.user);
+                      this.update(this.user);
                     });
               }
 
-  checking() {
+    updatePreChecking(user: User): boolean {
       if (this.user.FirstName === '') {
         this.error.fn = 'Should not be empty.';
       } else {
@@ -80,35 +84,26 @@ export class UserDetailComponent implements OnInit {
       } else {
         this.error.in = '';
       }
-  }
-  ngOnInit() {
-    // if (this.user.FirstName === '') {this.error.fn = 'Should not be empty.'; }
-    // if (this.user.LastName === '') {this.error.ln = 'Should not be empty.'; }
-    // if (this.user.Email === '') {this.error.email = 'Should not be empty.'; }
-    // if (this.user.Email.search('[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+') === -1) {
-    //   this.error.email = this.error.email + '::Not Email format. Please check accuracy.';
-    // }
-    // this.userService.userValidationByEmail(this.user.Email)
-    //     .subscribe(res => {
-    //       if(res[0]._id !== this.id){
-    //         this.error.email = this.error.email + '::This institute email is associated with' +
-    //                            'another existing user. Please choose a different institutional email.';
-    //       }
-    //     });
-    // if (this.user.Institution === '') {this.error.in = 'Should not be empty.'; }
+      if ( this.error.fn === '' &&
+           this.error.ln === '' &&
+           this.error.email.empty === '' &&
+           this.error.email.format === '' &&
+           this.error.email.duplicate === '' &&
+           this.error.in === '') {
+             return true;
+           } else {
+             return false;
+           }
   }
   update(user: User): void {
-    if (this.error.fn !== '' ||
-        this.error.ln !== '' ||
-        this.error.email.empty !== '' ||
-        this.error.email.format !== '' ||
-        this.error.email.duplicate !== '' ||
-        this.error.in !== '' ) {
-         alert('All fields are required.');
-         return;
-       } else {
-        this.userService.update(user).subscribe(() => alert('User Information has been updated.'));
-       }
+    if ( !this.updatePreChecking(user)) {
+      console.log(this.error);
+      console.log('Please see the error message in red.');
+    } else {
+       this.userService.update(user).subscribe(() => {
+         this.updateEmitService.updateState();
+      });
+    }
   }
   goHomepage(): void {
     this.router.navigate(['/landing']);
