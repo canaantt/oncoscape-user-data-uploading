@@ -26,7 +26,6 @@ $navbar-inverse-link-active-bg: $color-onco-blue;
 $navbar-inverse-link-hover-bg: $color-onco-blue;
 $navbar-inverse-brand-color: $color-white;
 $navbar-inverse-brand-hover-color: $color-white;
-
 .btn-primary {
     color: $color-white;
     background: $color-onco-blue;
@@ -54,13 +53,14 @@ $navbar-inverse-brand-hover-color: $color-white;
     margin-top: 0;
     letter-spacing: 0px;
 }
+
 .primary-fa {
-    margin-top:10px;
+    margin-top: 10px; 
     color: $color-onco-blue;
     &:hover {
-        color:$color-link;;
+        color: $color-link;
+        ;
     }
-
 }
 
 // Bootstrap needs to be placed in index.scss for overides
@@ -80,6 +80,7 @@ p.card-text {
     margin: 12px;
     font-size: 14px;
 }
+
 .form-control {
     font-weight: 300;
 }
