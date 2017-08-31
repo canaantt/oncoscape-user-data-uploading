@@ -114,7 +114,7 @@ export class ProjectsDashboardComponent {
     console.log('in add');
     this.newProjectForm = this.fb.group({
       Name: new FormControl('Name Your New Dataset', Validators.required),
-      Description: new FormControl('The largest recorded snowflake was in MT during year 1887, 15 inches wide', Validators.minLength(4)),
+      Description: new FormControl('Enter a dataset description.', Validators.minLength(4)),
       Private: new FormControl(true),
       Author: this.userID,
       DataCompliance: {'IRBNumber': null, 'IECNumber': null, 'Waiver': null, 'ComplianceOption': 'human' }

@@ -1,23 +1,23 @@
 <div class="detail">
-   <div *ngIf="project">
-      <div class="container">
-        <div class="row ">
-          <div class="col-12 ">
-            <h5 class="detail-header">Dataset Details</h5>
-            <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
-            <form>
-              <div class="row ">
-                <div class="col-10">
-                  <div class="form-group ">
-                    <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
-                    <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
-                  </div>
-                  <div class="form-group">
-                    <label class="detail-label ">Description</label>
-                    <textarea [(ngModel)]="project.Description" name="projectDescription" class="form-control" rows="10"></textarea>
-                  </div>
+  <div *ngIf="project">
+    <div class="container">
+      <div class="row ">
+        <div class="col-12 ">
+          <h5 class="detail-header">Dataset Details</h5>
+          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
+          <form>
+            <div class="row ">
+              <div class="col-10">
+                <div class="form-group ">
+                  <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
+                  <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
+                </div>
+                <div class="form-group">
+                  <label class="detail-label ">Description</label>
+                  <textarea [(ngModel)]="project.Description" name="projectDescription" class="form-control" rows="10"></textarea>
                 </div>
               </div>
+            </div>
             <!-- END project details -->
             <!-- START annotations -->
             <div #annotations>
@@ -39,7 +39,7 @@
                     <div class="col-3">
                       <p>{{annot.key}}</p>
                     </div>
-                    <div class="col-3 ">
+                    <div class="col-3 col-push-3 ">
                       <p>{{annot.value}}</p>
                     </div>
                     <div class="col-2">

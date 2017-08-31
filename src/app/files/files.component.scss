@@ -1,22 +1,14 @@
 // import global variable
 @import '/../index';
-
 .file-header {
     @extend .header-primary;
-    margin-bottom:0px;
-  }
-  
-  .files-fa {
- @extend .primary-fa;
-
+    margin-bottom: 0px;
 }
 
+.files-fa {
+    @extend .primary-fa;
+}
 
-
-
-
-
-
-
-
-  
+[hidden] {
+    display: none !important;
+}

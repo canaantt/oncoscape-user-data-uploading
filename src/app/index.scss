@@ -3,8 +3,7 @@
  *  The list of variables are listed here bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
  */
 
-@import 'vars'; 
-
+@import 'vars';
 
 /**
  *  Do not remove the comments below. It's the markers used by wiredep to inject
@@ -13,11 +12,9 @@
 
 // bower:scss
 // endbower
-
 body,
-html
- {
-    font-family: $font-family; 
+html {
+    font-family: $font-family;
     font-size: $font-size;
     font-weight: $font-weight;
     background: #fff;
@@ -30,7 +27,6 @@ html
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: grayscale;
-  
 }
 
 // SCSS Extends
@@ -71,6 +67,7 @@ html
     -ms-user-select: none;
     user-select: none;
 }
+
 
 /**
  *  Do not remove the comments below. It's the markers used by gulp-inject to inject
