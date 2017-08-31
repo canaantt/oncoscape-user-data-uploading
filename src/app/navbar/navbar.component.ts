@@ -15,9 +15,9 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 export class NavbarComponent implements OnInit {
   user: any;
-  colors = ['red', 'orange', 'blue', '#9fe25a', 'purple', '#88c26e', '#70936c', '#40e0d0', '#99d5cf'];
-  color: string;
-  counter = 0 ;
+  // colors = ['red', 'orange', 'blue', '#9fe25a', 'purple', '#88c26e', '#70936c', '#40e0d0', '#99d5cf'];
+  // color: string;
+  // counter = 0 ;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
@@ -34,12 +34,12 @@ export class NavbarComponent implements OnInit {
         .subscribe((res) => {
           console.log(res);
           console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-          this.color = this.colors[(this.counter++ % 9)];
+          // this.color = this.colors[(this.counter++ % 9)];
           this.completeLoading();
         });
   }
   startLoading() {
-    this.slimLoadingBarService.interval = 50;
+    this.slimLoadingBarService.interval = 100;
       this.slimLoadingBarService.start(() => {
           console.log('Loading complete');
       });

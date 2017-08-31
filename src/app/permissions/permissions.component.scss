@@ -14,11 +14,7 @@
     }
 }
 .permission-fa {
-    margin-top:10px;
-    color: $color-onco-blue;
-    &:hover {
-        color:$color-link;;
-    }
+  @extend .primary-fa;
 
 }
 
