@@ -9,7 +9,6 @@ import { PermissionService } from '../service/permission.service';
 import { File } from '../models/file';
 import { FileService } from '../service/file.service';
 import { IRB } from '../models/irb';
-import { IrbService } from '../service/irb.service';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
 import { Observable} from 'rxjs/Observable';
@@ -22,28 +21,12 @@ import { StateService } from '../service/state.service';
 import { DateFormatter } from '../projects-dashboard/projects-dashboard.component';
 import { UpdateEmitService } from '../service/update-emit.service';
 enum roles {'full-access', 'read-only'}
-@Pipe({
-  name: 'IrbDetailService'
-})
-export class IrbDetailService implements PipeTransform {
-  constructor(private irbService: IrbService) {}
-  transform(id: string): Observable<string> {
-      return this.irbService.getIrbObjIDByIRBNumber(id)
-          .map((response, err) => {
-              if (err) {
-                console.log(err);
-                return err;
-              } else {
-                return  response[0].IRBTitle;
-              }
-          });
-  }
-}
+
 @Component({
   selector: 'app-project-detail',
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.scss'],
-  providers: [FileService, IrbService, UserService, FormBuilder, PermissionService]
+  providers: [FileService, UserService, FormBuilder, PermissionService]
 })
 export class ProjectDetailComponent implements  OnInit {
   project: any;
@@ -68,7 +51,6 @@ export class ProjectDetailComponent implements  OnInit {
     private projectService: ProjectService,
     private permissionService: PermissionService,
     private fileService: FileService,
-    private irbService: IrbService,
     private userService: UserService,
     private stateService: StateService,
     private elementRef: ElementRef,

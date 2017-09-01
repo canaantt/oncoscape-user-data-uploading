@@ -115,8 +115,8 @@ function fileRouterFactory(){
                 });
                 
                 if(projectCollections.length === 0){
-                    res.status(404).send("Not Found").end();
-                    // res.send('Not Find').end();
+                    // res.status(404).send("Not Found").end();
+                    res.send('Not Find').end();
                 } else {
                     var arr = [];
 
@@ -239,8 +239,8 @@ db.once("open", function (callback) {
                 console.log(err);
 				return;
 			} else {
-                const writing2Mongo = fork('/Users/GrettyGoose/Documents/projects/NG4-Data-Upload/server/fileUpload.js');
-                // ,{ execArgv: ['--max-old-space-size=4096']});
+                const writing2Mongo = fork('server/fileUpload.js', 
+                { execArgv: ['--max-old-space-size=4096']});
                 console.log('test***');
                 writing2Mongo.send({filePath: res.req.file.path, projectID: projectID });
                 console.log('test@@@');
@@ -267,8 +267,7 @@ db.once("open", function (callback) {
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-     cb(null, '/Users/GrettyGoose/Documents/projects/NG4-Data-Upload/uploads')
-    //  cb(null, './uploads')
+     cb(null, './uploads')
   },
   filename: function (req, file, cb) {
     var newFileName = file.fieldname + '-' + Date.now() + '.xlsx';
@@ -279,4 +278,3 @@ var upload = multer({
 	storage: storage, 
     preservePath: true
 }).single('file');
-
