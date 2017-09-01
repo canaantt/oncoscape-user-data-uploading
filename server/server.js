@@ -115,8 +115,8 @@ function fileRouterFactory(){
                 });
                 
                 if(projectCollections.length === 0){
-                    // res.status(404).send("Not Found").end();
-                    res.send('Not Find').end();
+                    res.status(404).send("Not Found").end();
+                    // res.send('Not Find').end();
                 } else {
                     var arr = [];
 

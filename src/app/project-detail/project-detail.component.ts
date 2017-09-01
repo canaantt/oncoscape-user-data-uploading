@@ -120,9 +120,7 @@ export class ProjectDetailComponent implements  OnInit {
       } else {
         this.errorMessage.Name = '';
         if (this.project.DataCompliance.ComplianceOption === 'human'
-          && this.project.DataCompliance.IRBNumber === null
-          && this.project.DataCompliance.IECNumber === null
-          && this.project.DataCompliance.Waiver === null) {
+          && this.project.DataCompliance.HumanStudy === '') {
             this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
             return false;
       } else {
