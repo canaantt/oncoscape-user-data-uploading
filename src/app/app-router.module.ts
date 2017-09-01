@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes, ResolveData } from '@angular/router';
-import { UsersComponent } from '../users/users.component';
-import { LandingComponent } from '../landing/landing.component';
-import { ProjectsComponent } from '../projects/projects.component';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { ProjectsDashboardComponent } from '../projects-dashboard/projects-dashboard.component';
-import { ProjectDetailComponent } from '../project-detail/project-detail.component';
-import { RegisterComponent } from '../register/register.component';
-import { UserDetailComponent } from '../user-detail/user-detail.component';
-import { HelpComponent } from '../help/help.component';
+import { UsersComponent } from './users/users.component';
+import { LandingComponent } from './landing/landing.component';
+import { ProjectsComponent } from './projects/projects.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ProjectsDashboardComponent } from './projects-dashboard/projects-dashboard.component';
+import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { RegisterComponent } from './register/register.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
+import { HelpComponent } from './help/help.component';
 
 const routes: Routes = [
   {
