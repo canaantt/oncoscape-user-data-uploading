@@ -2,7 +2,7 @@ import { Component,  OnInit, Input, Output, EventEmitter} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { File } from '../models/file';
 import { FileService } from '../service/file.service';
-import { FileUploader } from 'ng2-file-upload';
+import { FileUploader, FileSelectDirective } from 'ng2-file-upload';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Pipe, PipeTransform } from '@angular/core';

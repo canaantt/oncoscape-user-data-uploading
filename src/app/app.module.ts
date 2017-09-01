@@ -13,7 +13,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/catch';
 import * as hello from 'hellojs';
 import * as _ from 'underscore';
-import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
+import { FileSelectDirective, FileDropDirective, FileUploadModule } from 'ng2-file-upload';
 import { UsersComponent } from './users/users.component';
 import { LandingComponent } from './landing/landing.component';
 import { ProjectsComponent } from './projects/projects.component';
@@ -48,7 +48,6 @@ import { UpdateEmitService } from './service/update-emit.service';
     DateFormatter,
     UserFullNamePipe,
     Overlapping,
-    FileSelectDirective,
     HelpComponent
   ],
   imports: [
@@ -57,6 +56,7 @@ import { UpdateEmitService } from './service/update-emit.service';
     AppRouterModule,
     ReactiveFormsModule,
     HttpModule,
+    FileUploadModule,
     RouterModule,
     NgbModule.forRoot(),
     SlimLoadingBarModule.forRoot()
