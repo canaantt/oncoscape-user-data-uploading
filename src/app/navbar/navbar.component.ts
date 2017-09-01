@@ -33,8 +33,6 @@ export class NavbarComponent implements OnInit {
     this.updateEmitService.updateStatus
         .subscribe((res) => {
           console.log(res);
-          console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-          // this.color = this.colors[(this.counter++ % 9)];
           this.completeLoading();
         });
   }

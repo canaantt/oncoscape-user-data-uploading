@@ -66,6 +66,7 @@ export class ProjectDetailComponent implements  OnInit {
       this.projectService.getProjectByID(this.route.snapshot.params['id'])
                          .subscribe(res0 => {
                            this.project = res0;
+                           this.updatePreChecking();
                          });
       const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
             .map(() => this.project)
@@ -103,7 +104,7 @@ export class ProjectDetailComponent implements  OnInit {
       });
   }
   update(project: Project): void {
-    if ( !this.updatePreChecking(project)) {
+    if ( !this.updatePreChecking()) {
       console.log('Please see the error message in red.');
 
     } else {
@@ -113,14 +114,15 @@ export class ProjectDetailComponent implements  OnInit {
       });
     }
   }
-  updatePreChecking (project: Project): boolean {
+  updatePreChecking (): boolean {
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
         return false;
       } else {
         this.errorMessage.Name = '';
         if (this.project.DataCompliance.ComplianceOption === 'human'
-          && this.project.DataCompliance.HumanStudy === '') {
+            && this.project.DataCompliance.HumanStudy === '') {
+            console.log('no exempt is checked.');
             this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
             return false;
       } else {
