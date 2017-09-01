@@ -115,13 +115,19 @@ export class ProjectDetailComponent implements  OnInit {
     }
   }
   updatePreChecking (): boolean {
+    console.log('@@@@@@@@@@@@@being called');
+    console.log(this.project.DataCompliance.ComplianceOption);
+    console.log(this.project.DataCompliance.HumanStudy === '');
+    console.log(typeof(this.project.DataCompliance.HumanStudy));
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
         return false;
       } else {
         this.errorMessage.Name = '';
         if (this.project.DataCompliance.ComplianceOption === 'human'
-            && this.project.DataCompliance.HumanStudy === '') {
+            && (this.project.DataCompliance.HumanStudy === ''
+            || typeof(this.project.DataCompliance.HumanStudy) === 'undefined')
+           ) {
             console.log('no exempt is checked.');
             this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
             return false;
