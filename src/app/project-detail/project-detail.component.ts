@@ -115,10 +115,6 @@ export class ProjectDetailComponent implements  OnInit {
     }
   }
   updatePreChecking (): boolean {
-    console.log('@@@@@@@@@@@@@being called');
-    console.log(this.project.DataCompliance.ComplianceOption);
-    console.log(this.project.DataCompliance.HumanStudy === '');
-    console.log(typeof(this.project.DataCompliance.HumanStudy));
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
         return false;

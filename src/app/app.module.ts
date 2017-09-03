@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { Router, RouterModule } from '@angular/router';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { LocationStrategy } from '@angular/common';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
@@ -57,7 +57,6 @@ import { UpdateEmitService } from './service/update-emit.service';
     ReactiveFormsModule,
     HttpModule,
     FileUploadModule,
-    RouterModule,
     NgbModule.forRoot(),
     SlimLoadingBarModule.forRoot()
   ],

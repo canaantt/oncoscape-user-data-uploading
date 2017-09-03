@@ -32,7 +32,7 @@ export class PermissionService {
     return this.http.get(this.permissionsUrl)
             .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
   }
-  getPermissionByUserByProject(userID: string, projectID: string): Observable<Response> {
+  getPermissionByUserByProject(userID: string, projectID: string): Observable<Permission> {
     return this.http.get(this.permissionsUrl)
             .map(res => res.json().filter(value => (value.User === userID && value.Project === projectID))[0]);
   }

@@ -100,12 +100,21 @@ export class ProjectsDashboardComponent {
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
     if (confirmDeletion) {
-      this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
-      const index = this.projectIDs.indexOf(project._id);
-      this.projectIDs.splice(index, 1);
-      this.getProjects();
-      this.fileService.removeFilesByProjectID(project._id);
-      this.permissionService.removePermisionsByProjectID(project._id);
+      this.permissionService.getPermissionByUserByProject(this.userID, project._id)
+          .subscribe(res => {
+            console.log('******************* permission is...', res);
+            if (res.Role !== 'admin') {
+              alert ('You do not have permission to delete this dataset. Please contact author.');
+              return;
+            } else {
+              this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
+              const index = this.projectIDs.indexOf(project._id);
+              this.projectIDs.splice(index, 1);
+              this.getProjects();
+              this.fileService.removeFilesByProjectID(project._id);
+              this.permissionService.removePermisionsByProjectID(project._id);
+            }
+          });
     }else {
       console.log('Deletion cancled.');
     }
