@@ -85,5 +85,16 @@
 .nav-link {
     display: inline;
 }
+.slim-loading-bar {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    margin-top: 63px;
+
+}
 
 
