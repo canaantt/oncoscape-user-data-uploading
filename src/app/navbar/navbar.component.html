@@ -9,9 +9,9 @@
     </a>
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav float-left">
-        <a class="navbar-items nav-item nav-link active " *ngIf='user' (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a>
-        <a class="navbar-items nav-item nav-link active " *ngIf='user' (click)='goHelp()'><span class="fa fa-question-circle"></span>Help</a>        
-        <a class="nav-item nav-link navbar-items active" href="http://resources.sttrcancer.org/oncoscape-contact"><span class="fa fa-comments"></span>Feedback</a>
+        <a class="navbar-items nav-link nav-item active" *ngIf='user' (click)='goDashboard()'><span class="fa fa-dashboard"></span>Dashboard</a>
+        <a class="navbar-items nav-link nav-item active" (click)='goHelp()'><span class="fa fa-question-circle"></span>Help</a>        
+        <a class="navbar-items nav-link nav-item active" href="http://resources.sttrcancer.org/oncoscape-contact"><span class="fa fa-comments"></span>Feedback</a>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img *ngIf='user'  class="navbar-pic" src={{user.thumbnail}} alt="Smiley face"></a>
           <div *ngIf='user' class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
