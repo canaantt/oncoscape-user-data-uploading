@@ -9,6 +9,7 @@ var projectSchema = new Schema({
     Description: String,
     Annotations: [{key: String, value: String}], 
     Private: Boolean,
+    PHI: Boolean,
     // IRBNumber: String,
     DataCompliance:  {HumanStudy: String, IRBNumber: String, IECNumber: String, Waiver: String, ComplianceOption: String},
     File: {filename: String, size: Number, timestamp: Date},

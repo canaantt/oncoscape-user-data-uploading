@@ -239,8 +239,8 @@ db.once("open", function (callback) {
                 console.log(err);
 				return;
 			} else {
-                const writing2Mongo = fork('/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/server/fileUpload.js', 
-                { execArgv: ['--max-old-space-size=4096']});
+                const writing2Mongo = fork('/Users/jzhang23/Desktop/canaantt/NG4-Data-Upload/server/fileUpload.js', 
+                { execArgv: ['--max-old-space-size=1000']});
                 console.log('test***');
                 writing2Mongo.send({filePath: res.req.file.path, projectID: projectID });
                 console.log('test@@@');
@@ -267,7 +267,7 @@ db.once("open", function (callback) {
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-     cb(null, '/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/uploads')
+     cb(null, '/Users/jzhang23/Desktop/canaantt/NG4-Data-Upload/uploads')
   },
   filename: function (req, file, cb) {
     var newFileName = file.fieldname + '-' + Date.now() + '.xlsx';

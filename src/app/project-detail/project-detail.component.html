@@ -74,12 +74,11 @@
           <!-- START permissions -->
           <div *ngIf="permission">
             <app-permissions [role]="permission.Role" [project]="project"></app-permissions>
-            <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'" class="well form-group">
+            <div *ngIf="permission.Role==='admin'" class="well form-group">
               <div clas="col-12">
                 <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
                 <p>Is this data derived from Human Subjects?</p>
               </div>
-            </div>
             <!-- START human yes/no -->
             <div class="row">
               <div class="col-1">
@@ -127,6 +126,7 @@
             </div>
             <!-- END appropriate documentation -->
             <hr>
+            </div>
             <app-files [project]="project" [user]="user" [permission]="permission" [errorMessage]="errorMessage" (uploaded)="fileUpdates($event)"></app-files>
           </div>
           <!-- END permissions -->
