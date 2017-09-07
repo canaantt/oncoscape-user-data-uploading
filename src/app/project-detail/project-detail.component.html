@@ -77,55 +77,62 @@
             <div *ngIf="permission.Role==='admin'" class="well form-group">
               <div clas="col-12">
                 <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
+              </div>
+              <div>
+                <p>Please certify that the dataset doesn't contain PHI<span class="text-danger">*</span></p>
+                <input type="checkbox" [(ngModel)]="project.PHI">
+                <small class="text-danger" *ngIf="errorMessage.PHI !==''">{{errorMessage.PHI}}</small>
+              </div>
+              <!-- START human yes/no -->
+              <div>
                 <p>Is this data derived from Human Subjects?</p>
-              </div>
-            <!-- START human yes/no -->
-            <div class="row">
-              <div class="col-1">
-                <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">&nbsp;Yes
-              </div>
-              <div class="col-1">
-                <input type="radio" value="non-human" name="non-human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('non-human')">&nbsp;No
-              </div>
-            </div>
-            <!-- END human yes/no -->
-            <!-- START appropriate Documentation -->
-            <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
-              <br>
-              <div>Please Select Appropriate Documentation </div>
-              <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
-              <br>
+              </div>  
               <div class="row">
-                <div class="col-3">
-                  <input type="radio" value="IRBChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IRB
-                  <div *ngIf="project.DataCompliance.HumanStudy === 'IRBChecked'">
-                    <label>Enter IRB Number</label>
-                    <input name="IRBNumber" class="form-control" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1">
-                  </div>
+                <div class="col-1">
+                  <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">&nbsp;Yes
                 </div>
-                <div class="col-3">
-                  <input type="radio" value="IECChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IEC
-
-                  <div *ngIf="project.DataCompliance.HumanStudy  === 'IECChecked'">
-                    <label>Enter IEC Number </label>
-                    <input name="IECNumber" class="form-control" [(ngModel)]="project.DataCompliance.IECNumber" rows="1">
-                  </div>
-                </div>
-                <div class="col-3">
-                  <input type="radio" value="ExemptedCheckedWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempted
-                  with Waiver
-                  <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptedCheckedWithWaiver'">
-                    <label>Enter Waiver Number </label>
-                    <input name="exempted" class="form-control" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
-                  </div>
-                </div>
-                <div class="col-3">
-                  <input type="radio" value="ExemptedChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempted
+                <div class="col-1">
+                  <input type="radio" value="non-human" name="non-human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('non-human')">&nbsp;No
                 </div>
               </div>
-            </div>
-            <!-- END appropriate documentation -->
-            <hr>
+              <!-- END human yes/no -->
+              <!-- START appropriate Documentation -->
+              <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
+                <br>
+                <div>Please Select Appropriate Documentation </div>
+                <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
+                <br>
+                <div class="row">
+                  <div class="col-3">
+                    <input type="radio" value="IRBChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IRB
+                    <div *ngIf="project.DataCompliance.HumanStudy === 'IRBChecked'">
+                      <label>Enter IRB Number</label>
+                      <input name="IRBNumber" class="form-control" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1">
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <input type="radio" value="IECChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IEC
+
+                    <div *ngIf="project.DataCompliance.HumanStudy  === 'IECChecked'">
+                      <label>Enter IEC Number </label>
+                      <input name="IECNumber" class="form-control" [(ngModel)]="project.DataCompliance.IECNumber" rows="1">
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <input type="radio" value="ExemptedCheckedWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempted
+                    with Waiver
+                    <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptedCheckedWithWaiver'">
+                      <label>Enter Waiver Number </label>
+                      <input name="exempted" class="form-control" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <input type="radio" value="ExemptedChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempted
+                  </div>
+                </div>
+              </div>
+              <!-- END appropriate documentation -->
+              <hr>
             </div>
             <app-files [project]="project" [user]="user" [permission]="permission" [errorMessage]="errorMessage" (uploaded)="fileUpdates($event)"></app-files>
           </div>

@@ -39,7 +39,7 @@ export class ProjectDetailComponent implements  OnInit {
   files: any;
   statusMsg: any;
   lastModifiedTime: any;
-  errorMessage = { Name: '', DataCompliance: ''};
+  errorMessage = { Name: '', PHI: '', DataCompliance: ''};
   users$: Observable<any>;
   results$: Observable<any>;
   newAnnotationForm: FormGroup;
@@ -105,8 +105,8 @@ export class ProjectDetailComponent implements  OnInit {
   }
   update(project: Project): void {
     if ( !this.updatePreChecking()) {
+      console.log('(((((((((((((', this.errorMessage);
       console.log('Please see the error message in red.');
-
     } else {
        this.projectService.update(project).subscribe(() => {
         this.statusReport();
@@ -115,37 +115,47 @@ export class ProjectDetailComponent implements  OnInit {
     }
   }
   updatePreChecking (): boolean {
+    let final = false;
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
-        return false;
+        final = false;
       } else {
         this.errorMessage.Name = '';
-        if (this.project.DataCompliance.ComplianceOption === 'human'
-            && (this.project.DataCompliance.HumanStudy === ''
-            || typeof(this.project.DataCompliance.HumanStudy) === 'undefined')
-           ) {
-            console.log('no exempt is checked.');
-            this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
-            return false;
-      } else {
-          if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
-              && this.project.DataCompliance.IRBNumber === '') {
-                this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
-                return false;
-          } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
-              && this.project.DataCompliance.IECNumber === '') {
-                this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
-                return false;
-          } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
-              && this.project.DataCompliance.Waiver === '') {
-                this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
-                return false;
-          } else {
-            this.errorMessage.DataCompliance = '';
-            return true;
-          }
+        final = true;
       }
-    }
+      if (this.project.DataCompliance.ComplianceOption === 'human'
+        && (this.project.DataCompliance.HumanStudy === ''
+        || typeof(this.project.DataCompliance.HumanStudy) === 'undefined')
+        ) {
+        console.log('no exempt is checked.');
+        this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
+        final = false;
+      } else {
+        if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
+            && this.project.DataCompliance.IRBNumber === '') {
+              this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
+              final = false;
+        } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
+            && this.project.DataCompliance.IECNumber === '') {
+              this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
+              final = false;
+        } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
+            && this.project.DataCompliance.Waiver === '') {
+              this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
+              final = false;
+        } else {
+          this.errorMessage.DataCompliance = '';
+          final = true;
+        }
+      }
+      if (!this.project.PHI){
+        this.errorMessage.PHI = 'Dataset has not been certified to be PHI-free.';
+        final = false;
+      } else {
+        this.errorMessage.PHI = '';
+        final = true;
+      }
+      return final;
   }
   refresh() {
     this.projectService.getProjectByID(this.route.snapshot.params['id'])

@@ -125,6 +125,7 @@ export class ProjectsDashboardComponent {
       Name: new FormControl('Name Your New Dataset', Validators.required),
       Description: new FormControl('Enter a dataset description.', Validators.minLength(4)),
       Private: new FormControl(true),
+      PHI: new FormControl(false),
       Author: this.userID,
       DataCompliance: {'IRBNumber': null, 'IECNumber': null, 'Waiver': null, 'ComplianceOption': 'human' }
     });
