@@ -26,8 +26,36 @@
   <link href='https://fonts.googleapis.com/css?family=Lato:300,400,200,100' rel='stylesheet' type='text/css'>
   <!-- font awesome -->
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" type="text/css" href="../node_modules/ng2-slim-loading-bar/bundles/style.css"/>
-  
+  <style>
+    .slim-loading-bar {
+      position: fixed;
+      margin: 0;
+      margin-top: 62px;
+      padding: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999;
+  }
+
+  /* Styling for the Slim Loading Progress Bar itself */
+  .slim-loading-bar-progress {
+      margin: 0;
+      padding: 0;
+      z-index: 99998;
+      background-color: green;
+      color: green;
+      box-shadow: 0 0 10px 0; /* Inherits the font color */
+      height: 2px;
+      opacity: 0;
+
+      /* Add CSS3 styles for transition smoothing */
+      -webkit-transition: all 0.5s ease-in-out;
+      -moz-transition: all 0.5s ease-in-out;
+      -o-transition: all 0.5s ease-in-out;
+      transition: all 0.5s ease-in-out;
+  }
+  </style>
 </head>
 
 <body>
