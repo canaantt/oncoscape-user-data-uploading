@@ -80,7 +80,7 @@
               </div>
               <div>
                 <p class="mb-0">I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/">Personal Health Information (PHI)</a><span class="text-danger">*</span></p>
-                <input type="checkbox" [(ngModel)]="project.PHI">
+                <input type="checkbox" [(ngModel)]="project.PHI">&nbsp;I agree<br />
                 <small class="text-danger" *ngIf="errorMessage.PHI !==''">{{errorMessage.PHI}}</small>
               </div>
               <!-- START human yes/no -->
