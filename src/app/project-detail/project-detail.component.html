@@ -79,12 +79,12 @@
                 <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
               </div>
               <div>
-                <p>Please certify that the dataset doesn't contain PHI<span class="text-danger">*</span></p>
+                <p class="mb-0">I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/">Personal Health Information (PHI)</a><span class="text-danger">*</span></p>
                 <input type="checkbox" [(ngModel)]="project.PHI">
                 <small class="text-danger" *ngIf="errorMessage.PHI !==''">{{errorMessage.PHI}}</small>
               </div>
               <!-- START human yes/no -->
-              <div>
+              <div class="mt-3">
                 <p>Is this data derived from Human Subjects?</p>
               </div>  
               <div class="row">

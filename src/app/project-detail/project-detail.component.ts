@@ -149,10 +149,10 @@ export class ProjectDetailComponent implements  OnInit {
         }
       }
       if (!this.project.PHI){
-        this.errorMessage.PHI = 'Dataset has not been certified to be PHI-free.';
+        this.errorMessage.PHI = 'I agree.';
         final = false;
       } else {
-        this.errorMessage.PHI = '';
+        this.errorMessage.PHI = 'Agreed';
         final = true;
       }
       return final;
