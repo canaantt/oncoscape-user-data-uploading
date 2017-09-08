@@ -39,7 +39,7 @@ export class FilesComponent implements OnInit {
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
-  @Input() errorMessage: any;
+  @Input() statusMsg: boolean;
   @Output()
     uploaded: EventEmitter<string> = new EventEmitter();
 
@@ -75,7 +75,7 @@ export class FilesComponent implements OnInit {
     return Promise.reject(error.message || error);
   }
   updateStatus(fileitem: any) {
-    if (this.errorMessage.Name !== '' || this.errorMessage.DataCompliance !== '') {
+    if (!this.statusMsg) {
       alert('Please fill all the required fields before proceeding with data uploading.');
     } else {
       fileitem.upload();

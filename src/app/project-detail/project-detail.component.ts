@@ -37,9 +37,10 @@ export class ProjectDetailComponent implements  OnInit {
   permission: any;
   role: any;
   files: any;
-  statusMsg: any;
+  statusMsg = false;
   lastModifiedTime: any;
   errorMessage = { Name: '', PHI: '', DataCompliance: ''};
+
   users$: Observable<any>;
   results$: Observable<any>;
   newAnnotationForm: FormGroup;
@@ -66,20 +67,18 @@ export class ProjectDetailComponent implements  OnInit {
       this.projectService.getProjectByID(this.route.snapshot.params['id'])
                          .subscribe(res0 => {
                            this.project = res0;
-                           this.updatePreChecking();
+                           this.update(this.project);
                          });
       const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
             .map(() => this.project)
             .debounceTime(500)
             .subscribe(input => {
-              this.statusMsg = '';
               this.update(this.project);
             });
       const eventStreamKeyUp = Observable.fromEvent(elementRef.nativeElement, 'keyup')
             .map(() => this.project)
             .debounceTime(500)
             .subscribe(input => {
-              this.statusMsg = '';
               this.update(this.project);
             });
      }
@@ -104,9 +103,10 @@ export class ProjectDetailComponent implements  OnInit {
       });
   }
   update(project: Project): void {
-    if ( !this.updatePreChecking()) {
-      console.log('(((((((((((((', this.errorMessage);
-      console.log('Please see the error message in red.');
+    this.updatePreChecking();
+    console.log('STATUS:', this.statusMsg);
+    if (!this.statusMsg) {
+      console.log('Dataset error Message: ', this.errorMessage);
     } else {
        this.projectService.update(project).subscribe(() => {
         this.statusReport();
@@ -114,67 +114,60 @@ export class ProjectDetailComponent implements  OnInit {
       });
     }
   }
-  updatePreChecking (): boolean {
-    let final = false;
+  updatePreChecking (): void {
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
-        final = false;
+        this.statusMsg = false;
       } else {
         this.errorMessage.Name = '';
-        final = true;
+        this.statusMsg = true;
       }
-      if (this.project.DataCompliance.ComplianceOption === 'human'
-        && (this.project.DataCompliance.HumanStudy === ''
-        || typeof(this.project.DataCompliance.HumanStudy) === 'undefined')
-        ) {
-        console.log('no exempt is checked.');
-        this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
-        final = false;
+    if (this.project.DataCompliance.ComplianceOption === 'human'
+      && (this.project.DataCompliance.HumanStudy === ''
+      || typeof(this.project.DataCompliance.HumanStudy) === 'undefined')
+      ) {
+      console.log('no exempt is checked.');
+      this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
+      this.statusMsg = false;
+    } else {
+      if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
+          && this.project.DataCompliance.IRBNumber === '') {
+            this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
+            this.statusMsg = false;
+      } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
+          && this.project.DataCompliance.IECNumber === '') {
+            this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
+            this.statusMsg = false;
+      } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
+          && this.project.DataCompliance.Waiver === '') {
+            this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
+            this.statusMsg = false;
       } else {
-        if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
-            && this.project.DataCompliance.IRBNumber === '') {
-              this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
-              final = false;
-        } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
-            && this.project.DataCompliance.IECNumber === '') {
-              this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
-              final = false;
-        } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
-            && this.project.DataCompliance.Waiver === '') {
-              this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
-              final = false;
-        } else {
-          this.errorMessage.DataCompliance = '';
-          final = true;
-        }
+        this.errorMessage.DataCompliance = '';
+        this.statusMsg = true;
       }
-      if (!this.project.PHI){
-        this.errorMessage.PHI = 'You must agree that all data is free of PHI.';
-        final = false;
-      } else {
-        this.errorMessage.PHI = '';
-        final = true;
-      }
-      return final;
+    }
+    if (!this.project.PHI) {
+      this.errorMessage.PHI = 'You must agree that all data is free of PHI.';
+      this.statusMsg = false;
+    } else {
+      this.errorMessage.PHI = '';
+      this.statusMsg = true;
+    }
   }
   refresh() {
     this.projectService.getProjectByID(this.route.snapshot.params['id'])
-                        .subscribe(res0 => {
-                          this.filesComponent.filerefresh();
-                          });
+                       .subscribe(res0 => {
+                         this.filesComponent.filerefresh();
+                        });
   }
   statusReport() {
-    // this.statusMsg = 'Saving updates...';
-    // this.completeLoading();
-    // setTimeout(() => this.completeLoading(), 500);
-    // this.lastModifiedTime = Date();
     setTimeout(() => this.updateEmitService.updateState());
   }
   fileUpdates(event) {
     this.update(this.project);
   }
   submitAnnotations(): void {
-    // document.getElementById('annotationKey').focus();
     this.project.Annotations.push(this.newAnnotationForm.value);
     this.newAnnotationForm.reset({key: '', value: ''});
   }
