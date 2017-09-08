@@ -149,10 +149,10 @@ export class ProjectDetailComponent implements  OnInit {
         }
       }
       if (!this.project.PHI){
-        this.errorMessage.PHI = 'I agree.';
+        this.errorMessage.PHI = 'You must agree that all data is free of PHI.';
         final = false;
       } else {
-        this.errorMessage.PHI = 'Agreed';
+        this.errorMessage.PHI = '';
         final = true;
       }
       return final;
