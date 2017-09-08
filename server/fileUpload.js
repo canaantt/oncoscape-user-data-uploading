@@ -56,6 +56,8 @@ const writingXLSX2Mongo = (msg) => {
     var PatientIDs;
     var PatientArr = [];
     var UploadingSummary = [];
+    var result = [];
+    var sampleUnion = [];
     allSheetNames.forEach(function(sheet){
         console.log(sheet);
         var sheetObj = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {header:1});
@@ -78,9 +80,6 @@ const writingXLSX2Mongo = (msg) => {
                 obj.marker = record[0];
                 obj.data = record.splice(1, record.length);
                 arr.push(obj);
-                // db.collection(molecularCollectionName).insert(obj, function(err, result){
-                //     if(err) console.log(err);
-                // })
             });
             db.collection(projectID+"_data_molecular").insertMany(arr, function(err, result){
                                     if (err) console.log(err);
@@ -194,27 +193,47 @@ const writingXLSX2Mongo = (msg) => {
                                 });
     
     /* Quality Control */
-        var allSampleIDs = [];
-        var allPatientIDs = [];
-        asyncLoop(UploadingSummary, function(sum, next){ 
-                if('markers' in sum){
-                    sum.geneSymbolValidation = checkHugoGeneSymbols(sum.markers);
-                    allSampleIDs = _.uniq(allSampleIDs.concat(sum.samples));
-                } else if ('patients' in sum){
-                    allPatientIDs = _.uniq(allPatientIDs.concat(sum.patients));
-                }
-                next();
-            } , function(err){
-                if(err){
-                    console.log(err);
-                    res.status(404).send(err).end();
-                } else {
-                    UploadingSummary.push({"meta": true, "allSampleIDs": allSampleIDs, "allPatientIDs": allPatientIDs});
-                    db.collection(projectID+"_uploadingSummary").insertMany(UploadingSummary, function(err, result){
-                                                    if (err) console.log(err);
-                                                });
-                    } 
-            });  
+    var allSampleIDs = [];
+    var allPatientIDs = [];
+    var sampleMapping = [];
+    
+    asyncLoop(UploadingSummary, function(sum, next){ 
+            if('markers' in sum){
+                sum.geneSymbolValidation = checkHugoGeneSymbols(sum.markers);
+                allSampleIDs = _.uniq(allSampleIDs.concat(sum.samples));
+            } else if ('patients' in sum){
+                allPatientIDs = _.uniq(allPatientIDs.concat(sum.patients));
+            }
+            next();
+        } , function(err){
+            if(err){
+                console.log(err);
+                res.status(404).send(err).end();
+            } else {
+                sampleMapping.push({'sample': allSampleIDs});
+                UploadingSummary.filter(function(m){
+                    return 'markers' in m;
+                }).map(function(n){
+                  n.positions = n.samples.map(function(d){
+                              return allSampleIDs.indexOf(d);
+                            });
+                  sampleMapping.push(_.pick(n, ['sheet', 'samples', 'positions']));
+                  return n;
+                });
+                var map = _.omit(UploadingSummary.filter(function(m){return m.sheet == 'PATIENT';})[0] ,['_id','sheet']);
+                UploadingSummary.push(map);
+                sampleMapping.push(map)
+                console.log(UploadingSummary);
+                console.log('*********************()****************');
+                console.log(sampleMapping);
+                db.collection(projectID+"_uploadingSummary").insertMany(UploadingSummary, function(err, result){
+                    if (err) console.log(err);
+                });
+                db.collection(projectID+"_data_samples").insertMany(sampleMapping, function(err, result){
+                    if (err) console.log(err);
+                });
+            }
+        });  
 }
 
 process.on('message', (filePath, HugoGenes, db) => {
