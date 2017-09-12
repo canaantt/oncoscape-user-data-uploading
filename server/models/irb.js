@@ -8,5 +8,5 @@ var IRBSchema = new Schema({
     PI: {type: Schema.ObjectId, ref: 'User', required: true},
     OtherUsers: [{type: Schema.ObjectId, ref: 'User'}],
     date: {type: Date, default: Date.now}
-}, {collection:'irbs'});
+}, {collection:'Accounts_IRBs'});
 module.exports = mongoose.model("IRB", IRBSchema);

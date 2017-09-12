@@ -16,6 +16,6 @@ var projectSchema = new Schema({
     Permissions: [{type: Schema.ObjectId, ref: Permission}],
     Date: {type: Date, default: Date.now},
     Author: {type: String}
-});
+},  {collection:'Accounts_Projects'});
 module.exports = mongoose.model("Project", projectSchema);
 

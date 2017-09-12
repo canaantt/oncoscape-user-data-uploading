@@ -32,9 +32,7 @@ export class FilesComponent implements OnInit {
   uploadedstring = 'Not Uploaded';
   uploadStatus = {
     'uploadSummaryClinical': [],
-    'uploadSummaryMolecular': [],
-    'allSamplesUploaded': [],
-    'allPatientsUploaded': []
+    'uploadSummaryMolecular': []
   };
   @Input() project: any;
   @Input() user: any;
@@ -64,11 +62,11 @@ export class FilesComponent implements OnInit {
           if (res[0].length  > 0 ) {
             this.hasFiles = true;
           }
-          this.uploadStatus.uploadSummaryClinical = res[0].filter(function(m){return 'patients' in m; });
-          this.uploadStatus.uploadSummaryMolecular = res[0].filter(function(m){return 'markers' in m; });
-          const meta: any = res[0].filter(function(m) {return m.meta; })[0];
-          this.uploadStatus.allSamplesUploaded = meta.allSampleIDs;
-          this.uploadStatus.allPatientsUploaded = meta.allPatientIDs;
+          this.uploadStatus.uploadSummaryClinical = res[0].filter(function(m){return 'sheet' in m  && 'patients' in m; });
+          this.uploadStatus.uploadSummaryMolecular = res[0].filter(function(m){return 'sheet' in m  && 'markers' in m; });
+          // const meta: any = res[0].filter(function(m) {return m.meta; })[0];
+          // this.uploadStatus.allSamplesUploaded = meta.allSampleIDs;
+          // this.uploadStatus.allPatientsUploaded = meta.allPatientIDs;
         });
   }
   private handleError(error: any): Promise<any> {

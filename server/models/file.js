@@ -13,5 +13,5 @@ var fileSchema = new Schema({
     Data: Object,
     Size: Number,
     Date: {type: Date, default: Date.now}
-}, {collection:'files'});
+}, {collection:'Accounts_Files'});
 module.exports = mongoose.model("File", fileSchema);

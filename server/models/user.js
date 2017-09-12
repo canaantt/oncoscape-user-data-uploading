@@ -11,5 +11,5 @@ var userSchema = new Schema({
     Consent: Boolean,
     Institution: String,
     Date: {type: Date, default: Date.now}
-});
+}, {collection:'Accounts_Users'});
 module.exports = mongoose.model("User", userSchema);

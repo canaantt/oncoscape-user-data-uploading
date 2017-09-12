@@ -8,7 +8,7 @@ var permissionSchema = new Schema({
     Project: {type: Schema.ObjectId, ref: 'Project', required: true},
     Role: {type: String, enum:roles , required: true},
     Date: {type: Date, default: Date.now}
-}, {collection:'permissions'});
+}, {collection:'Accounts_Permissions'});
 
 module.exports= mongoose.model("Permission", permissionSchema);
 

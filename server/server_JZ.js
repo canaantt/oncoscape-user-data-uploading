@@ -38,7 +38,23 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
 const corsOptions = {
 	origin: ['http://localhost:4200','http://localhost:8080', 'http://localhost:8080']
 }
-mongoose.connect("mongodb://localhost:27017/mydb");
+// mongoose.connect("mongodb://localhost:27017/mydb");
+mongoose.connect(
+    "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
+    // process.env.MONGO_CONNECTION, {  
+    db: {
+        native_parser: true
+    },
+    server: {
+        poolSize: 5,
+        reconnectTries: Number.MAX_VALUE
+    },
+    replset: {
+        rs_name: 'rs0'
+    },
+    user: process.env.MONGO_USERNAME,
+    pass: process.env.MONGO_PASSWORD
+});
 var db = mongoose.connection;
 // Grid.mongo = mongoose.mongo;
 // var gfs = Grid(db.db);
@@ -46,7 +62,7 @@ var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'jennylouzhang@gmail.com',
-      pass: 'oncoscape'
+      pass: process.env.GMAIL_PASSWORD
     }
   });
   
