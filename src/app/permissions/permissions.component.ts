@@ -70,6 +70,7 @@ export class PermissionsComponent implements OnInit {
             this.permissionService.getPermissionByUserByProject(p.User, p.Project)
                 .subscribe(res => {
                   if (typeof(res) === 'undefined') {
+                    this.emailError = '';
                     this.permissionService.create(p).subscribe(() => this.getPermissions());
                   } else {
                     alert('This user has already been added to this project');
