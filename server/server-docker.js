@@ -33,6 +33,11 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
     if(err) console.log(err);
     console.log("**********");
     console.log(HugoGenes.length);
+    console.log("#########process.env############");
+    console.log(process.env.GMAIL_PASSWORD);
+    console.log(process.env.MONGO_USERNAME);
+    console.log(process.env.MONGO_PASSWORD);
+    console.log(process.env.MONGO_CONNECTION);
 });
 
 const corsOptions = {
@@ -40,8 +45,8 @@ const corsOptions = {
 }
 // mongoose.connect("mongodb://localhost:27017/mydb");
 mongoose.connect(
-    "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
-    // process.env.MONGO_CONNECTION, {  
+    // "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
+    process.env.MONGO_CONNECTION, {  
     db: {
         native_parser: true
     },
