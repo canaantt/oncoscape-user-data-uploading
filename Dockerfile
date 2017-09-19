@@ -12,8 +12,10 @@ ENV MONGO_CONNECTION ${MONGO_CONNECTION}
 
 # Create a directory where our app will be placed
 RUN mkdir -p /usr/src/app
+RUN mkdir -p /usr/src/app/uploads
+RUN chmod +x /usr/src/app/uploads
 RUN mkdir -p /usr/src/app/server
-
+ADD docker-supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
 # Get client and server to the app
 COPY client-build/. /usr/src/app
 COPY server/package.json   /usr/src/app/server
@@ -28,8 +30,13 @@ COPY server/. /usr/src/app/server
 WORKDIR /usr/src/app
 
 # Expose the port the app runs in
-EXPOSE 8080 3000 27017
+EXPOSE 8080 3000
 
 # Serve the app
-CMD ["node", "server/server-docker.js", "&", "http-server"]
-# CMD ["sh", "-c", "node", "server/server-docker.js GMAIL_PASSWORD=${GMAIL_PASSWORD} MONGO_USERNAME=${MONGO_USERNAME} MONGO_PASSWORD=${MONGO_PASSWORD}", "&", "http-server"]
+RUN npm install supervisord -g
+RUN npm install http-server -g
+# CMD ["node", "server/server-docker.js", "&", "http-server"]
+ENTRYPOINT ["/usr/bin/supervisord"]
+# CMD ["sh", "-c", "node", "server/server-docker.js", "&", "http-server"]
+# RUN chmod +x /usr/src/app/Docker-servers.sh
+# ENTRYPOINT ["/usr/src/app/Docker-servers.sh"]
