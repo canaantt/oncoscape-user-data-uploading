@@ -19,7 +19,7 @@ ADD docker-supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Get client and server to the app
 COPY client-build/. /usr/src/app
 COPY server/package.json   /usr/src/app/server
-
+COPY Docker-servers.sh /usr/src/app/
 # Change directory so that our commands run inside this new directory
 WORKDIR /usr/src/app/server
 # Install dependecies
@@ -33,10 +33,11 @@ WORKDIR /usr/src/app
 EXPOSE 8080 3000
 
 # Serve the app
-RUN npm install supervisord -g
+# RUN npm install supervisord -g
 RUN npm install http-server -g
 # CMD ["node", "server/server-docker.js", "&", "http-server"]
-ENTRYPOINT ["/usr/bin/supervisord"]
+# ENTRYPOINT ["/usr/bin/supervisord"]
 # CMD ["sh", "-c", "node", "server/server-docker.js", "&", "http-server"]
 # RUN chmod +x /usr/src/app/Docker-servers.sh
-# ENTRYPOINT ["/usr/src/app/Docker-servers.sh"]
+RUN chmod +x /usr/src/app/Docker-servers.sh
+ENTRYPOINT ["/usr/src/app/Docker-servers.sh"]
