@@ -19,8 +19,8 @@ export class LoginService {
           google: this.GOOGLE_CLIENT_ID,
         }, {
           force: true,
-          redirect_uri: '/index.html', // for production `ng build --prod --aot`
-          // redirect_uri: '/landing',
+          // redirect_uri: '/index.html', // for production `ng build --prod --aot`
+          redirect_uri: '/landing',
           display: 'popup',
           response_type: 'token',
           scope: 'email'
