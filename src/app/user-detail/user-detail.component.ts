@@ -14,7 +14,6 @@ import { UpdateEmitService } from '../service/update-emit.service';
   styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent {
-  // @Input() user: User;
   id: any;
   user: any;
   formattedDate: string;
@@ -40,8 +39,6 @@ export class UserDetailComponent {
                     .map(() => this.user)
                     .debounceTime(500)
                     .subscribe(input => {
-                      // console.log(this.user);
-                      // this.updatePreChecking(this.user);
                       this.update(this.user);
                     });
               }

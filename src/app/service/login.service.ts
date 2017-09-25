@@ -9,11 +9,11 @@ import { User } from '../models/user';
 @Injectable()
 export class LoginService {
     GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
-    userGoogleProfile: EventEmitter<any> ;
+    oauthServiceStatus: EventEmitter<any> ;
     constructor(private stateService: StateService,
                 private userService: UserService,
                 private router: Router) {
-        this.userGoogleProfile = new EventEmitter<any>();
+        this.oauthServiceStatus = new EventEmitter<any>();
         hello.init({
           google: this.GOOGLE_CLIENT_ID,
         }, {
@@ -34,7 +34,7 @@ export class LoginService {
       hello.login('google');
     }
     googleLogOut(): any {
-      this.userGoogleProfile.emit('loggedOut');
+      this.oauthServiceStatus.emit('loggedOut');
       hello.logout('google', {});
       this.stateService.user.next(null);
     }
@@ -56,9 +56,9 @@ export class LoginService {
               .subscribe(r => {
                 if (typeof(r[0]) !== 'undefined') {
                   this.stateService.user.next(v);
-                  this.userGoogleProfile.emit('loggedIn');
+                  this.oauthServiceStatus.emit('loggedIn');
                 } else {
-                  this.userGoogleProfile.emit('register');
+                  this.oauthServiceStatus.emit('register');
                 }
               });
           }
