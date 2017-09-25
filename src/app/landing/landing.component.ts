@@ -40,7 +40,7 @@ export class LandingComponent implements OnInit {
         this.subscription.unsubscribe();
       }
     });
-    this.loginService.userGoogleProfile
+    this.loginService.oauthServiceStatus
         .subscribe((msg) => {
           console.log(msg);
           switch (msg) {
@@ -59,20 +59,15 @@ export class LandingComponent implements OnInit {
           }
         });
   }
-  // update() {
-  //   this.stateService.user.subscribe(res => {
-  //     this.user = res;
-  //     console.log('in update');
-  //     this.ref.markForCheck();
-  //     console.log('after ref.markForCheck');
-  //   });
-  // }
+
   goRegister() {
     this.router.navigate(['/register']);
   }
+
   googleLogin() {
     this.loginService.googleLogin();
   }
+
   googleLogOut() {
     this.loginService.googleLogOut();
   }

@@ -15,9 +15,6 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 export class NavbarComponent implements OnInit {
   user: any;
-  // colors = ['red', 'orange', 'blue', '#9fe25a', 'purple', '#88c26e', '#70936c', '#40e0d0', '#99d5cf'];
-  // color: string;
-  // counter = 0 ;
   constructor( private stateService: StateService,
                private userService: UserService,
                private loginService: LoginService,
