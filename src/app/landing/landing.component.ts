@@ -32,23 +32,41 @@ export class LandingComponent implements OnInit {
   }
   ngOnInit() {
     // this.getUser();
-    const timer = Observable.timer(10, 500);
+    console.log('in landing component ngOnInit');
+    const timer = Observable.timer(10, 200);
     this.subscription = timer.subscribe(() => {
       this.getUser();
       if (this.user !== null) {
         this.subscription.unsubscribe();
-        console.log('This section is called.');
       }
     });
+    this.loginService.userGoogleProfile
+        .subscribe((msg) => {
+          console.log(msg);
+          switch (msg) {
+            case 'loggedIn':
+                this.router.navigate(['/projects', 'dashboard']);
+                break;
+            case 'register':
+                alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
+                this.router.navigate(['/register']);
+                break;
+            case 'loggedOut':
+                this.router.navigate(['/landing']);
+                break;
+            default:
+                console.log('default');
+          }
+        });
   }
-  update() {
-    this.stateService.user.subscribe(res => {
-      this.user = res;
-      console.log('in update');
-      this.ref.markForCheck();
-      console.log('after ref.markForCheck');
-    });
-  }
+  // update() {
+  //   this.stateService.user.subscribe(res => {
+  //     this.user = res;
+  //     console.log('in update');
+  //     this.ref.markForCheck();
+  //     console.log('after ref.markForCheck');
+  //   });
+  // }
   goRegister() {
     this.router.navigate(['/register']);
   }

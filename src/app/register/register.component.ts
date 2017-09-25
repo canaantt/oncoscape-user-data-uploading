@@ -22,14 +22,14 @@ export class RegisterComponent implements OnInit {
     private loginService: LoginService,
     private router: Router
   ) {
-    this.loginService.googleLogOut();
+    // this.loginService.googleLogOut();
   }
 
   submit() {
     const self = this;
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = '';
-    this.loginService.googleLogOut();
+    // this.loginService.googleLogOut();
     if (this.newUserForm.value.FirstName === '' ||
         this.newUserForm.value.LastName === '' ||
         this.newUserForm.value.Email === '' ||
