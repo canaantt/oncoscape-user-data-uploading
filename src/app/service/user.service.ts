@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-
+import { environment } from '../../environments/environment';
 import { User } from '../models/user';
 
 @Injectable()
 export class UserService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  private usersUrl = 'http://localhost:3000/users';  // URL to web api
+  private usersUrl = environment.apiBaseUrl + 'users';
 
   constructor(private http: Http) {}
 

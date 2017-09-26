@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/toPromise';
 
 import { IRB } from '../models/irb';
@@ -9,8 +10,8 @@ import { IRB } from '../models/irb';
 export class IrbService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  private irbsUrl = 'http://localhost:3000/irbs';
-
+  // private irbsUrl = 'http://localhost:3000/irbs';
+  private irbsUrl =  environment.apiBaseUrl + 'irbs';
   constructor(private http: Http) {}
 
   getIrbs():  Observable<Response> {

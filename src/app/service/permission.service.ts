@@ -3,14 +3,14 @@ import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Permission } from '../models/permission';
 import { User } from '../models/user';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/observable/forkJoin';
 
 enum roles {'admin', 'read-write', 'read-only'}
 @Injectable()
 export class PermissionService {
   private headers = new Headers({'Content-Type': 'application/json'});
-  private permissionsUrl = 'http://localhost:3000/permissions';  // URL to web api
-
+  private permissionsUrl =  environment.apiBaseUrl + 'permissions';
   constructor(private http: Http) {}
 
   getPermissions():  Observable<Response> {

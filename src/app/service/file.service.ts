@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -9,7 +10,7 @@ import 'rxjs/add/observable/of';
 @Injectable()
 export class FileService {
   private headers = new Headers({'Content-Type': 'application/json'});
-  private filesUrl = 'http://localhost:3000/files';
+  private filesUrl = environment.apiBaseUrl + 'files';
   constructor(private http: Http) {}
 
   getFilesByProjectID(id: string): Observable<Response> {

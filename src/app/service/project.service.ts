@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '../../environments/environment';
 import { Project } from '../models/project';
 
 @Injectable()
 export class ProjectService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  private projectsUrl = 'http://localhost:3000/projects';  // URL to web api
+  private projectsUrl = environment.apiBaseUrl + 'projects';
 
   constructor(private http: Http ) {}
 

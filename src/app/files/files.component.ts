@@ -6,6 +6,7 @@ import { FileUploader, FileSelectDirective } from 'ng2-file-upload';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Pipe, PipeTransform } from '@angular/core';
+import { environment } from '../../environments/environment';
 import * as _ from 'underscore';
 @Pipe({
   name: 'Overlapping'
@@ -51,7 +52,8 @@ export class FilesComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.project._id;
-    this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
+    // this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
+    this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email});
     this.filerefresh();
   }
   filerefresh() {

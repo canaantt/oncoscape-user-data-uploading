@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user';
+import { environment } from '../../environments/environment';
 @Injectable()
 export class LoginService {
     GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
@@ -18,9 +19,7 @@ export class LoginService {
           google: this.GOOGLE_CLIENT_ID,
         }, {
           force: true,
-          // redirect_uri: '/index.html', // for production `ng build --prod --aot`
-          // redirect_uri: '/index.html', when integrated to Oncoscape/upload/
-          redirect_uri: '/landing',
+          redirect_uri: environment.oAuthRedirectUri,
           display: 'popup',
           response_type: 'token',
           scope: 'email'

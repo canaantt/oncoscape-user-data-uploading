@@ -22,6 +22,27 @@ var Permission = require("./models/permission");
 var GeneSymbolLookupTable;
 var HugoGenes;
 
+
+// ----------------------- //
+// -----  Middleware ----- //
+// ----------------------- //
+var app = express();
+app.use(function (req, res, next) { //allow cross origin requests
+    res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
+    res.header("Access-Control-Allow-Origin", "http://localhost:" + process.env.NODE_PORT + "/");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Credentials", true);
+    next();
+});
+app.use(bodyParser.urlencoded({
+    limit: '400mb',
+    extended: true
+}));
+app.use(bodyParser.json({limit: '400mb'}));
+const corsOptions = {
+	origin: ['http://localhost:4200','http://localhost:8080', 'http://localhost:8080']
+}
+app.use(cors(corsOptions));
 // ------------- Begin Data Upload Functions ------------- //
 request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apikey=password', function(err, resp, body){
     GeneSymbolLookupTable = JSON.parse(body);
@@ -30,9 +51,6 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
     if(err) console.log(err);
     console.log(HugoGenes.length);
 });
-const corsOptions = {
-	origin: ['http://localhost:4200','http://localhost:8080', 'http://localhost:8080']
-}
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -75,6 +93,7 @@ function routerFactory(Model) {
     return router;
 };
 function fileRouterFactory(){
+    console.log('in server fileRouterFactory');
     var router = express.Router();
     var projectCollections;
     router.use(bodyParser.json()); 
@@ -201,24 +220,6 @@ var upload = multer({
     preservePath: true
 }).single('file');
 // ------------- End Data Upload Functions ------------- //
-
-
-// ----------------------- //
-// -----  Middleware ----- //
-// ----------------------- //
-var app = express();
-app.use(function (req, res, next) { //allow cross origin requests
-    res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Credentials", true);
-    next();
-});
-app.use(bodyParser.urlencoded({
-    limit: '400mb',
-    extended: true
-}));
-app.use(bodyParser.json({limit: '400mb'}));
 
 // --------------------- //
 // ----- OAuth API ----- //
@@ -347,63 +348,60 @@ db.once("open", function (callback) {
             });
         });
     }
-
-	// app.listen(3000, function () {
-	// 	console.log('listening on 3000...');
-	// });
+  
 });
 
-    // -------------------------------- //
-    // ----- Data Upload Functions ---- //
-    // -------------------------------- //
-	app.use(cors(corsOptions));
-	app.use('/api/users', routerFactory(User));
-	app.use('/api/projects', routerFactory(Project));
-	app.use('/api/files', fileRouterFactory());
-	app.use('/api/irbs', routerFactory(IRB));
-	app.use('/api/permissions', routerFactory(Permission));
-	app.post('/api/upload/:id/:email', function (req, res) {
-        console.log(req.params.id);
-        var projectID = req.params.id;
-        var userEmail = req.params.email;
-        console.log('user: ', userEmail);
-        var mailOptions = {
-            from: 'jennylouzhang@gmail.com',
-            to: userEmail,
-            subject: 'Notification from Oncoscape Data Uploading App',
-            text: 'Data are in database, ready to share.'
-          };
-        var molecularColleciton = mongoose.model(projectID + "_data_molecular", File.schema);
-        var sampleMapCollection = mongoose.model(projectID + "_data_samples", File.schema);
-        var clinicalColleciton = mongoose.model(projectID + "_data_clinical", File.schema);
-        var uploadingSummaryCollection = mongoose.model(projectID + "_uploadingSummary", File.schema);
-		upload(req, res, function (err) {
-            console.log("This section is triggered");
-			if (err) {
-                console.log(err);
-				return;
-			} else {
-                const writing2Mongo = fork('/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/server/fileUpload.js', 
-                { execArgv: ['--max-old-space-size=1000']});
-                writing2Mongo.send({ filePath: res.req.file.path, 
-                                     projectID: projectID
-                                  });
-                writing2Mongo.on('message', () => {
-                    res.end('Writing is done');
-                    console.log("*********************!!!!!!!********************");
-                    transporter.sendMail(mailOptions, function(error, info){
-                        if (error) {
-                          console.log(error);
-                        } else {
-                          console.log('Email sent: ' + info.response);
-                        }
-                      });
-                });
-            }
-		});
-        res.status(200).end();
-	});
-    app.use('/api/upload/', express.static('./uploads'));
+// -------------------------------- //
+// ----- Data Upload Functions ---- //
+// -------------------------------- // 
+app.use('/api/users', routerFactory(User));
+app.use('/api/projects', routerFactory(Project));
+app.use('/api/files', fileRouterFactory());
+app.use('/api/irbs', routerFactory(IRB));
+app.use('/api/permissions', routerFactory(Permission));
+app.use('/api/upload/', express.static('./uploads'));
+app.post('/api/upload/:id/:email', function (req, res) {
+    console.log('................');
+    console.log(req.params.id);
+    var projectID = req.params.id;
+    var userEmail = req.params.email;
+    console.log('user: ', userEmail);
+    var mailOptions = {
+        from: 'jennylouzhang@gmail.com',
+        to: userEmail,
+        subject: 'Notification from Oncoscape Data Uploading App',
+        text: 'Data are in database, ready to share.'
+      };
+    var molecularColleciton = mongoose.model(projectID + "_data_molecular", File.schema);
+    var sampleMapCollection = mongoose.model(projectID + "_data_samples", File.schema);
+    var clinicalColleciton = mongoose.model(projectID + "_data_clinical", File.schema);
+    var uploadingSummaryCollection = mongoose.model(projectID + "_uploadingSummary", File.schema);
+    upload(req, res, function (err) {
+        console.log("This section is triggered");
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            const writing2Mongo = fork('/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/server/fileUpload.js', 
+            { execArgv: ['--max-old-space-size=1000']});
+            writing2Mongo.send({ filePath: res.req.file.path, 
+                                 projectID: projectID
+                              });
+            writing2Mongo.on('message', () => {
+                res.end('Writing is done');
+                console.log("*********************!!!!!!!********************");
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
+            });
+        }
+    });
+    res.status(200).end();
+});
 
 // Ping Method - Used For Testing
 app.get("/api/ping", function(req, res, next) {
