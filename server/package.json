@@ -1,5 +1,6 @@
 {
   "name": "oncoscape-data-upload",
+  "version": "15.0.0",
   "description": "oncoscape-data-upload fred hutchinson",
   "engines": {
     "node": ">=4"
