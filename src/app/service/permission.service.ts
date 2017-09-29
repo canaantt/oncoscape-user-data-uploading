@@ -13,39 +13,39 @@ export class PermissionService {
   private headers = new Headers();
   private permissionsUrl =  environment.apiBaseUrl + 'permissions';
   constructor(private stateService: StateService,
-    private http: Http ) {
-      this.stateService.jwtToken
-          .subscribe(res => {
-            this.headers.append('Authorization', 'Bearer ' + res);
-            this.headers.append('Content-Type', 'application/json');
-          });
-    }
+              private http: Http ) {
+                this.stateService.jwtToken
+                    .subscribe(res => {
+                      this.headers.append('Content-Type', 'application/json');
+                      this.headers.append('Authorization', 'Bearer ' + res.token);
+                    });
+              }
 
   getPermissions():  Observable<Response> {
-    return this.http.get(this.permissionsUrl);
+    return this.http.get(this.permissionsUrl, {headers: this.headers});
   }
   getPermissionByID(id: string): Observable<Response> {
-    return this.http.get(this.permissionsUrl)
+    return this.http.get(this.permissionsUrl, {headers: this.headers})
             .map(res => res.json().filter(value => value._id === id));
   }
   getPermissionsByProjectID(id: string): Observable<Response> {
-    return this.http.get(this.permissionsUrl)
+    return this.http.get(this.permissionsUrl, {headers: this.headers})
             .map(res => res.json().filter(value => value.Project === id));
   }
   getPermissionsByUserID(id: string): Observable<Response> {
-    return this.http.get(this.permissionsUrl)
+    return this.http.get(this.permissionsUrl, {headers: this.headers})
             .map(res => res.json().filter(value => value.User === id));
   }
   getPermissionsByIDs(ids: string[]): Observable<Response> {
-    return this.http.get(this.permissionsUrl)
+    return this.http.get(this.permissionsUrl, {headers: this.headers})
             .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
   }
   getPermissionByUserByProject(userID: string, projectID: string): Observable<Permission> {
-    return this.http.get(this.permissionsUrl)
+    return this.http.get(this.permissionsUrl, {headers: this.headers})
             .map(res => res.json().filter(value => (value.User === userID && value.Project === projectID))[0]);
   }
   removePermisionsByProjectID(id: string): any  {
-    this.http.get(this.permissionsUrl)
+    this.http.get(this.permissionsUrl, {headers: this.headers})
         .map(res => res.json().filter(value => value.Project === id)
         .map(permission => permission._id))
         .subscribe(res => {

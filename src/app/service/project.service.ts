@@ -10,20 +10,20 @@ export class ProjectService {
   private headers = new Headers();
   private projectsUrl = environment.apiBaseUrl + 'projects';
   constructor(private stateService: StateService,
-              private http: Http ) {
-                this.stateService.jwtToken
-                    .subscribe(res => {
-                      this.headers.append('Authorization', 'Bearer ' + res);
-                      this.headers.append('Content-Type', 'application/json');
-                    });
-              }
+    private http: Http ) {
+      this.stateService.jwtToken
+          .subscribe(res => {
+            this.headers.append('Content-Type', 'application/json');
+            this.headers.append('Authorization', 'Bearer ' + res.token);
+          });
+    }
 
   getProjects(): Observable<Response> {
-    return this.http.get(this.projectsUrl);
+    return this.http.get(this.projectsUrl, {headers: this.headers});
   }
 
   getRecentProject(userID: string): Observable<Response> {
-     return this.http.get(this.projectsUrl)
+     return this.http.get(this.projectsUrl, {headers: this.headers})
                  .map(res => {
                    const filtered = res.json().filter(value => value.Author === userID);
                    return filtered[filtered.length - 1];
@@ -35,14 +35,14 @@ export class ProjectService {
     return this.http.get(url).map(res => res.json());
   }
   getProjectsByIDs(ids: string[]): Observable<Response> {
-    return this.http.get(this.projectsUrl)
+    return this.http.get(this.projectsUrl, {headers: this.headers})
                .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
 
   }
 
   getProjectByUserID(id: string): Observable<Response> {
     const url = `${this.projectsUrl}/` + id;
-    return this.http.get(url).map(res => res.json());
+    return this.http.get(url, {headers: this.headers}).map(res => res.json());
   }
   delete(project: Project): Observable<Response> {
     const url = `${this.projectsUrl}/` + project._id;

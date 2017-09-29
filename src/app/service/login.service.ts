@@ -44,7 +44,7 @@ export class LoginService {
           .map(res => res.json())
           .subscribe((res) => {
             console.log('Google Access Token Sent to Server: ', res);
-            this.stateService.user.next(res);
+            this.stateService.jwtToken.next(res);
           });
       hello('google').api('me').then( this.updateUserInfo.bind(this));
     }

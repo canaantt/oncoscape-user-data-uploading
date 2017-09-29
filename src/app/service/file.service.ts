@@ -9,7 +9,7 @@ import 'rxjs/add/observable/of';
 
 @Injectable()
 export class FileService {
-  private headers = new Headers({'Content-Type': 'application/json', 'token': 'jwtToken'});
+  private headers = new Headers({'Content-Type': 'application/json'});
   private filesUrl = environment.apiBaseUrl + 'files';
   constructor(private http: Http) {}
 
