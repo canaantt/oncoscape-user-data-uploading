@@ -2,15 +2,22 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
+import { StateService } from '../service/state.service';
 import { User } from '../models/user';
 
 @Injectable()
 export class UserService {
-
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers();
   private usersUrl = environment.apiBaseUrl + 'users';
 
-  constructor(private http: Http) {}
+  constructor(private stateService: StateService,
+              private http: Http ) {
+                this.stateService.jwtToken
+                    .subscribe(res => {
+                      this.headers.append('Authorization', 'Bearer ' + res);
+                      this.headers.append('Content-Type', 'application/json');
+                    });
+              }
 
   getUsers():  Observable<Response> {
     return this.http.get(this.usersUrl);

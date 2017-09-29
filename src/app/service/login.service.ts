@@ -1,18 +1,20 @@
-import { Injectable } from '@angular/core';
 import { Component, Output, Input, EventEmitter, OnInit} from '@angular/core';
+import { environment } from './../../environments/environment';
+import { Injectable } from '@angular/core';
+import { Headers, Http, Response } from '@angular/http';
 import * as hello from 'hellojs';
 import { StateService } from '../service/state.service';
 import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user';
-import { environment } from '../../environments/environment';
 @Injectable()
 export class LoginService {
     GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
     oauthServiceStatus: EventEmitter<any> ;
     constructor(private stateService: StateService,
                 private userService: UserService,
+                private http: Http,
                 private router: Router) {
         this.oauthServiceStatus = new EventEmitter<any>();
         hello.init({
@@ -38,6 +40,12 @@ export class LoginService {
       this.stateService.user.next(null);
     }
     authLogin(auth) {
+      this.http.post(environment.apiBaseUrl + 'token', {'token': auth.authResponse.access_token})
+          .map(res => res.json())
+          .subscribe((res) => {
+            console.log('Google Access Token Sent to Server: ', res);
+            this.stateService.user.next(res);
+          });
       hello('google').api('me').then( this.updateUserInfo.bind(this));
     }
     authLogout(auth) {

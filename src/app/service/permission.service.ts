@@ -1,17 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '../../environments/environment';
+import { StateService } from '../service/state.service';
 import { Permission } from '../models/permission';
 import { User } from '../models/user';
-import { environment } from '../../environments/environment';
 import 'rxjs/add/observable/forkJoin';
 
 enum roles {'admin', 'read-write', 'read-only'}
 @Injectable()
 export class PermissionService {
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers();
   private permissionsUrl =  environment.apiBaseUrl + 'permissions';
-  constructor(private http: Http) {}
+  constructor(private stateService: StateService,
+    private http: Http ) {
+      this.stateService.jwtToken
+          .subscribe(res => {
+            this.headers.append('Authorization', 'Bearer ' + res);
+            this.headers.append('Content-Type', 'application/json');
+          });
+    }
 
   getPermissions():  Observable<Response> {
     return this.http.get(this.permissionsUrl);
