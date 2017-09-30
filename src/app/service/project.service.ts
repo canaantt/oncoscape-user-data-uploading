@@ -13,8 +13,11 @@ export class ProjectService {
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
+            // console.log('Project service: ', res);
             this.headers.append('Content-Type', 'application/json');
-            this.headers.append('Authorization', 'Bearer ' + res.token);
+            if (res !== null) {
+              this.headers.append('Authorization', 'Bearer ' + res.token);
+            }
           });
     }
 
