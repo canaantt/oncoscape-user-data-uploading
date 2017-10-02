@@ -35,7 +35,7 @@ export class ProjectService {
 
   getProjectByID(id: string): Observable<Response> {
     const url = `${this.projectsUrl}/` + id;
-    return this.http.get(url).map(res => res.json());
+    return this.http.get(url, {headers: this.headers}).map(res => res.json());
   }
   getProjectsByIDs(ids: string[]): Observable<Response> {
     return this.http.get(this.projectsUrl, {headers: this.headers})

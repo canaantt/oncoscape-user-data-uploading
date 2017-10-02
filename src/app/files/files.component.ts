@@ -6,6 +6,7 @@ import { FileUploader, FileSelectDirective } from 'ng2-file-upload';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Pipe, PipeTransform } from '@angular/core';
+import { StateService } from '../service/state.service';
 import { environment } from '../../environments/environment';
 import * as _ from 'underscore';
 @Pipe({
@@ -26,6 +27,7 @@ export class Overlapping implements PipeTransform {
 })
 export class FilesComponent implements OnInit {
   public uploader: FileUploader;
+  headerValue: string;
   files$: Observable<any>;
   hasFiles = false;
   id: string;
@@ -46,14 +48,23 @@ export class FilesComponent implements OnInit {
     this.uploaded.emit(message);
   }
   constructor(private fb: FormBuilder,
+              private stateService: StateService,
               private fileService: FileService) {
                 console.log('IN FILE COMPONENT, project is: ', this.project);
+                this.stateService.jwtToken
+                .subscribe(res => {
+                  if (res !== null) {
+                    this.headerValue = 'Bearer ' + res.token;
+                  }
+                });
    }
 
   ngOnInit(): void {
     this.id = this.project._id;
     // this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
-    this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email});
+    this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
+                                      headers: [{ name: 'Authorization', value: this.headerValue },
+                                                { name: 'Content-Type', value: 'application/json' }]});
     this.filerefresh();
   }
   filerefresh() {
