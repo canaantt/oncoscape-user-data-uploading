@@ -61,10 +61,13 @@ export class FilesComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.project._id;
+    console.log('in File component, this headerValue: ', this.headerValue);
     // this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
-                                      headers: [{ name: 'Authorization', value: this.headerValue },
-                                                { name: 'Content-Type', value: 'application/json' }]});
+                                      // headers: [{name: 'authorization', value: this.headerValue },
+                                      headers: [{name: 'authorization', value: 'fromFileUploading ngOnInit()' },
+                                                {name: 'content-type', value: 'application/json' }]
+                                    });
     this.filerefresh();
   }
   filerefresh() {
@@ -77,9 +80,6 @@ export class FilesComponent implements OnInit {
           }
           this.uploadStatus.uploadSummaryClinical = res[0].filter(function(m){return 'sheet' in m  && 'patients' in m; });
           this.uploadStatus.uploadSummaryMolecular = res[0].filter(function(m){return 'sheet' in m  && 'markers' in m; });
-          // const meta: any = res[0].filter(function(m) {return m.meta; })[0];
-          // this.uploadStatus.allSamplesUploaded = meta.allSampleIDs;
-          // this.uploadStatus.allPatientsUploaded = meta.allPatientIDs;
         });
   }
   private handleError(error: any): Promise<any> {
