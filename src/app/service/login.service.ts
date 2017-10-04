@@ -40,6 +40,8 @@ export class LoginService {
       this.stateService.user.next(null);
     }
     authLogin(auth) {
+      console.log('&&');
+      console.log(auth.authResponse.access_token);
       this.http.post(environment.apiBaseUrl + 'token', {'token': auth.authResponse.access_token})
           .map(res => res.json())
           .subscribe((res) => {
@@ -56,6 +58,8 @@ export class LoginService {
         const internalUser = res;
         if (internalUser !== null && internalUser.Gmail === '') {
           internalUser.Gmail = v.email;
+          console.log('^^^^^^^^');
+          console.log(internalUser);
           this.userService.create(internalUser)
               .subscribe(() => console.log('New User is added to database'));
         } else {

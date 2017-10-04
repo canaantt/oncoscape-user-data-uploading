@@ -9,6 +9,7 @@ import { Project } from '../models/project';
 export class ProjectService {
   private headers = new Headers();
   private projectsUrl = environment.apiBaseUrl + 'projects';
+  private projectPermissionJSON: any;
   constructor(private stateService: StateService,
     private http: Http ) {
       this.stateService.jwtToken
