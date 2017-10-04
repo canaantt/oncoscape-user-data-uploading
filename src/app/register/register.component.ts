@@ -40,8 +40,8 @@ export class RegisterComponent implements OnInit {
                 alert('This email has already been linked to existing user. Please check accuracy.');
                 return;
               } else {
-                this.stateService.internalUser.next(this.newUserForm.value);
                 this.loginService.googleLogin();
+                this.stateService.internalUser.next(this.newUserForm.value);
               }
             });
       }
