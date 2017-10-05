@@ -31,6 +31,7 @@ export class LoginService {
         hello.on('auth.logout', this.authLogout.bind(this));
     }
     googleLogin(): any {
+      hello.logout('google', {});
       this.stateService.user.next(null);
       hello.login('google');
     }
@@ -48,27 +49,32 @@ export class LoginService {
             console.log('Google Access Token Sent to Server: ', res);
             this.stateService.jwtToken.next(res);
           });
+      console.log('test1');
       hello('google').api('me').then( this.updateUserInfo.bind(this));
     }
     authLogout(auth) {
       this.updateUserInfo.bind(this, null);
     }
     updateUserInfo(v) {
+      console.log('test2');
       this.stateService.internalUser.subscribe(res => {
         const internalUser = res;
+        console.log('internal user is: ', res);
         if (internalUser !== null && internalUser.Gmail === '') {
           internalUser.Gmail = v.email;
           console.log('^^^^^^^^');
-          console.log(internalUser);
+          console.log(v.email);
           this.userService.create(internalUser)
               .subscribe(() => console.log('New User is added to database'));
         } else {
           this.userService.getUserIDByGmail(v.email)
               .subscribe(r => {
                 if (typeof(r[0]) !== 'undefined') {
+                  console.log('test3');
                   this.stateService.user.next(v);
                   this.oauthServiceStatus.emit('loggedIn');
                 } else {
+                  console.log('test4');
                   this.oauthServiceStatus.emit('register');
                 }
               });
