@@ -29,6 +29,8 @@ export class UserService {
                .map(res => res.json().filter(value => id.indexOf(value._id) > -1));
   }
   getUserIDByGmail(gmail: string): Observable<Response> {
+    console.log('In User service, getUserIDByGmail function, gmail received is: ');
+    console.log(gmail);
     return this.http.get(this.usersUrl, {headers: this.headers})
                .map(res => res.json().filter(value => value.Gmail === gmail));
   }
@@ -49,7 +51,7 @@ export class UserService {
 
   create(user: User): Observable<Response> {
     return this.http
-      .post(this.usersUrl, JSON.stringify(user), {headers: this.headers});
+      .post(this.usersUrl, user);
   }
 
   update(user: User): Observable<Response> {
