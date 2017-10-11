@@ -17,7 +17,8 @@ export class ProjectService {
             // console.log('Project service: ', res);
             this.headers.append('Content-Type', 'application/json');
             if (res !== null) {
-              this.headers.append('Authorization', 'Bearer ' + res.token);
+              // this.headers.append('Authorization', 'Bearer ' + res.token);
+              this.headers.append('Authorization', res.token);
             }
           });
     }
