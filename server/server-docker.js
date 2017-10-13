@@ -36,7 +36,7 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
 });
 
 const corsOptions = {
-	origin: ['http://localhost:4200','http://localhost:8080', 'http://localhost:8080']
+	origin: ['http://localhost:4200','http://localhost:8080']
 }
 // mongoose.connect("mongodb://localhost:27017/mydb");
 mongoose.connect(
@@ -61,7 +61,7 @@ var db = mongoose.connection;
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'jennylouzhang@gmail.com',
+      user: 'oncoscape.sttrcancer@gmail.com',
       pass: process.env.GMAIL_PASSWORD
     }
   });
@@ -240,7 +240,7 @@ db.once("open", function (callback) {
         var userEmail = req.params.email;
         console.log('##################### user: ', userEmail);
         var mailOptions = {
-            from: 'jennylouzhang@gmail.com',
+            from: 'oncoscape.sttrcancer@gmail.com',
             to: userEmail,
             subject: 'Notification from Oncoscape Data Uploading App',
             text: 'Data are in database, ready to share.'
@@ -260,6 +260,11 @@ db.once("open", function (callback) {
                 writing2Mongo.send({ filePath: res.req.file.path, 
                                      projectID: projectID
                                   });
+                // const writing2Mongo = fork('server/fileUpload.js', 
+                // { execArgv: ['--max-old-space-size=4096']});
+                // console.log('test***');
+                // writing2Mongo.send({filePath: res.req.file.path, projectID: projectID });
+                  
                 writing2Mongo.on('message', () => {
                     res.end('Writing is done');
                     console.log("*********************!!!!!!!********************");
@@ -284,6 +289,7 @@ db.once("open", function (callback) {
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
      cb(null, '/usr/src/app/uploads')
+     //cb(null, './uploads')
   },
   filename: function (req, file, cb) {
     var newFileName = file.fieldname + '-' + Date.now() + '.xlsx';

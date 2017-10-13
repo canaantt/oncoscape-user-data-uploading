@@ -54,7 +54,7 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'jennylouzhang@gmail.com',
+      user: 'oncoscape.sttrcancer@gmail.com',
       pass: process.env.GMAIL_PASSWORD
     }
   });
@@ -208,7 +208,7 @@ function camelToDash(str) {
 };
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-       cb(null, '/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/uploads')
+       cb(null, 'uploads')
     },
     filename: function (req, file, cb) {
       var newFileName = file.fieldname + '-' + Date.now() + '.xlsx';
@@ -367,7 +367,7 @@ app.post('/api/upload/:id/:email', function (req, res) {
     var userEmail = req.params.email;
     console.log('user: ', userEmail);
     var mailOptions = {
-        from: 'jennylouzhang@gmail.com',
+        from: 'oncoscape.sttrcancer@gmail.com',
         to: userEmail,
         subject: 'Notification from Oncoscape Data Uploading App',
         text: 'Data are in database, ready to share.'
@@ -382,7 +382,7 @@ app.post('/api/upload/:id/:email', function (req, res) {
             console.log(err);
             return;
         } else {
-            const writing2Mongo = fork('/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/server/fileUpload.js', 
+            const writing2Mongo = fork('server/fileUpload.js', 
             { execArgv: ['--max-old-space-size=1000']});
             writing2Mongo.send({ filePath: res.req.file.path, 
                                  projectID: projectID

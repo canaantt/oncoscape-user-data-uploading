@@ -61,7 +61,7 @@ var db = mongoose.connection;
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'jennylouzhang@gmail.com',
+      user: 'oncoscape.sttrcancer@gmail.com',
       pass: process.env.GMAIL_PASSWORD
     }
   });
@@ -240,7 +240,7 @@ db.once("open", function (callback) {
         var userEmail = req.params.email;
         console.log('##################### user: ', userEmail);
         var mailOptions = {
-            from: 'jennylouzhang@gmail.com',
+            from: 'oncoscape.sttrcancer@gmail.com',
             to: userEmail,
             subject: 'Notification from Oncoscape Data Uploading App',
             text: 'Data are in database, ready to share.'
