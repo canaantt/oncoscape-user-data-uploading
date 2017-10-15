@@ -5,6 +5,9 @@ const _ = require("underscore");
 const asyncLoop = require('node-async-loop');
 const XLSX =require("xlsx");
 const mongoose = require('mongoose');
+
+const HugoGenes = require('../HugoGenes.json');
+
 var option = {
     server: {
         socketOptions: {
@@ -13,15 +16,10 @@ var option = {
         }
     }
 }
-// mongoose.connect("mongodb://localhost:27017/mydb", option)
-//         .then(function(){
-//             console.log("Child Process MongoDB connect success!");
-//         }, function (err){
-//             console.log("Child Process  MongoDB connect error: ", err);
-//         });
+
 mongoose.connect(
-    "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
-    // process.env.MONGO_CONNECTION, {  
+    //"mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
+    process.env.MONGO_CONNECTION, {  
     db: {
         native_parser: true
     },
@@ -42,8 +40,6 @@ mongoose.connect(
 
 const db = mongoose.connection;
 
-const HugoGenes = require('../HugoGenes.json');
-
 var checkHugoGeneSymbols = function (geneArr) {
     var overLappedNames = _.intersection(geneArr, HugoGenes);
     var unvalidGeneNames = _.difference(geneArr, overLappedNames);
@@ -52,43 +48,54 @@ var checkHugoGeneSymbols = function (geneArr) {
         unvalidNamesArr: unvalidGeneNames
     }
 };
+
 function camelToDash(str) {
     return str.replace(/\W+/g, '-')
               .replace(/([a-z\d])([A-Z])/g, '$1-$2')
               .replace("-", "_")
               .toLowerCase();
  }
+
 const writingXLSX2Mongo = (msg) => {
-    filePath = msg.filePath;
-    projectID = msg.projectID;
-    console.log('%%%%%%%%%received file');
-    console.log('projectID is: ', msg);
+    
+    var filePath = msg.filePath;
+    var projectID = msg.projectID;
+    console.log('%%%%%%%%% Received file');
+    console.log('projectID: ', msg);
     console.time("Reading XLSX file");
+    
     var workbook = XLSX.readFile(filePath);
     console.log('%%%%%%%%%XLSX.readFile(filePath): ', filePath);
     console.timeEnd("Reading XLSX file");           
+    
     var allSheetNames =  Object.keys(workbook.Sheets);
     console.log(allSheetNames);
+    
     if (allSheetNames.indexOf("PATIENT") === -1) {
        err = "PATIENT Sheet is missing!";
        res.json({ error_code: 1, err_desc: err }).end(); 
        return;
     }
+    
     var PatientIDs;
     var PatientArr = [];
     var UploadingSummary = [];
     var result = [];
     var sampleUnion = [];
+    
     allSheetNames.forEach(function(sheet){
         console.log(sheet);
         var sheetObj = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {header:1});
         var arr = [];
         var header = sheetObj[0];
         if(sheet.split("-")[0] === "MOLECULAR"){
-            var allSamples = header.splice(1, header.length);
-            sheetObjData = sheetObj.splice(1, sheetObj.length);
+            
             var dataType = sheet.split("-")[1];
+
+            var allSamples = header.splice(1, header.length);
+            var sheetObjData = sheetObj.splice(1, sheetObj.length);
             var allMarkers = sheetObjData.map(function(m){return m[0].trim()});
+  
             UploadingSummary.push({ "sheet" : sheet,
                                     "samples" : allSamples,
                                     "markers" : allMarkers});

@@ -6,11 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const asyncLoop = require('node-async-loop');
 const nodemailer = require('nodemailer');
-// const tsv = require("node-tsv-json");
-// const csv=require('csvtojson');
-// var convertExcel = require('excel-as-json').processFile;
 var XLSX =require("xlsx");
-// var excelParser = require('excel-parser');
 const fs = require("fs");
 var path = require('path');
 var jsonfile = require("jsonfile");
@@ -22,7 +18,7 @@ var Project = require("./models/project");
 var File = require("./models/file");
 var IRB = require("./models/irb");
 var Permission = require("./models/permission");
-// var GeneSymbolLookupTable = require('dev-lookup_oncoscape_genes.json');
+
 var GeneSymbolLookupTable;
 var HugoGenes;
 
@@ -36,12 +32,12 @@ request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apike
 });
 
 const corsOptions = {
-	origin: ['http://localhost:4200','http://localhost:8080']
+	origin: ['http://localhost:8088', 'http://localhost:4200']
 }
-// mongoose.connect("mongodb://localhost:27017/mydb");
+
 mongoose.connect(
-    //"mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/tcga?authSource=admin",{
-    process.env.MONGO_CONNECTION, {  
+    "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
+    //process.env.MONGO_CONNECTION, {  
     db: {
         native_parser: true
     },
@@ -61,7 +57,7 @@ var db = mongoose.connection;
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'jennylouzhang@gmail.com',
+      user: 'oncoscape.sttrcancer@gmail.com',
       pass: process.env.GMAIL_PASSWORD
     }
   });
@@ -240,7 +236,7 @@ db.once("open", function (callback) {
         var userEmail = req.params.email;
         console.log('##################### user: ', userEmail);
         var mailOptions = {
-            from: 'jennylouzhang@gmail.com',
+            from: 'oncoscape.sttrcancer@gmail.com',
             to: userEmail,
             subject: 'Notification from Oncoscape Data Uploading App',
             text: 'Data are in database, ready to share.'

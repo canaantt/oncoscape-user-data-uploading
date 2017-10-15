@@ -31,8 +31,7 @@ export class LandingComponent implements OnInit {
     });
   }
   ngOnInit() {
-    // this.getUser();
-    console.log('in landing component ngOnInit');
+    
     const timer = Observable.timer(10, 200);
     this.subscription = timer.subscribe(() => {
       this.getUser();

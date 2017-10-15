@@ -1,9 +1,9 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var File = require("../models/file");
-var IRB = require("../models/irb");
-var Permission = require("../models/permission");
-var status = ["uploaded", "upload started", "failed"];
+// var File = require("../models/file");
+// var IRB = require("../models/irb");
+// var Permission = require("../models/permission");
+//var status = ["uploaded", "upload started", "failed"];
 var projectSchema = new Schema({
     Name: String,
     Description: String,
