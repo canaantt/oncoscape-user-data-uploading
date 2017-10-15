@@ -21,7 +21,6 @@ export class NavbarComponent implements OnInit {
                private updateEmitService: UpdateEmitService,
                private slimLoadingBarService: SlimLoadingBarService,
                private router: Router) {
-                  console.log('in Nav Constructor');
                   this.stateService.user.subscribe((data) => {
                     this.user = data;
                 });
