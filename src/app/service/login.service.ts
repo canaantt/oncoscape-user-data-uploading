@@ -10,7 +10,7 @@ import { UserService } from '../service/user.service';
 import { User } from '../models/user';
 @Injectable()
 export class LoginService {
-    GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
+    GOOGLE_CLIENT_ID = '459144121975-lp2p5kahpqahm2gffgtl31vv0nes9hj4.apps.googleusercontent.com';
     oauthServiceStatus: EventEmitter<any> ;
     constructor(private stateService: StateService,
                 private userService: UserService,
