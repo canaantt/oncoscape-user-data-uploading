@@ -10,6 +10,7 @@ import { UserService } from '../service/user.service';
 import { User } from '../models/user';
 @Injectable()
 export class LoginService {
+
     
   GOOGLE_CLIENT_ID = '459144121975-lp2p5kahpqahm2gffgtl31vv0nes9hj4.apps.googleusercontent.com';
   oauthServiceStatus: EventEmitter<any> ;
@@ -26,6 +27,7 @@ export class LoginService {
         display: 'popup',
         response_type: 'token',
         scope: 'email'
+
       });
       hello.on('auth', function() {console.log('state changed!'); });
       hello.on('auth.login', this.authLogin.bind(this));
