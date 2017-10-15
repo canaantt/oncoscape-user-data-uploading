@@ -6,42 +6,42 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const asyncLoop = require('node-async-loop');
 const nodemailer = require('nodemailer');
-// const tsv = require("node-tsv-json");
-// const csv=require('csvtojson');
-// var convertExcel = require('excel-as-json').processFile;
-var XLSX =require("xlsx");
-// var excelParser = require('excel-parser');
 const fs = require("fs");
+
+const corsOptions = {
+	origin: ['http://localhost:4200', 'http://localhost:8088']
+}
+
+var XLSX =require("xlsx");
 var path = require('path');
 var jsonfile = require("jsonfile");
 var multer = require('multer');
 var bodyParser = require('body-parser'); //parses information from POST
 var filebrowser = require('file-browser');
-var User = require("./models/user");
-var Project = require("./models/project");
-var File = require("./models/file");
+
+var USER = require("./models/user");
+var PROJECT = require("./models/project");
+var FILE = require("./models/file");
 var IRB = require("./models/irb");
-var Permission = require("./models/permission");
-// var GeneSymbolLookupTable = require('dev-lookup_oncoscape_genes.json');
-var GeneSymbolLookupTable;
-var HugoGenes;
+var PERMISSION = require("./models/permission");
 
-request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apikey=password', function(err, resp, body){
-    GeneSymbolLookupTable = JSON.parse(body);
-    HugoGenes = GeneSymbolLookupTable.map(function(m){return m.hugo;});
-    jsonfile.writeFile("HugoGenes.json", HugoGenes, {spaces: 2}, function(err){ console.error(err);});  
-    if(err) console.log(err);
-    console.log("**********");
-    console.log(HugoGenes.length);
-});
+// var GeneSymbolLookupTable;
+// var HugoGenes;
 
-const corsOptions = {
-	origin: ['http://localhost:4200','http://localhost:8080']
-}
-// mongoose.connect("mongodb://localhost:27017/mydb");
+// request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apikey=password', function(err, resp, body){
+//     GeneSymbolLookupTable = JSON.parse(body);
+//     HugoGenes = GeneSymbolLookupTable.map(function(m){return m.hugo;});
+//     jsonfile.writeFile("HugoGenes.json", HugoGenes, {spaces: 2}, function(err){ console.error(err);});  
+//     if(err) console.log(err);
+//     console.log("**********");
+//     console.log(HugoGenes.length);
+// });
+
+/////////////////
+// Define Connections
 mongoose.connect(
-    // "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
-    process.env.MONGO_CONNECTION, {  
+     "mongodb://oncoscape-dev-db1.sttrcancer.io:27017,oncoscape-dev-db2.sttrcancer.io:27017,oncoscape-dev-db3.sttrcancer.io:27017/v2?authSource=admin",{
+    //process.env.MONGO_CONNECTION, {  
     db: {
         native_parser: true
     },
@@ -55,9 +55,9 @@ mongoose.connect(
     user: process.env.MONGO_USERNAME,
     pass: process.env.MONGO_PASSWORD
 });
+
 var db = mongoose.connection;
-// Grid.mongo = mongoose.mongo;
-// var gfs = Grid(db.db);
+
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -66,7 +66,16 @@ var transporter = nodemailer.createTransport({
     }
   });
   
-function processResult(req, res, next , query){
+// Helper functions
+function camelToDash(str) {
+    return str.replace(/\W+/g, '-')
+              .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+              .replace("-", "_")
+              .toLowerCase();
+}
+
+// Handle Routes 
+function processResult(req, res, next, query){
     return function(err, data){
         if (err) {
             console.log(err);
@@ -89,8 +98,7 @@ function routerFactory(Model)
     router.post('/', function(req, res) {
         Model.create(req.body, processResult(req,res));
     });
-    router.route('/:id')
-    .get(function(req, res){
+    router.route('/:id').get(function(req, res){
         Model.findById(req.params.id, processResult(req,res));
     })
     .put(function(req, res){
@@ -105,19 +113,20 @@ function routerFactory(Model)
 function fileRouterFactory(){
     var router = express.Router();
     var projectCollections;
+    
     router.use(bodyParser.json()); 
     router.use(bodyParser.urlencoded({ extended: true }));
     router.get('/', function(req, res){	
-        console.log("in Files");
+        console.log("File Router get");
         res.status(200).end();
     });
     router.post('/', function(req, res) {
-        console.log("in post");
+       console.log("File Router post");
     });
-    router.route('/:id')
-    .get(function(req, res){
+    router.route('/:id').get(function(req, res){
         console.log("Getting Project-Related Collections...");
         console.log(req.params.id);
+        
         var projectID = req.params.id;
         db.db.listCollections().toArray(function(err, collectionMeta) {
             if (err) {
@@ -130,9 +139,9 @@ function fileRouterFactory(){
                     return m.indexOf(projectID) > -1;
                 });
                 
+                // get all projects associated with ID
                 if(projectCollections.length === 0){
-                    res.status(404).send("Not Found").end();
-                    // res.send('Not Find').end();
+                    res.status(404).send("No Project Collections Found").end();
                 } else {
                     var arr = [];
 
@@ -184,9 +193,9 @@ function fileRouterFactory(){
             }
         });
     }).delete(function(req, res){
-        console.log("in delete");
-        console.log(req.params.id);
         var projectID = req.params.id;
+        console.log("Delete project: " + projectID);
+        
         db.db.listCollections().toArray(function(err, collectionMeta) {
             if (err) {
                 console.log(err);
@@ -205,16 +214,12 @@ function fileRouterFactory(){
                 });
             }
         });
-        res.status(200).send("files are deleted").end();
+        res.status(200).send("Project Deleted").end();
     });
     return router;
 }
-function camelToDash(str) {
-      return str.replace(/\W+/g, '-')
-                .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                .replace("-", "_")
-                .toLowerCase();
-   }
+
+
 var app = express();
 app.use(function (req, res, next) { //allow cross origin requests
     res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
@@ -229,28 +234,30 @@ db.on("error", console.error.bind(console, "connection error"));
 db.once("open", function (callback) {
 	console.log("Connection succeeded.");
 	app.use(cors(corsOptions));
-	app.use('/users', routerFactory(User));
-	app.use('/projects', routerFactory(Project));
-	app.use('/files', fileRouterFactory());
+	app.use('/users', routerFactory(USER));
+	app.use('/projects', routerFactory(PROJECT));
+	app.use('/files', fileRouterFactory(FILE));
 	app.use('/irbs', routerFactory(IRB));
-	app.use('/permissions', routerFactory(Permission));
-	app.post('/upload/:id/:email', function (req, res) {
-        console.log(req.params.id);
+	app.use('/permissions', routerFactory(PERMISSION));
+    
+    app.post('/upload/:id/:email', function (req, res) {
+        
         var projectID = req.params.id;
         var userEmail = req.params.email;
         console.log('##################### user: ', userEmail);
         var mailOptions = {
             from: 'oncoscape.sttrcancer@gmail.com',
             to: userEmail,
-            subject: 'Notification from Oncoscape Data Uploading App',
-            text: 'Data are in database, ready to share.'
+            subject: 'Oncoscape Data upload complete',
+            text: 'You can now view your private data at oncoscape.sttrcancer.org'
           };
         var molecularColleciton = mongoose.model(projectID + "_data_molecular", File.schema);
         var sampleMapCollection = mongoose.model(projectID + "_data_samples", File.schema);
         var clinicalColleciton = mongoose.model(projectID + "_data_clinical", File.schema);
         var uploadingSummaryCollection = mongoose.model(projectID + "_uploadingSummary", File.schema);
-		upload(req, res, function (err) {
-            console.log("This section is triggered");
+        
+        upload(req, res, function (err) {
+            console.log("Upload Project to Database");
 			if (err) {
                 console.log(err);
 				return;
@@ -266,11 +273,11 @@ db.once("open", function (callback) {
                 // writing2Mongo.send({filePath: res.req.file.path, projectID: projectID });
                   
                 writing2Mongo.on('message', () => {
-                    res.end('Writing is done');
-                    console.log("*********************!!!!!!!********************");
+                    res.end('Database Write Complete');
+                    console.log('Database Write Complete.');
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
-                          console.log(error);
+                          console.log('Email NOT sent: ' + error);
                         } else {
                           console.log('Email sent: ' + info.response);
                         }
@@ -281,7 +288,8 @@ db.once("open", function (callback) {
         res.status(200).end();
 	});
     app.use('/upload/', express.static('./uploads'));
-	app.listen(3000, function () {
+    //app.listen(3000, function () {
+    app.listen(process.env.NODE_PORT, function () {
 		console.log('listening on 3000...');
 	});
 });
