@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 const fs = require("fs");
 
 const corsOptions = {
-	origin: ['http://localhost:4200', 'http://localhost:8088']
+	origin: ['http://localhost:4200', 'http://localhost:8088','https://localhost:4200']
 }
 
 var XLSX =require("xlsx");
