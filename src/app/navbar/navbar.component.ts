@@ -61,7 +61,7 @@ export class NavbarComponent implements OnInit {
     this.loginService.googleLogOut();
   }
   toProfile() {
-      this.userService.getUserIDByGmail(this.user.email)
+      this.userService.getUserByGmail(this.user.email)
         .subscribe(res => {
           this.router.navigate([`/users/${res[0]._id}/`]);
         });

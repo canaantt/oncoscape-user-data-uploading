@@ -74,7 +74,7 @@ export class ProjectsDashboardComponent {
     this.router.navigate([ `/projects/${id}/`]);
   }
   getUserID(id: string): void {
-    this.userService.getUserIDByGmail(id)
+    this.userService.getUserByGmail(id)
               .subscribe(res => {
                 this.getPermissions(res[0]._id);
                 this.userID = res[0]._id;

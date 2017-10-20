@@ -28,11 +28,9 @@ export class UserService {
     return this.http.get(this.usersUrl, {headers: this.headers})
                .map(res => res.json().filter(value => id.indexOf(value._id) > -1));
   }
-  getUserIDByGmail(gmail: string): Observable<Response> {
-    console.log('In User service, getUserIDByGmail function, gmail received is: ');
-    console.log(gmail);
-    return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => value.Gmail === gmail));
+  getUserByGmail(gmail: string): Observable<Response> {
+    const url = environment.apiBaseUrl + 'users/checkGmail/' + gmail;
+    return this.http.get(url, {headers: this.headers});
   }
   getUsersByIDs(ids: string[]): Observable<Response> {
     return this.http.get(this.usersUrl, {headers: this.headers})

@@ -47,8 +47,8 @@ export class LoginService {
   }
 
   authLogin(auth) {
-    console.log("AuthLogin access token: "+auth.authResponse.access_token);
-    this.http.post(environment.apiBaseUrl + 'token', {'token': auth.authResponse.access_token})
+    var token = auth.authResponse.access_token;
+    this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
           console.log('Google Access Token Sent to Server: ', res);
@@ -73,8 +73,9 @@ export class LoginService {
         this.userService.create(internalUser)
             .subscribe(() => console.log('New User is added to database'));
       } else {
-        this.userService.getUserIDByGmail(v.email)
+        this.userService.getUserByGmail(v.email)
             .subscribe(r => {
+              console.log('LOGIN SERVICE, USER SERVICE.getUserByGmail...', r);
               if (typeof(r[0]) !== 'undefined') {
                 this.stateService.user.next(v);
                 this.oauthServiceStatus.emit('loggedIn');
