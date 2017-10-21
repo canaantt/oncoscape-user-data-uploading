@@ -62,8 +62,9 @@ export class NavbarComponent implements OnInit {
   }
   toProfile() {
       this.userService.getUserByGmail(this.user.email)
+        .map(res => res.json())
         .subscribe(res => {
-          this.router.navigate([`/users/${res[0]._id}/`]);
+          this.router.navigate([`/users/${res.user._id}/`]);
         });
   }
  }

@@ -54,7 +54,7 @@ export class FilesComponent implements OnInit {
                 this.stateService.jwtToken
                 .subscribe(res => {
                   if (res !== null) {
-                    this.headerValue = 'Bearer ' + res.token;
+                    this.headerValue = res.token;
                   }
                 });
    }

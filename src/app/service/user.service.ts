@@ -17,7 +17,7 @@ export class UserService {
             // console.log('User service: ', res);
             this.headers.append('Content-Type', 'application/json');
             if (res !== null) {
-              this.headers.append('Authorization', 'Bearer ' + res.token);
+              this.headers.append('Authorization', res.token);
             }
           });
     }
@@ -30,7 +30,7 @@ export class UserService {
   }
   getUserByGmail(gmail: string): Observable<Response> {
     const url = environment.apiBaseUrl + 'users/checkGmail/' + gmail;
-    return this.http.get(url, {headers: this.headers});
+    return this.http.post(url, {headers: this.headers});
   }
   getUsersByIDs(ids: string[]): Observable<Response> {
     return this.http.get(this.usersUrl, {headers: this.headers})

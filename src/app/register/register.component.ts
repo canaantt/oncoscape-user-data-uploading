@@ -6,6 +6,7 @@ import { StateService } from '../service/state.service';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import { LoginService } from '../service/login.service';
+import { UserEmailValidators } from '../validators/userEmail.validator';
 
 @Component({
   selector: 'app-register',
@@ -15,36 +16,74 @@ import { LoginService } from '../service/login.service';
 export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
   @ViewChild('LoginComponent') login;
+  error = {
+    fn: '',
+    ln: '',
+    email: {empty: '', format: '', duplicate: ''},
+    in: ''
+  };
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private stateService: StateService,
     private loginService: LoginService,
     private router: Router
-  ) { }
-
+  ) {};
+  
+  checking(): boolean {
+    if (this.newUserForm.value.FirstName === '') {
+      this.error.fn = 'First Name is required.';
+    } else {
+      this.error.fn = '';
+    }
+    if (this.newUserForm.value.LastName === '') {
+      this.error.ln = 'Last Name is required.';
+    } else {
+      this.error.ln = '';
+    }
+    if (this.newUserForm.value.Email === '') {
+      this.error.email.empty = 'Email is required';
+    } else {
+      this.error.email.empty = '';
+    }
+    if (this.newUserForm.value.Email.search('[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+') === -1) {
+      this.error.email.format = 'Email format is wrong';
+    } else {
+      this.error.email.format = '';
+    }
+    this.userService.userValidationByEmail(this.newUserForm.value.Email)
+    .subscribe(res => {
+      if (typeof(res[0]) !== 'undefined') {
+        this.error.email.duplicate = 'This email has already been registered';
+        return;
+      } else {
+        this.error.email.duplicate = '';
+      }
+    });
+    if (this.newUserForm.value.Institution === '') {
+      this.error.in = 'Should not be empty.';
+    } else {
+      this.error.in = '';
+    }
+    if ( this.error.fn === '' &&
+    this.error.ln === '' &&
+    this.error.email.empty === '' &&
+    this.error.email.format === '' &&
+    this.error.email.duplicate === '' &&
+    this.error.in === '') {
+      return true;
+    } else {
+      return false;
+    }
+  }
   submit() {
     const self = this;
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = '';
-    if (this.newUserForm.value.FirstName === '' ||
-        this.newUserForm.value.LastName === '' ||
-        this.newUserForm.value.Email === '' ||
-        this.newUserForm.value.Institution === '') {
-          alert('Please fill all the required fields to proceed');
-          return;
-       } else {
-        this.userService.userValidationByEmail(this.newUserForm.value.Email)
-            .subscribe(res => {
-              if (typeof(res[0]) !== 'undefined') {
-                alert('This email has already been linked to existing user. Please check accuracy.');
-                return;
-              } else {
-                this.loginService.googleLogin();
-                this.stateService.internalUser.next(this.newUserForm.value);
-              }
-            });
-      }
+    if(this.checking()) {
+      this.loginService.googleLogin();
+      this.stateService.internalUser.next(this.newUserForm.value);
+    } 
   }
 
   ngOnInit(): void {
@@ -54,6 +93,9 @@ export class RegisterComponent implements OnInit {
       Email: new FormControl('', Validators.required),
       Institution: new FormControl('', Validators.required)
     });
+    this.newUserForm.valueChanges
+        .debounceTime(200)
+        .subscribe(() => this.checking());
   }
 
 }

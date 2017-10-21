@@ -19,7 +19,7 @@ export class PermissionService {
                       // console.log('Permission service: ', res);
                       this.headers.append('Content-Type', 'application/json');
                       if (res !== null) {
-                        this.headers.append('Authorization', 'Bearer ' + res.token);
+                        this.headers.append('Authorization', res.token);
                       }
                     });
               }
@@ -73,6 +73,7 @@ export class PermissionService {
     return this.http.delete(url, {headers: this.headers});
   }
   create(permission: any): Observable<Response> {
+    console.log('In Permission service create: ', permission);
     return this.http
       .post(this.permissionsUrl, JSON.stringify(permission), {headers: this.headers});
   }

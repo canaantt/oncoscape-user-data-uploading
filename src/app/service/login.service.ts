@@ -41,9 +41,9 @@ export class LoginService {
     hello.login('google');
   }
   googleLogOut(): any {
-    this.oauthServiceStatus.emit('loggedOut');
     hello.logout('google', {});
     this.stateService.user.next(null);
+    this.router.navigate(['/landing']);
   }
 
   authLogin(auth) {
@@ -54,11 +54,10 @@ export class LoginService {
           console.log('Google Access Token Sent to Server: ', res);
           this.stateService.jwtToken.next(res);
         });
-    console.log('Update User Info with google token');
     hello('google').api('me').then( this.updateUserInfo.bind(this));
   }
   authLogout(auth) {
-    this.updateUserInfo.bind(this, null);
+    this.oauthServiceStatus.emit('loggedOut');
   }
 
   updateUserInfo(v) {
@@ -74,9 +73,10 @@ export class LoginService {
             .subscribe(() => console.log('New User is added to database'));
       } else {
         this.userService.getUserByGmail(v.email)
+            .map(res => res.json())
             .subscribe(r => {
               console.log('LOGIN SERVICE, USER SERVICE.getUserByGmail...', r);
-              if (typeof(r[0]) !== 'undefined') {
+              if (r.user !== null) {
                 this.stateService.user.next(v);
                 this.oauthServiceStatus.emit('loggedIn');
               } else {
