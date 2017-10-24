@@ -47,7 +47,7 @@ export class LandingComponent implements OnInit {
                 this.router.navigate(['/projects', 'dashboard']);
                 break;
             case 'register':
-                console.log('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
+                alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
                 this.router.navigate(['/register']);
                 break;
             case 'loggedOut':
