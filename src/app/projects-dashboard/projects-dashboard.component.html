@@ -8,9 +8,8 @@
                 <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button>
             </div>
         </div>
-        <div *ngIf = "projects.length === 0">
-            <h4 class="dashboard-header">Please click <strong>+ Datasets</strong> to add new project.</h4>
-        </div>
+        <h4 *ngIf= "!projects || (projects.length === 0)" class="dashboard-header">Please click <strong>+ Datasets</strong> to add new project.</h4>
+        
         <div class="mb-5" *ngFor="let project of projects">
             <!--START card-->
             <div class="card card-cascade ">

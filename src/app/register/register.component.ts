@@ -15,6 +15,7 @@ import { UserEmailValidators } from '../validators/userEmail.validator';
 })
 export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
+  internalUser: any;
   @ViewChild('LoginComponent') login;
   error = {
     fn: '',
@@ -28,7 +29,12 @@ export class RegisterComponent implements OnInit {
     private stateService: StateService,
     private loginService: LoginService,
     private router: Router
-  ) {};
+  ) {
+    this.stateService.internalUser.subscribe(res => {
+       this.internalUser = res;
+       console.log('IN REGISTER CONSTRUCT, DO WE RECEIVE GMAIL? ', res);
+    });
+  };
   
   checking(): boolean {
     if (this.newUserForm.value.FirstName === '') {
@@ -79,10 +85,13 @@ export class RegisterComponent implements OnInit {
   submit() {
     const self = this;
     this.newUserForm.value.Consent = true;
-    this.newUserForm.value.Gmail = '';
+    this.newUserForm.value.Gmail = this.internalUser.Gmail.gmail;
     if(this.checking()) {
-      this.loginService.googleLogin();
       this.stateService.internalUser.next(this.newUserForm.value);
+      this.userService.create(this.newUserForm.value).subscribe(()=> {
+        alert('Create New User');
+        this.loginService.googleLogin();
+      });
     } 
   }
 

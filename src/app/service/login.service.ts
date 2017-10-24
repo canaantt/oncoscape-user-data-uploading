@@ -36,14 +36,15 @@ export class LoginService {
 
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
-    hello.logout('google', {});
-    this.stateService.user.next(null);
-    hello.login('google');
+    this.googleLogOut();
+    hello.login('google', {force:true});
   }
   googleLogOut(): any {
-    hello.logout('google', {});
-    this.stateService.user.next(null);
-    this.router.navigate(['/landing']);
+    window.location.assign("/");
+    hello.logout('google', {force:true});
+    // this.stateService.user.next(null);
+    // this.stateService.jwtToken.next(null);
+    // this.router.navigate(['/landing']);
   }
 
   authLogin(auth) {
@@ -51,40 +52,56 @@ export class LoginService {
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
-          console.log('Google Access Token Sent to Server: ', res);
+          console.log('Google Access Token Recieved from Server: ', res);
           this.stateService.jwtToken.next(res);
+          if ('token' in res) {
+            hello('google').api('me').then( this.updateUserInfo.bind(this));
+          } else if('gmail' in res) {
+            console.log('in authLogin but not register situation: ', res);
+            this.stateService.internalUser.next({'Gmail': res});
+            this.oauthServiceStatus.emit('register');
+          }
         });
-    hello('google').api('me').then( this.updateUserInfo.bind(this));
   }
   authLogout(auth) {
     this.oauthServiceStatus.emit('loggedOut');
   }
 
-  updateUserInfo(v) {
+  updateUserInfo (v) {
     console.log('Update User Info');
-    this.stateService.internalUser.subscribe(res => {
-      const internalUser = res;
-      console.log('internal user: ', res);
-      if (internalUser !== null && internalUser.Gmail === '') {
-        internalUser.Gmail = v.email;
-        console.log('-- email'+ v.email);
-
-        this.userService.create(internalUser)
-            .subscribe(() => console.log('New User is added to database'));
-      } else {
-        this.userService.getUserByGmail(v.email)
-            .map(res => res.json())
-            .subscribe(r => {
-              console.log('LOGIN SERVICE, USER SERVICE.getUserByGmail...', r);
-              if (r.user !== null) {
-                this.stateService.user.next(v);
-                this.oauthServiceStatus.emit('loggedIn');
-              } else {
-                console.log('Email subscriber undefined');
-                this.oauthServiceStatus.emit('register');
-              }
-            });
-        }
+    this.userService.getUserByGmail(v.email)
+    .map(res => res.json())
+    .subscribe(r => {
+      console.log('LOGIN SERVICE, USER SERVICE.getUserByGmail...', r);
+      if (r.user !== null) {
+        this.stateService.user.next(v);
+        this.oauthServiceStatus.emit('loggedIn');
+      }
     });
+
+    // this.stateService.internalUser.subscribe(res => {
+    //   const internalUser = res;
+    //   console.log('internal user: ', res);
+    //   if (internalUser !== null && internalUser.Gmail === '') {
+    //     internalUser.Gmail = v.email;
+    //     console.log('-- email'+ v.email);
+
+    //     this.userService.create(internalUser)
+    //         .subscribe(() => console.log('New User is added to database'));
+    //   } else {
+    //     this.userService.getUserByGmail(v.email)
+    //         .map(res => res.json())
+    //         .subscribe(r => {
+    //           console.log('LOGIN SERVICE, USER SERVICE.getUserByGmail...', r);
+    //           if (r.user !== null) {
+    //             this.stateService.user.next(v);
+    //             this.oauthServiceStatus.emit('loggedIn');
+    //           } else {
+    //             console.log('Email subscriber undefined');
+    //             this.oauthServiceStatus.emit('register');
+    //           }
+    //         });
+    //     }
+    // });
   }
 }
