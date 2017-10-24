@@ -36,12 +36,13 @@ export class LoginService {
 
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
-    this.googleLogOut();
+    alert('xxx');
+    //this.googleLogOut();
     hello.login('google', {force:true,  redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/'});
     console.log("WOOT WOOT My CODE MADE IT TO THE SERVER.. I HOPE IT WORKS... FINGERS CROSSED");
   }
   googleLogOut(): any {
-    window.location.assign("/");
+    window.location.assign("/upload/");
     hello.logout('google', {force:true});
     // this.stateService.user.next(null);
     // this.stateService.jwtToken.next(null);
