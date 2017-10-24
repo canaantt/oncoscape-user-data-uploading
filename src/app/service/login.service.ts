@@ -36,8 +36,7 @@ export class LoginService {
 
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
-    alert('xxx');
-    //this.googleLogOut();
+    this.googleLogOut();
     hello.login('google', {force:true,  redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/'});
     console.log("WOOT WOOT My CODE MADE IT TO THE SERVER.. I HOPE IT WORKS... FINGERS CROSSED");
   }
