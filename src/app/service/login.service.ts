@@ -23,7 +23,7 @@ export class LoginService {
         google: this.GOOGLE_CLIENT_ID,
       }, {
         force: true,
-        redirect_uri: environment.oAuthRedirectUri, 
+        redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/', 
         display: 'popup',
         response_type: 'token',
         scope: 'email'
@@ -37,7 +37,8 @@ export class LoginService {
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
     this.googleLogOut();
-    hello.login('google', {force:true});
+    hello.login('google', {force:true,  redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/'});
+    console.log("WOOT WOOT My CODE MADE IT TO THE SERVER.. I HOPE IT WORKS... FINGERS CROSSED");
   }
   googleLogOut(): any {
     window.location.assign("/");
