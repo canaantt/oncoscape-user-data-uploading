@@ -65,7 +65,6 @@ export class FilesComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.project._id;
-    console.log(environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email);
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
