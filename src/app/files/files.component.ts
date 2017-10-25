@@ -97,7 +97,7 @@ export class FilesComponent implements OnInit {
         };
         this.uploadComplete('Being uploaded');
         this.filerefresh();
-        alert('An email will be sent shortly after the operation is complete.');
+        alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
       } else {
         alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileTypeError + ' ' + this.errorMsg.fileSizeError);
       }
