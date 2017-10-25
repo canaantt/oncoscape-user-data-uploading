@@ -35,14 +35,17 @@ Once you have registered, upon returing to the site, simply click the login butt
 
 1. On the Dataset Dashboard page, click on the Dataset that you want to edit. You will be redirected to the Dataset detail page, where you can change name of the project, update description, add more annotations, etc.
 2. After update, the page will automatically save the new change. You will notice a light blue bar under the navigation bar flashing through after each update.
+3. *Please notice: 
 
 ### 3. **File Operation (Upload File/Deleting File)**
+
+1. For users with 'admin' or 'read-write' 
 
 ### 4. **Deleting Dataset**
 
 ### 5. **Sharing Dataset with Collaborators**
 
-On the Dataset detail page, you with either "Administrator" or "readWrite" role on this Dataset, can add other existing users by typing their institutional emails and also assigning them a proper role. If your collaborators are not registered in the system, they have to register into our system first. The user, who creates a Dataset, is automatically assigned with "Admin" over this Dataset.
+On the Dataset detail page, you with either "admin" or "read-write" role on this Dataset, can add other existing users by typing their institutional emails and also assigning them a proper role. If your collaborators are not registered in the system, they have to register into our system first. The user, who creates a Dataset, is automatically assigned with "Admin" over this Dataset.
 
 - Adding/Deleting Collaborators
 - Collaborator Permissions

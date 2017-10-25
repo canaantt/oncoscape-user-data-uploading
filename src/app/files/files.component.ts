@@ -31,7 +31,11 @@ export class FilesComponent implements OnInit {
   files$: Observable<any>;
   hasFiles = false;
   id: string;
-  errorMsg = '';
+  errorMsg = {
+    'requiredField': '',
+    'fileSizeError': '', 
+    'fileTypeError':''
+  };
   uploadedstring = 'Not Uploaded';
   uploadStatus = {
     'uploadSummaryClinical': [],
@@ -61,10 +65,8 @@ export class FilesComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.project._id;
-    // this.uploader = new FileUploader({url: 'http://localhost:3000/upload/' + this.id  + '/' + this.user.email});
     console.log(environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email);
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
-                                      // headers: [{name: 'authorization', value: this.headerValue },
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
     console.log('test1');
@@ -86,23 +88,20 @@ export class FilesComponent implements OnInit {
     return Promise.reject(error.message || error);
   }
   updateStatus(fileitem: any) {
-    if (!this.statusMsg) {
-      alert('Please fill all the required fields before proceeding with data uploading.');
-    } else {
-      fileitem.upload();
-      this.uploadedstring = 'Uploaded';
-      console.log(fileitem.file);
-      this.project.File = {
-        'filename': fileitem.file.name,
-        'size' : fileitem.file.size,
-        'timestamp' : Date()
-      };
-      this.uploadComplete('Being uploaded');
-      this.filerefresh();
-      // if (fileitem.file.size >= 10000000) {
+      if(this.projectValidChecking(fileitem)) {
+        fileitem.upload();
+        this.uploadedstring = 'Uploaded';
+        this.project.File = {
+          'filename': fileitem.file.name,
+          'size' : fileitem.file.size,
+          'timestamp' : Date()
+        };
+        this.uploadComplete('Being uploaded');
+        this.filerefresh();
         alert('An email will be sent shortly after the operation is complete.');
-      // }
-    }
+      } else {
+        alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileTypeError + ' ' + this.errorMsg.fileSizeError);
+      }
   }
   cancelUpdate(fileitem: any) {
     const len = this.uploader.queue.length;
@@ -122,8 +121,28 @@ export class FilesComponent implements OnInit {
       console.log('file deletion is canceled.');
     }
   }
-  projectValidChecking(): boolean {
-    this.errorMsg = 'Still working on this feature';
-    return false;
+  projectValidChecking( fileitem ): boolean {
+    if (!this.statusMsg) {
+      this.errorMsg.requiredField = 'Please fill all the required fields before proceeding with data uploading.';
+    } else {
+      this.errorMsg.requiredField = '';
+    }
+    if (fileitem.file.size > 400*1000*1000) {
+      this.errorMsg.fileSizeError = 'File size should be greater than 400Mb';
+    } else {
+      this.errorMsg.fileSizeError = '';
+    }
+    if (fileitem.file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+      this.errorMsg.fileTypeError = 'File format should be xlsx'
+    } else {
+      this.errorMsg.fileTypeError = '';
+    }
+    if( this.errorMsg.requiredField === '' &&
+        this.errorMsg.fileSizeError === '' &&
+        this.errorMsg.fileTypeError === '') {
+          return true;
+        } else {
+          return false;
+        }
   }
 }

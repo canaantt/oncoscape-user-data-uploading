@@ -70,7 +70,7 @@
             <span (click)="submitPermissions()" class="fa fa-plus-circle permission-fa"></span>
           </div>
         </div>
-        <small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small>
+        <small [hidden]="newPermissionForm.controls.Email.valid" class="text-warning">Please Add Valid Email</small>
       </div>
     </form>
     <small class="text-danger">{{emailError}}</small>

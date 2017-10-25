@@ -14,7 +14,7 @@
                 </div>
                 <div class="form-group">
                   <label class="detail-label ">Description</label>
-                  <textarea [(ngModel)]="project.Description" name="projectDescription" class="form-control" rows="10"></textarea>
+                  <textarea [(ngModel)]="project.Description" name="projectDescription" placeholder="Enter Dataset Description" class="form-control" rows="10"></textarea>
                 </div>
               </div>
             </div>
@@ -24,10 +24,10 @@
               <div *ngIf='project.Annotations.length > 0'>
                 <div class="row ">
                   <div class="col-3">
-                    <h6>Dataset Annotation<span class="text-danger">*</span></h6>
+                    <h6>Dataset Annotation<span class="text-warning">*</span></h6>
                   </div>
                   <div class="col-3 ">
-                    <h6>Key Value<span class="text-danger">*</span></h6>
+                    <h6>Key Value<span class="text-warning">*</span></h6>
                   </div>
                   <div class="col-2">
                     <h6>Remove/Add</h6>
@@ -59,9 +59,11 @@
                 <div class="row ">
                   <div class="col-3">
                     <input class="form-control" type="text" formControlName="key" placeholder="e.g. Sample Size">
+                    <small *ngIf="!newAnnotationForm.valid" class="text-warning">Key is required</small>
                   </div>
                   <div class="col-3">
                     <input class="form-control" type="text" formControlName="value" placeholder="e.g. 110">
+                    <small *ngIf="!newAnnotationForm.valid" class="text-warning">Value is required</small>
                   </div>
                   <div class="col-2">
                     <div class="fa fa-plus-circle detail-fa" (click)="submitAnnotations()"></div>
@@ -79,7 +81,7 @@
                 <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
               </div>
               <div>
-                <p class="mb-0">I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/">Personal Health Information (PHI)</a><span class="text-danger">*</span></p>
+                <p class="mb-0">I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/" target="_blank">Personal Health Information (PHI)</a><span class="text-danger">*</span></p>
                 <input type="checkbox" [(ngModel)]="project.PHI">&nbsp;I agree<br />
                 <small class="text-danger" *ngIf="errorMessage.PHI !==''">{{errorMessage.PHI}}</small>
               </div>

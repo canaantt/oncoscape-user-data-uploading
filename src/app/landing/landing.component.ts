@@ -25,7 +25,6 @@ export class LandingComponent implements OnInit {
                private zone: NgZone,
                private router: Router ) {}
   getUser(): void {
-    // console.log('Landing getUser being called', this.counter++);
     this.stateService.user.subscribe(res => {
       this.zone.run(() => { this.user = res; });
     });

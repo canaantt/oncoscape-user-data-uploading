@@ -23,7 +23,8 @@ export class LoginService {
         google: this.GOOGLE_CLIENT_ID,
       }, {
         force: true,
-        redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/', 
+        // redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/', 
+        redirect_uri: environment.oAuthRedirectUri,
         display: 'popup',
         response_type: 'token',
         scope: 'email'
@@ -37,15 +38,11 @@ export class LoginService {
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
     this.googleLogOut();
-    hello.login('google', {force:true,  redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/'});
-    console.log("WOOT WOOT My CODE MADE IT TO THE SERVER.. I HOPE IT WORKS... FINGERS CROSSED");
+    hello.login('google', {force:true});
   }
   googleLogOut(): any {
     window.location.assign("/upload/");
     hello.logout('google', {force:true});
-    // this.stateService.user.next(null);
-    // this.stateService.jwtToken.next(null);
-    // this.router.navigate(['/landing']);
   }
 
   authLogin(auth) {
@@ -53,12 +50,10 @@ export class LoginService {
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
-          console.log('Google Access Token Recieved from Server: ', res);
           this.stateService.jwtToken.next(res);
           if ('token' in res) {
             hello('google').api('me').then( this.updateUserInfo.bind(this));
           } else if('gmail' in res) {
-            console.log('in authLogin but not register situation: ', res);
             this.stateService.internalUser.next({'Gmail': res});
             this.oauthServiceStatus.emit('register');
           }
@@ -69,11 +64,9 @@ export class LoginService {
   }
 
   updateUserInfo (v) {
-    console.log('Update User Info');
     this.userService.getUserByGmail(v.email)
     .map(res => res.json())
     .subscribe(r => {
-      console.log('LOGIN SERVICE, USER SERVICE.getUserByGmail...', r);
       if (r.user !== null) {
         this.stateService.user.next(v);
         this.oauthServiceStatus.emit('loggedIn');

@@ -1,5 +1,6 @@
 import { Component, Input, Output, SimpleChanges,  AfterViewInit, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { Pipe, PipeTransform } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -8,9 +9,9 @@ import { ProjectService } from '../service/project.service';
 import { PermissionService } from '../service/permission.service';
 import { File } from '../models/file';
 import { FileService } from '../service/file.service';
-import { IRB } from '../models/irb';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
+import { LoginService } from '../service/login.service';
 import { Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
@@ -56,12 +57,16 @@ export class ProjectDetailComponent implements  OnInit {
     private stateService: StateService,
     private elementRef: ElementRef,
     private updateEmitService: UpdateEmitService,
+    private loginService: LoginService,
+    private router: Router,
     private fb: FormBuilder) {
       this.id = this.route.snapshot.params['id'];
       this.stateService.user.subscribe(res => {
         if (res !== null) {
           this.user = res;
           this.getUserID(res.email, this.id);
+        } else {
+          this.loginService.googleLogOut();
         }
       });
       this.projectService.getProjectByID(this.route.snapshot.params['id'])
@@ -169,8 +174,10 @@ export class ProjectDetailComponent implements  OnInit {
     this.update(this.project);
   }
   submitAnnotations(): void {
-    this.project.Annotations.push(this.newAnnotationForm.value);
-    this.newAnnotationForm.reset({key: '', value: ''});
+    if (this.newAnnotationForm.valid) {
+      this.project.Annotations.push(this.newAnnotationForm.value);
+      this.newAnnotationForm.reset({key: '', value: ''});
+    } 
   }
   collectDataCompliance(value: string) {
     if (value === 'human') {

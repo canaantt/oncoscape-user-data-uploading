@@ -44,7 +44,6 @@ export class PermissionsComponent implements OnInit {
     });
     this.id = this.project._id;
     this.getPermissions();
-    console.log('Current role is...........', this.role);
   }
 
   getPermissions(): void {
@@ -62,7 +61,6 @@ export class PermissionsComponent implements OnInit {
     const p =  new Permission();
     this.userService.userValidationByEmail(formValue.Email)
         .subscribe(res => {
-          console.log(res[0]);
           if (typeof(res[0]) !== 'undefined') {
             p.User = res[0]._id;
             p.Project = this.project._id;
@@ -94,7 +92,6 @@ export class PermissionsComponent implements OnInit {
   }
   updatePermissions() {
     this.newPermissionForm.get('Permissions').value.forEach(element => {
-      console.log(element);
       this.updatePermission(element, element.Role);
     });
   }

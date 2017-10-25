@@ -6,8 +6,7 @@ import { Project } from '../models/project';
 import { ProjectService } from '../service/project.service';
 import { Permission } from '../models/permission';
 import { PermissionService } from '../service/permission.service';
-import { IRB } from '../models/irb';
-import { IrbService } from '../service/irb.service';
+import { LoginService } from '../service/login.service';
 import { User } from '../models/user';
 import { UserService } from '../service/user.service';
 import { FileService } from '../service/file.service';
@@ -37,7 +36,7 @@ export class DateFormatter implements PipeTransform {
   selector: 'app-projects-dashboard',
   templateUrl: './projects-dashboard.component.html',
   styleUrls: ['./projects-dashboard.component.scss'],
-  providers: [IrbService, UserService, PermissionService, FileService]
+  providers: [UserService, PermissionService, FileService]
 })
 export class ProjectsDashboardComponent {
   projects: any;
@@ -53,7 +52,7 @@ export class ProjectsDashboardComponent {
   constructor( private fb: FormBuilder,
                private projectService: ProjectService,
                private permissionService: PermissionService,
-               private irbService: IrbService,
+               private loginService: LoginService,
                private fileService: FileService,
                private userService: UserService,
                private stateService: StateService,
@@ -65,6 +64,8 @@ export class ProjectsDashboardComponent {
                       this.user = res;
                       if (this.user !== null) {
                         this.getUserID(this.user.email);
+                      } else {
+                        this.loginService.googleLogOut();
                       }
                     });
                }
@@ -126,8 +127,8 @@ export class ProjectsDashboardComponent {
   add(): void {
     console.log('in add');
     this.newProjectForm = this.fb.group({
-      Name: new FormControl('Name Your New Dataset', Validators.required),
-      Description: new FormControl('Enter a dataset description.', Validators.minLength(4)),
+      Name: new FormControl('', Validators.required),
+      Description: new FormControl(''),
       Private: new FormControl(true),
       Source: new FormControl('File'),
       Author: this.userID,
