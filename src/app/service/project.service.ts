@@ -60,8 +60,7 @@ export class ProjectService {
 
   update(project: Project): Observable<Response> {
     const url = `${this.projectsUrl}/` + project._id;
-    return this.http
-      .put(url, JSON.stringify(project), {headers: this.headers});
+    return this.http.put(url, JSON.stringify(project), {headers: this.headers});
   }
 
   private handleError(error: any): Promise<any> {

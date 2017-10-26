@@ -96,8 +96,8 @@ export class ProjectsDashboardComponent {
   getProjects(): void {
     this.projectService.getProjectsByIDs(this.projectIDs)
         .subscribe(res => {
-          this.zone.run(() => { 
-            this.projects = res; 
+          this.zone.run(() => {
+            this.projects = res;
 
           });
         });
@@ -127,8 +127,8 @@ export class ProjectsDashboardComponent {
   add(): void {
     console.log('in add');
     this.newProjectForm = this.fb.group({
-      Name: new FormControl('', Validators.required),
-      Description: new FormControl(''),
+      Name: new FormControl('New Name for the Dataset', Validators.required),
+      Description: new FormControl('Descriptions'),
       Private: new FormControl(true),
       Source: new FormControl('File'),
       Author: this.userID,
