@@ -59,8 +59,8 @@ export class PermissionService {
   deletePermissions( inputObject ) {
     const observableBatch = [];
     inputObject.forEach(( item, key ) => {
-      observableBatch.push(this.http.delete(this.permissionsUrl + '/' + item).map((res: Response) => res.json()) );
-    }, {headers: this.headers});
+      observableBatch.push(this.http.delete(this.permissionsUrl + '/' + item, {headers: this.headers}).map((res: Response) => res.json()) );
+    });
     return Observable.forkJoin(observableBatch);
   }
 
