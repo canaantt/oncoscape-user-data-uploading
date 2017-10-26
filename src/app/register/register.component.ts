@@ -31,11 +31,15 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) {
     this.stateService.internalUser.subscribe(res => {
-       this.internalUser = res;
-       console.log('IN REGISTER CONSTRUCT, DO WE RECEIVE GMAIL? ', res);
+      if (res !== null) {
+        this.internalUser = res;
+      } else {
+        alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
+        this.loginService.googleLogin();
+      }
     });
-  };
-  
+  }
+
   checking(): boolean {
     if (this.newUserForm.value.FirstName === '') {
       this.error.fn = 'First Name is required.';
@@ -86,13 +90,13 @@ export class RegisterComponent implements OnInit {
     const self = this;
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = this.internalUser.Gmail.gmail;
-    if(this.checking()) {
+    if (this.checking()) {
       this.stateService.internalUser.next(this.newUserForm.value);
-      this.userService.create(this.newUserForm.value).subscribe(()=> {
+      this.userService.create(this.newUserForm.value).subscribe(() => {
         alert('Create New User');
         this.loginService.googleLogin();
       });
-    } 
+    }
   }
 
   ngOnInit(): void {

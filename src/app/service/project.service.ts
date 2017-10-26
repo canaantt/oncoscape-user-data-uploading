@@ -16,6 +16,9 @@ export class ProjectService {
           .subscribe(res => {
             // console.log('Project service: ', res);
             this.headers.append('Content-Type', 'application/json');
+            this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
+            this.headers.append('Pragma', 'no-cache');
+            this.headers.append('Cache-Control', 'max-age=0');
             if (res !== null) {
               this.headers.append('Authorization', 'Bearer ' + res.token);
             }

@@ -16,6 +16,9 @@ export class UserService {
           .subscribe(res => {
             // console.log('User service: ', res);
             this.headers.append('Content-Type', 'application/json');
+            this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
+            this.headers.append('Pragma', 'no-cache');
+            this.headers.append('Cache-Control', 'max-age=0');
             if (res !== null) {
               this.headers.append('Authorization', 'Bearer ' + res.token);
             }
@@ -38,7 +41,7 @@ export class UserService {
   }
   userValidationByEmail(email: string): Observable<Response> {
     return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => value.Email === email))
+               .map(res => res.json().filter(value => (value.Email === email || value.Gmail === email)))
                .catch(err => Observable.throw(err));
   }
 
