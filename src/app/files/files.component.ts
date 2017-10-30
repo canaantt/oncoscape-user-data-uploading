@@ -33,8 +33,8 @@ export class FilesComponent implements OnInit {
   id: string;
   errorMsg = {
     'requiredField': '',
-    'fileSizeError': '', 
-    'fileTypeError':''
+    'fileSizeError': '',
+    'fileTypeError': ''
   };
   uploadedstring = 'Not Uploaded';
   uploadStatus = {
@@ -68,26 +68,28 @@ export class FilesComponent implements OnInit {
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
-    console.log('test1');
     this.filerefresh();
   }
   filerefresh() {
     console.log('in File component refresh()');
     this.fileService.uploadingValidation(this.id + '_uploadingSummary')
-        .catch(this.handleError)
+        // .catch(this.handleError)
         .subscribe(res => {
-          if (res[0].length  > 0 ) {
+          if (res.text() !== 'Not Found or No File has been uploaded yet.' ) {
             this.hasFiles = true;
+            res = res.json();
+            this.uploadStatus.uploadSummaryClinical = res[0].filter(function(m){return 'sheet' in m  && 'patients' in m; });
+            this.uploadStatus.uploadSummaryMolecular = res[0].filter(function(m){return 'sheet' in m  && 'markers' in m; });
+          } else {
+            console.log('No File has been uploaded to this dataset yet. ');
           }
-          this.uploadStatus.uploadSummaryClinical = res[0].filter(function(m){return 'sheet' in m  && 'patients' in m; });
-          this.uploadStatus.uploadSummaryMolecular = res[0].filter(function(m){return 'sheet' in m  && 'markers' in m; });
         });
   }
   private handleError(error: any): Promise<any> {
-    return Promise.reject(error.message || error);
+    return Promise.reject('No file is uploaded yet.');
   }
   updateStatus(fileitem: any) {
-      if(this.projectValidChecking(fileitem)) {
+      if (this.projectValidChecking(fileitem)) {
         fileitem.upload();
         this.uploadedstring = 'Uploaded';
         this.project.File = {
@@ -97,6 +99,7 @@ export class FilesComponent implements OnInit {
         };
         this.uploadComplete('Being uploaded');
         this.filerefresh();
+        // tslint:disable-next-line:max-line-length
         alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
       } else {
         alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileTypeError + ' ' + this.errorMsg.fileSizeError);
@@ -112,7 +115,6 @@ export class FilesComponent implements OnInit {
     if (confirmDeletion) {
       this.fileService.removeFilesByProjectID(this.id);
       this.project.File = null;
-      console.log('test...');
       this.uploadComplete('Being removed');
       this.hasFiles = false;
       this.uploader.queue = [];
@@ -126,17 +128,17 @@ export class FilesComponent implements OnInit {
     } else {
       this.errorMsg.requiredField = '';
     }
-    if (fileitem.file.size > 400*1000*1000) {
+    if (fileitem.file.size > 400 * 1000 * 1000) {
       this.errorMsg.fileSizeError = 'File size should be greater than 400Mb';
     } else {
       this.errorMsg.fileSizeError = '';
     }
-    if (fileitem.file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
-      this.errorMsg.fileTypeError = 'File format should be xlsx'
+    if (fileitem.file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      this.errorMsg.fileTypeError = 'File format should be xlsx';
     } else {
       this.errorMsg.fileTypeError = '';
     }
-    if( this.errorMsg.requiredField === '' &&
+    if (this.errorMsg.requiredField === '' &&
         this.errorMsg.fileSizeError === '' &&
         this.errorMsg.fileTypeError === '') {
           return true;

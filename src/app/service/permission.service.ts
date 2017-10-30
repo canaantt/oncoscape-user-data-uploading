@@ -16,7 +16,6 @@ export class PermissionService {
               private http: Http ) {
                 this.stateService.jwtToken
                     .subscribe(res => {
-                      // console.log('Permission service: ', res);
                       this.headers.append('Content-Type', 'application/json');
                       this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
                       this.headers.append('Pragma', 'no-cache');
@@ -76,7 +75,6 @@ export class PermissionService {
     return this.http.delete(url, {headers: this.headers});
   }
   create(permission: any): Observable<Response> {
-    console.log('In Permission service create: ', permission);
     return this.http
       .post(this.permissionsUrl, JSON.stringify(permission), {headers: this.headers});
   }

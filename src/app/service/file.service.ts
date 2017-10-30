@@ -42,8 +42,8 @@ export class FileService {
   }
 
   uploadingValidation(id: string): Observable<Response> {
-    return this.http.get(this.filesUrl + '/' + id, {headers: this.headers})
-                    .map(res => res.json());
+    return this.http.get(this.filesUrl + '/' + id, {headers: this.headers});
+                    // .map(res => res.json());
   }
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
