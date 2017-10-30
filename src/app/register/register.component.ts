@@ -34,8 +34,9 @@ export class RegisterComponent implements OnInit {
       if (res !== null) {
         this.internalUser = res;
       } else {
-        alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
-        this.loginService.googleLogin();
+        this.router.navigate(['/landing']);
+        // alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
+        // this.loginService.googleLogin();
       }
     });
   }
@@ -93,7 +94,7 @@ export class RegisterComponent implements OnInit {
     if (this.checking()) {
       this.stateService.internalUser.next(this.newUserForm.value);
       this.userService.create(this.newUserForm.value).subscribe(() => {
-        alert('Create New User');
+        console.log('Create New User');
         this.loginService.googleLogin();
       });
     }

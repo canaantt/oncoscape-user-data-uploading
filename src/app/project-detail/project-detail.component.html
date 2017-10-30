@@ -3,6 +3,10 @@
     <div class="container">
       <div class="row ">
         <div class="col-12 ">
+          <div *ngIf="!statusMsg">
+            <h5 class="text-warning">The content will Not be saved automatically untill the <strong>Regulatory Information</strong> is filled appropriately.</h5>
+            <br>
+          </div>
           <h5 class="detail-header">Dataset Details</h5>
           <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
           <form>

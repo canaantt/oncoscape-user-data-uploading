@@ -123,10 +123,10 @@ export class ProjectDetailComponent implements  OnInit {
   updatePreChecking (): void {
     if (this.project.Name === '') {
         this.errorMessage.Name = 'Project Name is required.';
-        this.statusMsg = false;
+        // this.statusMsg = false;
       } else {
         this.errorMessage.Name = '';
-        this.statusMsg = true;
+        // this.statusMsg = true;
       }
     if (this.project.DataCompliance.ComplianceOption === 'human'
       && (this.project.DataCompliance.HumanStudy === ''
@@ -134,32 +134,39 @@ export class ProjectDetailComponent implements  OnInit {
       ) {
       console.log('no exempt is checked.');
       this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
-      this.statusMsg = false;
+      // this.statusMsg = false;
     } else {
       if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
           && this.project.DataCompliance.IRBNumber === '') {
             this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
-            this.statusMsg = false;
+            // this.statusMsg = false;
       } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
           && this.project.DataCompliance.IECNumber === '') {
             this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
-            this.statusMsg = false;
+            // this.statusMsg = false;
       } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
           && this.project.DataCompliance.Waiver === '') {
             this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
-            this.statusMsg = false;
+            // this.statusMsg = false;
       } else {
         this.errorMessage.DataCompliance = '';
-        this.statusMsg = true;
+        // this.statusMsg = true;
       }
     }
     if (!this.project.PHI) {
       this.errorMessage.PHI = 'You must agree that all data is free of PHI.';
-      this.statusMsg = false;
+      // this.statusMsg = false;
     } else {
       this.errorMessage.PHI = '';
-      this.statusMsg = true;
+      // this.statusMsg = true;
     }
+    if (this.errorMessage.Name === '' &&
+        this.errorMessage.PHI === '' &&
+        this.errorMessage.DataCompliance === '') {
+          this.statusMsg = true;
+        } else {
+          this.statusMsg = false;
+        }
   }
   refresh() {
     this.projectService.getProjectByID(this.route.snapshot.params['id'])
@@ -177,7 +184,7 @@ export class ProjectDetailComponent implements  OnInit {
     if (this.newAnnotationForm.valid) {
       this.project.Annotations.push(this.newAnnotationForm.value);
       this.newAnnotationForm.reset({key: '', value: ''});
-    } 
+    }
   }
   collectDataCompliance(value: string) {
     if (value === 'human') {

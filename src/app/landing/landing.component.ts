@@ -30,7 +30,6 @@ export class LandingComponent implements OnInit {
     });
   }
   ngOnInit() {
-    
     const timer = Observable.timer(10, 200);
     this.subscription = timer.subscribe(() => {
       this.getUser();
@@ -46,10 +45,11 @@ export class LandingComponent implements OnInit {
                 this.router.navigate(['/projects', 'dashboard']);
                 break;
             case 'register':
-                alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
+                // alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
                 this.router.navigate(['/register']);
                 break;
             case 'loggedOut':
+                this.googleLogOut();
                 this.router.navigate(['/landing']);
                 break;
             default:
@@ -59,7 +59,14 @@ export class LandingComponent implements OnInit {
   }
 
   goRegister() {
-    this.router.navigate(['/register']);
+    this.stateService.internalUser.subscribe(res => {
+      if (res !== null) {
+        this.router.navigate(['/register']);
+      } else {
+        // alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
+        this.loginService.googleLogin();
+      }
+    });
   }
 
   googleLogin() {
@@ -67,6 +74,7 @@ export class LandingComponent implements OnInit {
   }
 
   googleLogOut() {
+    console.log('in landing component, googleLogout...');
     this.loginService.googleLogOut();
   }
  }

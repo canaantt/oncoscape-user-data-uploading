@@ -32,6 +32,7 @@ export class DateFormatter implements PipeTransform {
       }
   }
 }
+
 @Component({
   selector: 'app-projects-dashboard',
   templateUrl: './projects-dashboard.component.html',
@@ -107,7 +108,6 @@ export class ProjectsDashboardComponent {
     if (confirmDeletion) {
       this.permissionService.getPermissionByUserByProject(this.userID, project._id)
           .subscribe(res => {
-            console.log('******************* permission is...', res);
             if (res.Role !== 'admin') {
               alert ('You do not have permission to delete this dataset. Please contact author.');
               return;
