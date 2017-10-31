@@ -30,14 +30,21 @@ export class PermissionService {
     return this.http.get(this.permissionsUrl, {headers: this.headers});
   }
   getPermissionByID(id: string): Observable<Response> {
-    return this.http.get(this.permissionsUrl, {headers: this.headers})
-            .map(res => res.json().filter(value => value._id === id));
+    const url = `${this.permissionsUrl}/` + '{ _id:' + id + '}';
+    return this.http.get(url, {headers: this.headers});
+                // .map(res => res.json().filter(value => value._id === id));
+    // return this.http.get(this.permissionsUrl, {headers: this.headers})
+    //         .map(res => res.json().filter(value => value._id === id));
   }
   getPermissionsByProjectID(id: string): Observable<Response> {
-    return this.http.get(this.permissionsUrl, {headers: this.headers})
-            .map(res => res.json().filter(value => value.Project === id));
+    const url = `${this.permissionsUrl}/` + '{Project:ObjectId(' + id + ')}';
+    debugger;
+    return this.http.get(url, {headers: this.headers});
+            // .map(res => res.json().filter(value => value.Project === id));
   }
   getPermissionsByUserID(id: string): Observable<Response> {
+    const url = `${this.permissionsUrl}/` + `{User:ObjectId(` + id + `)}`;
+    debugger;
     return this.http.get(this.permissionsUrl, {headers: this.headers})
             .map(res => res.json().filter(value => value.User === id));
   }
