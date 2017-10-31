@@ -86,15 +86,18 @@ export class ProjectsDashboardComponent {
   getPermissions(id: string): void {
     this.permissionService.getPermissionsByUserID(id)
         .subscribe(res => {
+          debugger;
           this.getProjectIDs(res);
           this.permissions = res;
         });
   }
   getProjectIDs(permissions: any): void {
+    debugger;
     this.projectIDs = _.uniq(permissions.map(function(r){return r.Project; }));
     this.getProjects();
   }
   getProjects(): void {
+    debugger;
     this.projectService.getProjectsByIDs(this.projectIDs)
         .subscribe(res => {
           this.zone.run(() => {

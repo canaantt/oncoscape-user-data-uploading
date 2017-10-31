@@ -37,15 +37,13 @@ export class PermissionService {
     //         .map(res => res.json().filter(value => value._id === id));
   }
   getPermissionsByProjectID(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + '{Project:ObjectId(' + id + ')}';
-    debugger;
+    const url = `${this.permissionsUrl}/` + 'Project:ObjectId(' + id + ')';
     return this.http.get(url, {headers: this.headers});
             // .map(res => res.json().filter(value => value.Project === id));
   }
   getPermissionsByUserID(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + `{User:ObjectId(` + id + `)}`;
-    debugger;
-    return this.http.get(this.permissionsUrl, {headers: this.headers})
+    const url = `${this.permissionsUrl}/` + 'User:' + id;
+    return this.http.get(url, {headers: this.headers})
             .map(res => res.json().filter(value => value.User === id));
   }
   getPermissionsByIDs(ids: string[]): Observable<Response> {
