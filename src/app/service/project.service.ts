@@ -38,11 +38,12 @@ export class ProjectService {
   }
 
   getProjectByID(id: string): Observable<Response> {
-    const url = `${this.projectsUrl}/` + id;
+    const url = `${this.projectsUrl}/` + '_id:' + id;
     return this.http.get(url, {headers: this.headers}).map(res => res.json());
   }
   getProjectsByIDs(ids: string[]): Observable<Response> {
-    return this.http.get(this.projectsUrl, {headers: this.headers})
+    const url = `${this.projectsUrl}/` + '_id:' + ids;
+    return this.http.get(url, {headers: this.headers})
                .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
 
   }

@@ -92,16 +92,20 @@ export class ProjectDetailComponent implements  OnInit {
     this.userService.getUserByGmail(id)
               .map(res => res.json())
               .subscribe(res => {
-                this.getPermission(res.user._id, projectID );
+                // this.getPermission(res.user._id, projectID );
                 this.userID = res.user._id;
+                this.permissionService.getPermissionByUserByProject(res.user._id, projectID)
+                .subscribe(r => {
+                  console.log(r);
+                  console.log(res.user._id);
+                  this.permission = r;
+                });
               });
     }
-  getPermission(userID: string, projectID: string) {
-    this.permissionService.getPermissionByUserByProject(userID, projectID)
-        .subscribe(res => {
-          this.permission = res;
-        });
-  }
+  // getPermission(userID: string, projectID: string) {
+  //   this.permissionService.getPermissionByUserByProject(userID, projectID)
+  //       .subscribe(res => this.permission = res);
+  // }
   ngOnInit(): void {
     this.newAnnotationForm = new FormGroup({
         key: new FormControl('', Validators.required),

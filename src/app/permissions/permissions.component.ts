@@ -47,6 +47,7 @@ export class PermissionsComponent implements OnInit {
   }
 
   getPermissions(): void {
+    debugger;
     this.permissions$ = this.permissionService.getPermissionsByProjectID(this.id);
   }
 
