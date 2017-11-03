@@ -51,4 +51,25 @@ On the Dataset detail page, you with either "admin" or "read-write" role on this
 - Collaborator Permissions
 
 ## III. Dataset Template
+Currently, Oncoscape only accept data in Microsoft Excel sheet. 
 
+### Categories of Data 
+- PATIENT Required
+- PATIENTEVENT Optional
+- MOLECULAR-[type]-[subtype] Optional
+
+
+| Data Category  | Sheet Name | Row | Column |Required Fields | Optional Fields |
+| -------------- |:----------:| -------:|--------:| -------:|--------:|
+| Patient | **"PATIENT"** | sample | sample/patient-related information |A1:"SampleID"; B1:"PatientId" |[field_name]-[data_type] | 
+| Event | **"PATIENTEVENT-[Event_Type]"** | event | event-related information | A1:"PatientId"; B1:"StartDate"; C1:"EndDate" |[field_name]-[data_dype] | 
+| Molecular | **MOLECULAR-[Molecular_Type]-[Molecular_SubType]** | gene/biomarker/probe  | sample |  || 
+
+
+- Event_Type: "DIAGNOSIS", "PATHOLOGY", etc.
+- Patient Optional Fields: 
+    - field_name: "Birth", "Death", "DeathType", "Ethnicity", "HistoryTobacco"
+    - data_type: "Date", "String", "Number", "Boolean", etc
+    - some examples : "Birth-Date", "Death-Date", "DeathType-String", "Ethnicity-String", "HistoryTobacco-Boolean", etc.
+- Molecular_Type: "CNV", "MUT", etc
+- Molecular_SubType: you can specific more granular information such as platform, or batch name. 
