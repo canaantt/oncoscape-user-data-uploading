@@ -68,6 +68,10 @@ export class FilesComponent implements OnInit {
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
+    // this.uploader.onErrorItem = function(item) {
+    //   debugger;
+    //   item.isUploaded = false;
+    //   };
     this.filerefresh();
   }
   filerefresh() {
@@ -103,6 +107,7 @@ export class FilesComponent implements OnInit {
         alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
       } else {
         alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileTypeError + ' ' + this.errorMsg.fileSizeError);
+        this.uploader.clearQueue();
       }
   }
   cancelUpdate(fileitem: any) {
