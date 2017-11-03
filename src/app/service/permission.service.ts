@@ -38,8 +38,8 @@ export class PermissionService {
   }
   getPermissionsByProjectID(id: string): Observable<Response> {
     const url = `${this.permissionsUrl}/` + 'Project:' + id;
-    return this.http.get(url, {headers: this.headers});
-            // .map(res => res.json().filter(value => value.Project === id));
+    return this.http.get(url, {headers: this.headers})
+            .map(res => res.json());
   }
   getPermissionsByUserID(id: string): Observable<Response> {
     const url = `${this.permissionsUrl}/` + 'User:' + id;

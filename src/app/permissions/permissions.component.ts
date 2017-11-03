@@ -26,7 +26,7 @@ export class UserFullNamePipe implements PipeTransform {
 export class PermissionsComponent implements OnInit {
   permissions: any;
   newPermissionForm: FormGroup;
-  permissions$: Observable<any>;
+  // permissions$: Observable<any>;
   roles= ['admin', 'read-write', 'read-only'];
   @Input() project: any;
   @Input() role: any;
@@ -47,7 +47,11 @@ export class PermissionsComponent implements OnInit {
   }
 
   getPermissions(): void {
-    this.permissions$ = this.permissionService.getPermissionsByProjectID(this.id);
+    this.permissionService.getPermissionsByProjectID(this.id)
+        .subscribe(res => {
+          debugger;
+          this.permissions = res;
+        });
   }
 
   permissionItem(val: string) {
