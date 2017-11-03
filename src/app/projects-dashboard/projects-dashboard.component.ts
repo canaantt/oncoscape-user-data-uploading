@@ -99,7 +99,7 @@ export class ProjectsDashboardComponent {
         .subscribe(res => {
           this.zone.run(() => {
             this.projects = res;
-
+            this.projects = this.projects.reverse();
           });
         });
   }
