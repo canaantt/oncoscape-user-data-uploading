@@ -79,7 +79,6 @@
           <!-- END annotations -->
           <!-- START permissions -->
           <div *ngIf="permission">
-            <h5>TEST</h5>
             <app-permissions [role]="permission.Role" [project]="project"></app-permissions>
             <div *ngIf="permission.Role==='admin'" class="well form-group">
               <div clas="col-12">

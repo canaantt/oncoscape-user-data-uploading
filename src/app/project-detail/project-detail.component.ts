@@ -71,8 +71,8 @@ export class ProjectDetailComponent implements  OnInit {
       });
       this.projectService.getProjectByID(this.route.snapshot.params['id'])
                          .subscribe(res0 => {
-                           this.project = res0;
-                           this.update(this.project);
+                           this.project = res0[0];
+                           this.updatePreChecking();
                          });
       const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
             .map(() => this.project)
