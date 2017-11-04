@@ -95,7 +95,7 @@ export class RegisterComponent implements OnInit {
       this.stateService.internalUser.next(this.newUserForm.value);
       this.userService.create(this.newUserForm.value).subscribe(() => {
         console.log('Create New User');
-        this.loginService.googleLogin();
+        this.loginService.googleLogOut();
       });
     }
   }
