@@ -68,8 +68,8 @@ Currently, Oncoscape only accept data in Microsoft Excel sheet.
 
 - Event_Type: "DIAGNOSIS", "PATHOLOGY", etc.
 - Patient Optional Fields: 
-    - field_name: "Birth", "Death", "DeathType", "Ethnicity", "HistoryTobacco"
-    - data_type: "Date", "String", "Number", "Boolean", etc
+    - field_name: "Birth", "Death", "DeathType", "Ethnicity", "HistoryTobacco", etc
+    - data_type: "Date", "String", "Number", "Boolean"
     - some examples : "Birth-Date", "Death-Date", "DeathType-String", "Ethnicity-String", "HistoryTobacco-Boolean", etc.
 - Molecular_Type: "CNV", "MUT", etc
 - Molecular_SubType: you can specific more granular information such as platform, or batch name. 
