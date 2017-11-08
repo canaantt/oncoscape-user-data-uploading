@@ -24,9 +24,9 @@ export class UserService {
             }
           });
     }
-  getUsers():  Observable<Response> {
-    return this.http.get(this.usersUrl, {headers: this.headers});
-  }
+  // getUsers():  Observable<Response> {
+  //   return this.http.get(this.usersUrl, {headers: this.headers});
+  // }
   getUsersByID(id: string): Observable<Response> {
     return this.http.get(this.usersUrl, {headers: this.headers})
                .map(res => res.json().filter(value => id.indexOf(value._id) > -1));
@@ -35,20 +35,20 @@ export class UserService {
     const url = environment.apiBaseUrl + 'users/checkGmail/' + gmail;
     return this.http.post(url, {headers: this.headers});
   }
-  getUsersByIDs(ids: string[]): Observable<Response> {
-    return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
-  }
+  // getUsersByIDs(ids: string[]): Observable<Response> {
+  //   return this.http.get(this.usersUrl, {headers: this.headers})
+  //              .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
+  // }
   userValidationByEmail(email: string): Observable<Response> {
     return this.http.get(this.usersUrl, {headers: this.headers})
                .map(res => res.json().filter(value => (value.Email === email || value.Gmail === email)))
                .catch(err => Observable.throw(err));
   }
 
-  delete(user: User): Observable<Response> {
-    const url = `${this.usersUrl}/` + user._id;
-    return this.http.delete(url, {headers: this.headers});
-  }
+  // delete(user: User): Observable<Response> {
+  //   const url = `${this.usersUrl}/` + user._id;
+  //   return this.http.delete(url, {headers: this.headers});
+  // }
 
   create(user: User): Observable<Response> {
     return this.http

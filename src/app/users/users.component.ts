@@ -27,26 +27,27 @@ export class UsersComponent implements OnInit {
     private http: Http
   ) { }
 
-  getUsers(): void {
-    this.userService.getUsers()
-        .subscribe(res => {
-          this.users = res.json();
-        });
-  }
+  // getUsers(): void {
+  //   this.userService.getUsers()
+  //       .subscribe(res => {
+  //         this.users = res.json();
+  //       });
+  // }
   onSelect(user: User): void {
     this.selectedUser = user;
   }
-  delete(user: User): void {
-    this.userService.delete(user).subscribe(response => {
-      this.getUsers();
-    });
-  }
+  // delete(user: User): void {
+  //   this.userService.delete(user).subscribe(response => {
+  //     this.getUsers();
+  //   });
+  // }
   submit() {
-    this.userService.create(this.newUserForm.value).subscribe(() => this.getUsers());
+    // this.userService.create(this.newUserForm.value).subscribe(() => this.getUsers());
+    this.userService.create(this.newUserForm.value).subscribe(() => console.log('user is created.'));
   }
 
   ngOnInit(): void {
-    this.getUsers();
+    // this.getUsers();
     this.newUserForm = this.fb.group({
       FirstName: new FormControl('', Validators.required),
       LastName: new FormControl('', Validators.required),
@@ -63,7 +64,7 @@ export class UsersComponent implements OnInit {
     .debounceTime(500)
     .switchMap(val => this.users.map(users => users.Email).filter(emails => emails.indexOf(val) === -1))
     .subscribe(val => {
-      if(val.length === 0 ){
+      if (val.length === 0 ) {
         console.log('valid');
       } else {
         console.log('invalid');

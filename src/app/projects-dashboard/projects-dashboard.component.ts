@@ -117,6 +117,7 @@ export class ProjectsDashboardComponent {
               this.projectIDs.splice(index, 1);
               this.getProjects();
               this.fileService.removeFilesByProjectID(project._id);
+              debugger;
               this.permissionService.removePermisionsByProjectID(project._id);
             }
           });

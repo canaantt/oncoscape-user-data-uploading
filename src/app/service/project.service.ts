@@ -25,16 +25,15 @@ export class ProjectService {
           });
     }
 
-  getProjects(): Observable<Response> {
-    return this.http.get(this.projectsUrl, {headers: this.headers});
-  }
+  // getProjects(): Observable<Response> {
+  //   return this.http.get(this.projectsUrl, {headers: this.headers});
+  // }
 
   getRecentProject(userID: string): Observable<Response> {
      const url = `${this.projectsUrl}/` + 'User:' + userID;
      return this.http.get(url, {headers: this.headers})
                  .map(res => {
                    const filtered = res.json().filter(value => value.Author === userID);
-                   debugger;
                    return filtered[filtered.length - 1];
                   });
   }

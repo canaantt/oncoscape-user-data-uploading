@@ -17,8 +17,7 @@
   <!-- END of title row -->
   <!-- START of admin -->
   <div *ngIf="role === 'admin'">
-    <!-- <div *ngFor="let permission of permissions$ | async"> -->
-    <div *ngFor="let permission of permissions">
+    <div *ngFor="let permission of permissions$ | async">
       <div *ngIf="project.Author === permission.User" class="row">
         <div class="col-3">
           <p>{{permission.User | userFullName | async }}</p>
@@ -80,7 +79,7 @@
   <!-- END of admin ngIf -->
   <!-- START different view if not an admin -->
   <div *ngIf="role !== 'admin'">
-    <div class="form-group" *ngFor="let permission of permissions">
+    <div class="form-group" *ngFor="let permission of permissions$ | async">
       <div class="row">
         <div class="col-3">
           <p class="detail-users">{{permission.User | userFullName | async }}</p>

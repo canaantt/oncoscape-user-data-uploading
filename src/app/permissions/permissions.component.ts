@@ -24,9 +24,9 @@ export class UserFullNamePipe implements PipeTransform {
   providers: [ PermissionService, UserService, FormBuilder ]
 })
 export class PermissionsComponent implements OnInit {
-  permissions: any;
+  // permissions: Array<any>;
   newPermissionForm: FormGroup;
-  // permissions$: Observable<any>;
+  permissions$: Observable<any>;
   roles= ['admin', 'read-write', 'read-only'];
   @Input() project: any;
   @Input() role: any;
@@ -47,11 +47,12 @@ export class PermissionsComponent implements OnInit {
   }
 
   getPermissions(): void {
-    this.permissionService.getPermissionsByProjectID(this.id)
-        .subscribe(res => {
-          debugger;
-          this.permissions = res;
-        });
+    this.permissions$ = this.permissionService.getPermissionsByProjectID(this.id);
+    // this.permissionService.getPermissionsByProjectID(this.id)
+    //     .map(res => res.json())
+    //     .subscribe(res => {
+    //       this.permissions = res;
+    //     });
   }
 
   permissionItem(val: string) {
@@ -100,7 +101,7 @@ export class PermissionsComponent implements OnInit {
     });
   }
 
-  deletePermission(permission: Permission) {
-    this.permissionService.delete(permission).subscribe(() => this.getPermissions());
-  }
+  // deletePermission(permission: Permission) {
+  //   this.permissionService.delete(permission).subscribe(() => this.getPermissions());
+  // }
 }
