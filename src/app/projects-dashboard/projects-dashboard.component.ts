@@ -95,13 +95,16 @@ export class ProjectsDashboardComponent {
     this.getProjects();
   }
   getProjects(): void {
-    this.projectService.getProjectsByIDs(this.projectIDs)
-        .subscribe(res => {
-          this.zone.run(() => {
-            this.projects = res;
-
-          });
+    if (this.projectIDs.length === 0) {
+      this.projects = [];
+    } else {
+      this.projectService.getProjectsByIDs(this.projectIDs)
+      .subscribe(res => {
+        this.zone.run(() => {
+          this.projects = res;
         });
+      });
+    }
   }
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
@@ -117,11 +120,21 @@ export class ProjectsDashboardComponent {
               this.projectIDs.splice(index, 1);
               this.getProjects();
               this.fileService.removeFilesByProjectID(project._id);
-              debugger;
-              this.permissionService.removePermisionsByProjectID(project._id);
+              this.permissionService.removePermisionsByProjectID(project._id)
+                  .subscribe(() => console.log('permissions are deleted.'));
+              // this.projectService.delete(project).subscribe(() => {
+              // const index = this.projectIDs.indexOf(project._id);
+              // this.projectIDs.splice(index, 1);
+              // this.getProjects();
+              // this.permissionService.removePermisionsByProjectID(project._id)
+              //     .subscribe(() => {
+              //       console.log('permissions associated with this project are deleted.');
+              //     });
+              // });
+              // this.fileService.removeFilesByProjectID(project._id);
             }
           });
-    }else {
+    } else {
       console.log('Deletion cancled.');
     }
   }

@@ -34,7 +34,7 @@ export class FileService {
 
   removeFilesByProjectID(id: string): any {
     const url = `${this.filesUrl}/` + id;
-    this.http.delete(url, {headers: this.headers}).subscribe(err => console.log(err));
+    this.http.delete(url, {headers: this.headers}).subscribe(() => console.log('files are deleted.'));
   }
   create(file: File): Observable<Response> {
     return this.http

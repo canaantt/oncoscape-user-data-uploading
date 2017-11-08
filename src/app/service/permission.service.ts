@@ -59,7 +59,6 @@ export class PermissionService {
   removePermisionsByProjectID(id: string): any  {
     const url = `${this.permissionsUrl}/` + 'Project:' + id;
     console.log('in removePermisionsByProjectID: ', url);
-    debugger;
     return this.http.delete(url, {headers: this.headers});
     // this.http.get(this.permissionsUrl, {headers: this.headers})
     //     .map(res => res.json().filter(value => value.Project === id)

@@ -44,8 +44,8 @@ export class ProjectService {
   }
   getProjectsByIDs(ids: string[]): Observable<Response> {
     const url = `${this.projectsUrl}/` + '_id:' + ids;
-    return this.http.get(url, {headers: this.headers})
-               .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
+    return this.http.get(url, {headers: this.headers}).map(res => res.json());
+              //  .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
 
   }
 
