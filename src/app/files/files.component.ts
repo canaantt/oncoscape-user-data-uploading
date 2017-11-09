@@ -76,7 +76,7 @@ export class FilesComponent implements OnInit {
   }
   filerefresh() {
     console.log('in File component refresh()');
-    this.fileService.uploadingValidation(this.id + '_uploadingSummary')
+    this.fileService.uploadingValidation(this.id + '_collections')
         // .catch(this.handleError)
         .subscribe(res => {
           if (res.text() !== 'Not Found or No File has been uploaded yet.' ) {
