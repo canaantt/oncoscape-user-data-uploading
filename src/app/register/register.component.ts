@@ -92,9 +92,10 @@ export class RegisterComponent implements OnInit {
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = this.internalUser.Gmail.gmail;
     if (this.checking()) {
-      this.stateService.internalUser.next(this.newUserForm.value);
+      // this.stateService.internalUser.next(this.newUserForm.value);
       this.userService.create(this.newUserForm.value).subscribe(() => {
         console.log('Create New User');
+        // this.stateService.internalUser.next(this.newUserForm.value);
         this.loginService.googleLogOut();
       });
     }
