@@ -48,11 +48,6 @@ export class PermissionsComponent implements OnInit {
 
   getPermissions(): void {
     this.permissions$ = this.permissionService.getPermissionsByProjectID(this.id);
-    // this.permissionService.getPermissionsByProjectID(this.id)
-    //     .map(res => res.json())
-    //     .subscribe(res => {
-    //       this.permissions = res;
-    //     });
   }
 
   permissionItem(val: string) {
@@ -66,13 +61,14 @@ export class PermissionsComponent implements OnInit {
     const p =  new Permission();
     this.userService.userValidationByEmail(formValue.Email)
         .subscribe(res => {
+          debugger;
           if (typeof(res[0]) !== 'undefined') {
             p.User = res[0]._id;
             p.Project = this.project._id;
             p.Role = formValue.Role;
             this.permissionService.getPermissionByUserByProject(p.User, p.Project)
-                .subscribe(res => {
-                  if (typeof(res) === 'undefined') {
+                .subscribe((re) => {
+                  if (typeof(re) === 'undefined') {
                     this.emailError = '';
                     this.permissionService.create(p).subscribe(() => this.getPermissions());
                   } else {
@@ -101,7 +97,7 @@ export class PermissionsComponent implements OnInit {
     });
   }
 
-  // deletePermission(permission: Permission) {
-  //   this.permissionService.delete(permission).subscribe(() => this.getPermissions());
-  // }
+  deletePermission(permission: Permission) {
+    this.permissionService.deleteById(permission._id).subscribe(() => this.getPermissions());
+  }
 }

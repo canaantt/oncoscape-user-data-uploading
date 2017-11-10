@@ -26,71 +26,47 @@ export class PermissionService {
                     });
               }
 
-  getPermissions():  Observable<Response> {
-    return this.http.get(this.permissionsUrl, {headers: this.headers});
-  }
   getPermissionByID(id: string): Observable<Response> {
     const url = `${this.permissionsUrl}/` + '_id:' + id;
     return this.http.get(url, {headers: this.headers});
-                // .map(res => res.json().filter(value => value._id === id));
-    // return this.http.get(this.permissionsUrl, {headers: this.headers})
-    //         .map(res => res.json().filter(value => value._id === id));
   }
+
   getPermissionsByProjectID(id: string): Observable<Response> {
     const url = `${this.permissionsUrl}/` + 'Project:' + id;
     return this.http.get(url, {headers: this.headers})
             .map(res => res.json());
   }
+
   getPermissionsByUserID(id: string): Observable<Response> {
     const url = `${this.permissionsUrl}/` + 'User:' + id;
     return this.http.get(url, {headers: this.headers})
             .map(res => res.json().filter(value => value.User === id));
   }
-  getPermissionsByIDs(ids: string[]): Observable<Response> {
-    return this.http.get(this.permissionsUrl, {headers: this.headers})
-            .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
-  }
+
   getPermissionByUserByProject(userID: string, projectID: string): Observable<Permission> {
     const url = `${this.permissionsUrl}/` + 'Project:' + projectID + ';User:' + userID;
     console.log('in getPermissionByUserByProject: ', url);
+    debugger;
     return this.http.get(url, {headers: this.headers}).map(res => res.json()[0]);
-            // .map(res => res.json().filter(value => (value.User === userID && value.Project === projectID))[0]);
   }
+
   removePermisionsByProjectID(id: string): any  {
     const url = `${this.permissionsUrl}/` + 'Project:' + id;
-    console.log('in removePermisionsByProjectID: ', url);
-    return this.http.delete(url, {headers: this.headers});
-    // this.http.get(this.permissionsUrl, {headers: this.headers})
-    //     .map(res => res.json().filter(value => value.Project === id)
-    //     .map(permission => permission._id))
-    //     .subscribe(res => {
-    //       this.deletePermissions(res).subscribe();
-    //     });
-  }
-
-  deletePermissions( inputObject ) {
-    const observableBatch = [];
-    inputObject.forEach(( item, key ) => {
-      observableBatch.push(this.http.delete(this.permissionsUrl + '/' + item, {headers: this.headers}).map((res: Response) => res.json()) );
-    });
-    return Observable.forkJoin(observableBatch);
-  }
-
-  delete(permission: Permission): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + permission._id;
     return this.http.delete(url, {headers: this.headers});
   }
+
   deleteById(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + id;
+    const url = `${this.permissionsUrl}/` + '_id:' + id;
     return this.http.delete(url, {headers: this.headers});
   }
+
   create(permission: any): Observable<Response> {
     return this.http
       .post(this.permissionsUrl, JSON.stringify(permission), {headers: this.headers});
   }
 
   update(permission: Permission, permissionRole: roles): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + permission._id;
+    const url = `${this.permissionsUrl}/` + '_id:' + permission._id;
     permission.Role = permissionRole;
     return this.http.put(url, JSON.stringify(permission), {headers: this.headers});
   }

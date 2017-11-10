@@ -122,16 +122,6 @@ export class ProjectsDashboardComponent {
               this.fileService.removeFilesByProjectID(project._id);
               this.permissionService.removePermisionsByProjectID(project._id)
                   .subscribe(() => console.log('permissions are deleted.'));
-              // this.projectService.delete(project).subscribe(() => {
-              // const index = this.projectIDs.indexOf(project._id);
-              // this.projectIDs.splice(index, 1);
-              // this.getProjects();
-              // this.permissionService.removePermisionsByProjectID(project._id)
-              //     .subscribe(() => {
-              //       console.log('permissions associated with this project are deleted.');
-              //     });
-              // });
-              // this.fileService.removeFilesByProjectID(project._id);
             }
           });
     } else {

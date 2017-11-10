@@ -14,7 +14,6 @@ export class ProjectService {
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
-            // console.log('Project service: ', res);
             this.headers.append('Content-Type', 'application/json');
             this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
             this.headers.append('Pragma', 'no-cache');
@@ -24,10 +23,6 @@ export class ProjectService {
             }
           });
     }
-
-  // getProjects(): Observable<Response> {
-  //   return this.http.get(this.projectsUrl, {headers: this.headers});
-  // }
 
   getRecentProject(userID: string): Observable<Response> {
      const url = `${this.projectsUrl}/` + 'User:' + userID;
@@ -42,19 +37,14 @@ export class ProjectService {
     const url = `${this.projectsUrl}/` + '_id:' + id;
     return this.http.get(url, {headers: this.headers}).map(res => res.json());
   }
+
   getProjectsByIDs(ids: string[]): Observable<Response> {
     const url = `${this.projectsUrl}/` + '_id:' + ids;
     return this.http.get(url, {headers: this.headers}).map(res => res.json());
-              //  .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
-
   }
 
-  getProjectByUserID(id: string): Observable<Response> {
-    const url = `${this.projectsUrl}/` + id;
-    return this.http.get(url, {headers: this.headers}).map(res => res.json());
-  }
   delete(project: Project): Observable<Response> {
-    const url = `${this.projectsUrl}/` + project._id;
+    const url = `${this.projectsUrl}/` + '_id:' + project._id;
     return this.http.delete(url, {headers: this.headers});
   }
 
@@ -64,7 +54,7 @@ export class ProjectService {
   }
 
   update(project: Project): Observable<Response> {
-    const url = `${this.projectsUrl}/` + project._id;
+    const url = `${this.projectsUrl}/` + '_id:' + project._id;
     return this.http.put(url, JSON.stringify(project), {headers: this.headers});
   }
 
