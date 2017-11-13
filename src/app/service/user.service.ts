@@ -40,7 +40,8 @@ export class UserService {
   // }
   userValidationByEmail(email: string): Observable<Response> {
     console.log('working on it........');
-    const url = `${this.usersUrl}/` + '{"$or":' + '[{Email:"' + email + '"},{Gmail:"' + email + '"}]}';
+    const query = {'$or': [{'Email': email}, {'Gmail': email}]};
+    const url = `${this.usersUrl}/` + JSON.stringify(query);
     return this.http.get(url, {headers: this.headers})
                .map(res => res.json());
   }
