@@ -84,6 +84,7 @@ export class ProjectsDashboardComponent {
               });
   }
   getPermissions(id: string): void {
+    debugger;
     this.permissionService.getPermissionsByUserID(id)
         .subscribe(res => {
           this.getProjectIDs(res);
@@ -91,7 +92,8 @@ export class ProjectsDashboardComponent {
         });
   }
   getProjectIDs(permissions: any): void {
-    this.projectIDs = _.uniq(permissions.map(function(r){return r.Project; }));
+    debugger;
+    this.projectIDs = _.uniq(permissions.map(r => r.Project));
     this.getProjects();
   }
   getProjects(): void {
@@ -148,11 +150,13 @@ export class ProjectsDashboardComponent {
   getRecentAddedProject(): void {
     this.projectService.getRecentProject(this.userID)
         .subscribe(res => {
+          debugger;
           this.addPermission(res['_id']);
           this.newAddedProject = res;
         });
   }
   addPermission(projectID: string): void {
+    debugger;
     const newPermission = {
                          'User': this.userID,
                          'Role': 'admin',

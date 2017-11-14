@@ -45,8 +45,6 @@ export class PermissionService {
 
   getPermissionByUserByProject(userID: string, projectID: string): Observable<Permission> {
     const url = `${this.permissionsUrl}/` + 'Project:' + projectID + ';User:' + userID;
-    console.log('in getPermissionByUserByProject: ', url);
-    debugger;
     return this.http.get(url, {headers: this.headers}).map(res => res.json()[0]);
   }
 
@@ -61,6 +59,7 @@ export class PermissionService {
   }
 
   create(permission: any): Observable<Response> {
+    console.log('am I adding new permission? during project addition?');
     return this.http
       .post(this.permissionsUrl, JSON.stringify(permission), {headers: this.headers});
   }

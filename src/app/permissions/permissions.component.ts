@@ -61,7 +61,6 @@ export class PermissionsComponent implements OnInit {
     const p =  new Permission();
     this.userService.userValidationByEmail(formValue.Email)
         .subscribe(res => {
-          debugger;
           if (typeof(res[0]) !== 'undefined') {
             p.User = res[0]._id;
             p.Project = this.project._id;
