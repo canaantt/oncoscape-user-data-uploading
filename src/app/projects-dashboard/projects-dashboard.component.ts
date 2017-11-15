@@ -84,7 +84,6 @@ export class ProjectsDashboardComponent {
               });
   }
   getPermissions(id: string): void {
-    debugger;
     this.permissionService.getPermissionsByUserID(id)
         .subscribe(res => {
           this.getProjectIDs(res);
@@ -92,7 +91,6 @@ export class ProjectsDashboardComponent {
         });
   }
   getProjectIDs(permissions: any): void {
-    debugger;
     this.projectIDs = _.uniq(permissions.map(r => r.Project));
     this.getProjects();
   }
