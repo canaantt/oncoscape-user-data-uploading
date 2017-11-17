@@ -49,6 +49,7 @@ export class ProjectService {
   }
 
   create(project: Project): Observable<Response> {
+    console.log('PROJECT SERVICE CREATE: ', project);
     return this.http
       .post(this.projectsUrl, JSON.stringify(project), {headers: this.headers});
   }

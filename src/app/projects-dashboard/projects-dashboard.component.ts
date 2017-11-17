@@ -76,6 +76,7 @@ export class ProjectsDashboardComponent {
     this.router.navigate([ `/projects/${id}/`]);
   }
   getUserID(id: string): void {
+    debugger;
     this.userService.getUserByGmail(id)
               .map(res => res.json())
               .subscribe(res => {
@@ -141,12 +142,12 @@ export class ProjectsDashboardComponent {
     });
     this.projectService.create(this.newProjectForm.value)
         .subscribe(() => {
-          this.getRecentAddedProject();
+          this.getRecentAddedProject(this.newProjectForm.value.Author);
         });
     this.getProjects();
   }
-  getRecentAddedProject(): void {
-    this.projectService.getRecentProject(this.userID)
+  getRecentAddedProject(userID: string): void {
+    this.projectService.getRecentProject(userID)
         .subscribe(res => {
           debugger;
           this.addPermission(res['_id']);
