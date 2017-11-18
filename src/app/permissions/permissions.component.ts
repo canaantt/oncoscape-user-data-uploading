@@ -14,7 +14,9 @@ export class UserFullNamePipe implements PipeTransform {
   constructor(private userService: UserService) {}
   transform(id: string): Observable<string> {
       return this.userService.getUsersByID(id)
-      .map(res => res[0].FirstName + ' ' + res[0].LastName);
+      .map(res => {
+        return res[0].FirstName + ' ' + res[0].LastName;
+      });
   }
 }
 @Component({
