@@ -13,7 +13,7 @@ enum roles {'admin', 'read-write', 'read-only'}
 export class UserFullNamePipe implements PipeTransform {
   constructor(private userService: UserService) {}
   transform(id: string): Observable<string> {
-      return this.userService.getUsersByID(id)
+      return this.userService.getUserByID(id)
       .map(res => {
         return res[0].FirstName + ' ' + res[0].LastName;
       });

@@ -14,7 +14,6 @@ export class UserService {
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
-            // console.log('User service: ', res);
             this.headers.append('Content-Type', 'application/json');
             this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
             this.headers.append('Pragma', 'no-cache');
@@ -25,31 +24,23 @@ export class UserService {
           });
     }
 
-  getUsersByID(id: string): Observable<Response> {
-    const url = `${this.usersUrl}/` + '_id:' + id;
+  getUserByID(id: string): Observable<Response> {
+    const url = `${this.usersUrl}/` + JSON.stringify({'_id': id});
     return this.http.get(url, {headers: this.headers})
                .map(res => res.json());
   }
+
   getUserByGmail(gmail: string): Observable<Response> {
     const url = environment.apiBaseUrl + 'users/checkGmail/' + gmail;
     return this.http.post(url, {headers: this.headers});
   }
-  // getUsersByIDs(ids: string[]): Observable<Response> {
-  //   return this.http.get(this.usersUrl, {headers: this.headers})
-  //              .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
-  // }
+
   userValidationByEmail(email: string): Observable<Response> {
-    console.log('working on it........');
     const query = {'$or': [{'Email': email}, {'Gmail': email}]};
     const url = `${this.usersUrl}/` + JSON.stringify(query);
     return this.http.get(url, {headers: this.headers})
                .map(res => res.json());
   }
-
-  // delete(user: User): Observable<Response> {
-  //   const url = `${this.usersUrl}/` + user._id;
-  //   return this.http.delete(url, {headers: this.headers});
-  // }
 
   create(user: User): Observable<Response> {
     return this.http
@@ -57,7 +48,7 @@ export class UserService {
   }
 
   update(user: User): Observable<Response> {
-    const url = `${this.usersUrl}/` + '_id:' + user._id;
+    const url = `${this.usersUrl}/`  + JSON.stringify({'_id': user._id});
     return this.http.put(url, JSON.stringify(user), {headers: this.headers});
   }
 

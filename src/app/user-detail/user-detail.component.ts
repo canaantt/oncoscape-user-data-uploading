@@ -30,7 +30,7 @@ export class UserDetailComponent {
               private updateEmitService: UpdateEmitService,
               private userService: UserService) {
                 this.id = this.route.snapshot.params['id'];
-                this.userService.getUsersByID(this.id)
+                this.userService.getUserByID(this.id)
                     .subscribe(res => {
                       console.log(res);
                       this.user = res[0];

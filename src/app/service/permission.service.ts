@@ -27,45 +27,49 @@ export class PermissionService {
               }
 
   getPermissionByID(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + '_id:' + id;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'_id': id});
     return this.http.get(url, {headers: this.headers});
   }
 
   getPermissionsByProjectID(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + 'Project:' + id;
+    // const url = `${this.permissionsUrl}/` + 'Project:' + id;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'Project': id});
     return this.http.get(url, {headers: this.headers})
             .map(res => res.json());
   }
 
   getPermissionsByUserID(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + 'User:' + id;
+    // const url = `${this.permissionsUrl}/` + 'User:' + id;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'User': id});
     return this.http.get(url, {headers: this.headers})
             .map(res => res.json().filter(value => value.User === id));
   }
 
   getPermissionByUserByProject(userID: string, projectID: string): Observable<Permission> {
-    const url = `${this.permissionsUrl}/` + 'Project:' + projectID + ';User:' + userID;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'Project': projectID, 'User': userID});
     return this.http.get(url, {headers: this.headers}).map(res => res.json()[0]);
   }
 
   removePermisionsByProjectID(id: string): any  {
-    const url = `${this.permissionsUrl}/` + 'Project:' + id;
+    // const url = `${this.permissionsUrl}/` + 'Project:' + id;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'Project': id});
     return this.http.delete(url, {headers: this.headers});
   }
 
   deleteById(id: string): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + '_id:' + id;
+    // const url = `${this.permissionsUrl}/` + '_id:' + id;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'_id': id});
     return this.http.delete(url, {headers: this.headers});
   }
 
   create(permission: any): Observable<Response> {
-    console.log('am I adding new permission? during project addition?');
     return this.http
       .post(this.permissionsUrl, JSON.stringify(permission), {headers: this.headers});
   }
 
   update(permission: Permission, permissionRole: roles): Observable<Response> {
-    const url = `${this.permissionsUrl}/` + '_id:' + permission._id;
+    // const url = `${this.permissionsUrl}/` + '_id:' + permission._id;
+    const url = `${this.permissionsUrl}/` + JSON.stringify({'_id': permission._id});
     permission.Role = permissionRole;
     return this.http.put(url, JSON.stringify(permission), {headers: this.headers});
   }

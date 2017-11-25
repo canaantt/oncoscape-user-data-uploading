@@ -25,26 +25,26 @@ export class ProjectService {
     }
 
   getRecentProject(userID: string): Observable<Response> {
-     const url = `${this.projectsUrl}/` + 'Author:' + userID;
+     const url = `${this.projectsUrl}/` + JSON.stringify({'Author': userID});
      return this.http.get(url, {headers: this.headers})
-                 .map(res => {
-                   const filtered = res.json().filter(value => value.Author === userID);
-                   return filtered[filtered.length - 1];
-                  });
+                .map(res => {
+                  const filtered = res.json();
+                  return filtered[filtered.length - 1];
+                });
   }
 
   getProjectByID(id: string): Observable<Response> {
-    const url = `${this.projectsUrl}/` + '_id:' + id;
+    const url = `${this.projectsUrl}/` + JSON.stringify({'_id': id});
     return this.http.get(url, {headers: this.headers}).map(res => res.json());
   }
 
   getProjectsByIDs(ids: string[]): Observable<Response> {
-    const url = `${this.projectsUrl}/` + '_id:' + ids;
+    const url = `${this.projectsUrl}/` + JSON.stringify({'_id': {'$in': ids}});
     return this.http.get(url, {headers: this.headers}).map(res => res.json());
   }
 
   delete(project: Project): Observable<Response> {
-    const url = `${this.projectsUrl}/` + '_id:' + project._id;
+    const url = `${this.projectsUrl}/` + JSON.stringify({'_id': project._id});
     return this.http.delete(url, {headers: this.headers});
   }
 
@@ -55,7 +55,7 @@ export class ProjectService {
   }
 
   update(project: Project): Observable<Response> {
-    const url = `${this.projectsUrl}/` + '_id:' + project._id;
+    const url = `${this.projectsUrl}/` +  JSON.stringify({'_id': project._id});
     return this.http.put(url, JSON.stringify(project), {headers: this.headers});
   }
 
