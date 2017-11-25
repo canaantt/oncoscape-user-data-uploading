@@ -95,17 +95,15 @@ export class ProjectsDashboardComponent {
     this.getProjects();
   }
   getProjects(): void {
-    if (this.projectIDs.length === 0) {
-      this.projects = [];
-    } else {
-      this.projectService.getProjectsByIDs(this.projectIDs)
-      .subscribe(res => {
-        this.zone.run(() => {
-          this.projects = res;
+    this.projectService.getProjectsByIDs(this.projectIDs)
+        .subscribe(res => {
+          this.zone.run(() => {
+            this.projects = res;
+            this.projects = this.projects.reverse();
+          });
         });
-      });
     }
-  }
+
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
     if (confirmDeletion) {

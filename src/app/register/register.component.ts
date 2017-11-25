@@ -41,7 +41,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  checking(): boolean {
+  errorMsgUpdate() {
     if (this.newUserForm.value.FirstName === '') {
       this.error.fn = 'First Name is required.';
     } else {
@@ -62,20 +62,22 @@ export class RegisterComponent implements OnInit {
     } else {
       this.error.email.format = '';
     }
-    this.userService.userValidationByEmail(this.newUserForm.value.Email)
-    .subscribe(res => {
-      if (typeof(res[0]) !== 'undefined') {
-        this.error.email.duplicate = 'This email has already been registered';
-        return;
-      } else {
-        this.error.email.duplicate = '';
-      }
-    });
+    // this.userService.userValidationByEmail(this.newUserForm.value.Email)
+    // .subscribe(res => {
+    //   if (typeof(res[0]) !== 'undefined') {
+    //     this.error.email.duplicate = 'This email has already been registered';
+    //     return;
+    //   } else {
+    //     this.error.email.duplicate = '';
+    //   }
+    // });
     if (this.newUserForm.value.Institution === '') {
       this.error.in = 'Should not be empty.';
     } else {
       this.error.in = '';
     }
+  }
+  checking(): boolean {
     if ( this.error.fn === '' &&
     this.error.ln === '' &&
     this.error.email.empty === '' &&
@@ -92,10 +94,9 @@ export class RegisterComponent implements OnInit {
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = this.internalUser.Gmail.gmail;
     if (this.checking()) {
-      this.stateService.internalUser.next(this.newUserForm.value);
       this.userService.create(this.newUserForm.value).subscribe(() => {
         console.log('Create New User');
-        this.loginService.googleLogin();
+        this.loginService.googleLogOut();
       });
     }
   }
@@ -109,7 +110,7 @@ export class RegisterComponent implements OnInit {
     });
     this.newUserForm.valueChanges
         .debounceTime(200)
-        .subscribe(() => this.checking());
+        .subscribe(() => this.errorMsgUpdate());
   }
 
 }
