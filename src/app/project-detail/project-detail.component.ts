@@ -181,13 +181,6 @@ export class ProjectDetailComponent implements  OnInit {
   statusReport() {
     setTimeout(() => this.updateEmitService.updateState());
   }
-  updatePrivateState() {
-    if (this.project.Private) {
-      this.fileService.removeFilesByProjectID(this.project._id);
-    } else {
-
-    }
-  }
   fileUpdates(event) {
     this.update(this.project);
   }

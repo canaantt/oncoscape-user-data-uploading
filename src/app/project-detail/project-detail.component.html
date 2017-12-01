@@ -17,11 +17,6 @@
                   <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
                 </div>
                 <div class="form-group">
-                  <label>Private</label>
-                  <input type="checkbox" [(ngModel)]="project.Private" name='private' [checked]="project.Private" (change)="updatePrivateState()">
-                    <h6><span class="text-warning">By Unchecking this option, your project will be publicly searchable.</span></h6>
-                </div>
-                <div class="form-group">
                   <label class="detail-label ">Description</label>
                   <textarea [(ngModel)]="project.Description" name="projectDescription" placeholder="Enter Dataset Description" class="form-control" rows="10"></textarea>
                 </div>
@@ -85,10 +80,15 @@
           <!-- START permissions -->
           <div *ngIf="permission">
             <app-permissions [role]="permission.Role" [project]="project"></app-permissions>
-            <div *ngIf="permission.Role==='admin'" class="well form-group">
-              <div clas="col-12">
+            <div clas="col-12">
                 <h5 class="detail-header">Regulatory Infomation<span class="text-danger">*</span></h5>
               </div>
+            <div class="form-group">
+              <p class="mb-0">Unchecking this option will make your dataset publicly searchable. Only Author or admin of the dataset can update this option.</p>                
+              <label>Private</label>
+              <input type="checkbox" [(ngModel)]="project.Private" name='private' [checked]="project.Private" [disabled]="permission.Role!=='admin'">
+            </div>
+            <div *ngIf="permission.Role==='admin'" class="well form-group">
               <div>
                 <p class="mb-0">I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/" target="_blank">Personal Health Information (PHI)</a><span class="text-danger">*</span></p>
                 <input type="checkbox" [(ngModel)]="project.PHI">&nbsp;I agree<br />
