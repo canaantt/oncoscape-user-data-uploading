@@ -46,6 +46,7 @@ export class LoginService {
 
   authLogin(auth) {
     const token = auth.authResponse.access_token;
+    console.log(auth);
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
