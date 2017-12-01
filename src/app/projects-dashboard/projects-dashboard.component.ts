@@ -77,10 +77,10 @@ export class ProjectsDashboardComponent {
   }
   getUserID(id: string): void {
     this.userService.getUserByGmail(id)
-              .map(res => res.json())
+              .map(res => res.json()[0])
               .subscribe(res => {
-                this.getPermissions(res.user._id);
-                this.userID = res.user._id;
+                this.getPermissions(res._id);
+                this.userID = res._id;
               });
   }
   getPermissions(id: string): void {

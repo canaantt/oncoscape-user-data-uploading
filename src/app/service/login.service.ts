@@ -65,7 +65,7 @@ export class LoginService {
 
   updateUserInfo (v) {
     this.userService.getUserByGmail(v.email)
-    .map(res => res.json())
+    .map(res => res.json()[0])
     .subscribe(r => {
       if (r.user !== null) {
         this.stateService.user.next(v);
