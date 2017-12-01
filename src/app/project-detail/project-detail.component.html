@@ -17,6 +17,11 @@
                   <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
                 </div>
                 <div class="form-group">
+                  <label>Private</label>
+                  <input type="checkbox" [(ngModel)]="project.Private" name='private' [checked]="project.Private" (change)="updatePrivateState()">
+                    <h6><span class="text-warning">By Unchecking this option, your project will be publicly searchable.</span></h6>
+                </div>
+                <div class="form-group">
                   <label class="detail-label ">Description</label>
                   <textarea [(ngModel)]="project.Description" name="projectDescription" placeholder="Enter Dataset Description" class="form-control" rows="10"></textarea>
                 </div>
