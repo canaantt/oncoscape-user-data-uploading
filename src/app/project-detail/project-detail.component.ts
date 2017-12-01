@@ -90,14 +90,14 @@ export class ProjectDetailComponent implements  OnInit {
 
   getUserID(id: string, projectID: string): void {
     this.userService.getUserByGmail(id)
-              .map(res => res.json())
+              .map(res => res.json()[0])
               .subscribe(res => {
                 // this.getPermission(res.user._id, projectID );
-                this.userID = res.user._id;
-                this.permissionService.getPermissionByUserByProject(res.user._id, projectID)
+                this.userID = res._id;
+                this.permissionService.getPermissionByUserByProject(res._id, projectID)
                 .subscribe(r => {
                   console.log(r);
-                  console.log(res.user._id);
+                  console.log(res._id);
                   this.permission = r;
                 });
               });
