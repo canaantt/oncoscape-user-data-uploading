@@ -4,16 +4,15 @@
       <div class="row ">
         <div class="col-12 ">
           <div *ngIf="!statusMsg">
-            <h5 class="text-warning">The content will Not be saved automatically untill the <strong>Regulatory Information</strong> is filled appropriately.</h5>
-            <br>
           </div>
           <h5 class="detail-header">Dataset Details</h5>
-          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
+          
           <form>
             <div class="row ">
               <div class="col-10">
                 <div class="form-group ">
                   <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
+                  <small class="text-danger" *ngIf="errorMessage.Name!==''"><br/>{{errorMessage.Name}}</small>
                   <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
                 </div>
                 <div class="form-group">

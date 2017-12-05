@@ -60,36 +60,26 @@ export class ProjectsDashboardComponent {
                private zone: NgZone,
                private router: Router) {
                 console.log('Dashboard Component constructor');
-                this.stateService.user
+                this.stateService.internalUser
                     .subscribe(res => {
                       this.user = res;
                       if (this.user !== null) {
-                        this.getUserID(this.user.email);
+                        this.getPermissions(this.user._id);
                       } else {
                         this.loginService.googleLogOut();
                       }
                     });
                }
-  onSelect(Project: Project): void {
-    this.selectedProject = Project;
-    const id = this.selectedProject._id;
-    this.router.navigate([ `/projects/${id}/`]);
-  }
-  getUserID(id: string): void {
-    this.userService.getUserByGmail(id)
-              .map(res => res.json())
-              .subscribe(res => {
-                this.getPermissions(res.user._id);
-                this.userID = res.user._id;
-              });
-  }
-  getPermissions(id: string): void {
-    this.permissionService.getPermissionsByUserID(id)
-        .subscribe(res => {
-          this.getProjectIDs(res);
-          this.permissions = res;
-        });
-  }
+  
+  // getUserID(id: string): void {
+  //   this.userService.getUserByGmail(id)
+  //             .map(res => res.json())
+  //             .subscribe(res => {
+  //               // this.getPermissions(res.user._id);
+  //               this.userID = res.user._id;
+  //             });
+  // }
+  
   getProjectIDs(permissions: any): void {
     this.projectIDs = _.uniq(permissions.map(r => r.Project));
     this.getProjects();
@@ -103,6 +93,13 @@ export class ProjectsDashboardComponent {
           });
         });
     }
+  getPermissions(id: string): void {
+    this.permissionService.getPermissionsByUserID(id)
+        .subscribe(res => {
+          this.getProjectIDs(res);
+          this.permissions = res;
+        });
+  }
 
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
@@ -129,8 +126,8 @@ export class ProjectsDashboardComponent {
   add(): void {
     console.log('in add');
     this.newProjectForm = this.fb.group({
-      Name: new FormControl('New Name for the Dataset', Validators.required),
-      Description: new FormControl('Descriptions'),
+      Name: new FormControl('Dataset Name', Validators.required),
+      Description: new FormControl('Description'),
       Private: new FormControl(true),
       Source: new FormControl('File'),
       Author: this.userID,
@@ -138,24 +135,24 @@ export class ProjectsDashboardComponent {
       DataCompliance: {'IRBNumber': null, 'IECNumber': null, 'Waiver': null, 'ComplianceOption': 'human' , 'HumanStudy': null}
     });
     this.projectService.create(this.newProjectForm.value)
-        .subscribe(() => {
-          this.getRecentAddedProject(this.newProjectForm.value.Author);
-        });
-    this.getProjects();
-  }
-  getRecentAddedProject(userID: string): void {
-    this.projectService.getRecentProject(userID)
-        .subscribe(res => {
-          this.addPermission(res['_id']);
-          this.newAddedProject = res;
+        .subscribe((newProject) => {
+          this.addPermission(newProject.json())
         });
   }
-  addPermission(projectID: string): void {
+  
+  addPermission(Project: Project): void {
     const newPermission = {
-                         'User': this.userID,
+                         'User': Project.Author,
                          'Role': 'admin',
-                         'Project': projectID};
+                         'Project': Project._id};
     this.permissionService.create(newPermission)
-        .subscribe(() => this.getPermissions(this.userID));
+        .subscribe((permission) => {
+          this.permissions.push(permission.json().Project);
+          this.onSelect(permission.json().Project)
+        });
   }
+  onSelect(ProjectID: string): void {
+    this.router.navigate([ `/projects/${ProjectID}/`]);
+  }
+
 }

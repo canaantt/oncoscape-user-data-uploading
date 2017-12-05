@@ -8,9 +8,9 @@
                     </div>
                     <div class="text-center card-body">
                         <div class="btn-group">
-                            <div class="btn landing-button">
-                                <a class="text-center" *ngIf='!user' (click)="googleLogin()">Login </a>
-                                <a class="text-center" *ngIf='user' (click)="googleLogOut()">Logout</a>
+                            <div class="btn landing-button" (click)="toggleLogin()">
+                                <a class="text-center" *ngIf='!user'>Login </a>
+                                <a class="text-center" *ngIf='user'>Logout</a>
                             </div>
                             <div class="btn landing-button" (click)="goRegister()">Register</div>
                         </div>
