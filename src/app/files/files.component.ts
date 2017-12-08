@@ -44,7 +44,7 @@ export class FilesComponent implements OnInit {
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
-  @Input() statusMsg: boolean;
+  @Input() isCompliant: boolean;
   @Output()
     uploaded: EventEmitter<string> = new EventEmitter();
 
@@ -128,7 +128,7 @@ export class FilesComponent implements OnInit {
     }
   }
   projectValidChecking( fileitem ): boolean {
-    if (!this.statusMsg) {
+    if (!this.isCompliant) {
       this.errorMsg.requiredField = 'Please fill all the required fields before proceeding with data uploading.';
     } else {
       this.errorMsg.requiredField = '';

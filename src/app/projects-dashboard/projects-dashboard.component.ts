@@ -2,19 +2,21 @@ import { Component, OnInit, Input, Output, Pipe, PipeTransform, NgZone } from '@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Project } from '../models/project';
-import { ProjectService } from '../service/project.service';
-import { Permission } from '../models/permission';
-import { PermissionService } from '../service/permission.service';
-import { LoginService } from '../service/login.service';
-import { User } from '../models/user';
-import { UserService } from '../service/user.service';
-import { FileService } from '../service/file.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
-import { StateService } from '../service/state.service';
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
+
+import { Project } from '../models/project';
+import { Permission } from '../models/permission';
+import { User } from '../models/user';
+
+import { StateService } from '../service/state.service';
+import { LoginService } from '../service/login.service';
+import { PermissionService } from '../service/permission.service';
+import { ProjectService } from '../service/project.service';
+import { FileService } from '../service/file.service';
+
 @Pipe({
   name: 'DateFormatter'
 })
@@ -37,25 +39,17 @@ export class DateFormatter implements PipeTransform {
   selector: 'app-projects-dashboard',
   templateUrl: './projects-dashboard.component.html',
   styleUrls: ['./projects-dashboard.component.scss'],
-  providers: [UserService, PermissionService, FileService]
+  providers: [PermissionService, FileService]
 })
 export class ProjectsDashboardComponent {
-  projects: any;
-  selectedProject: Project;
-  newProjectForm: FormGroup;
   user: any;
-  userID: string;
-  authenticated: boolean;
-  projectIDs: any;
-  newAddedProject: any;
-  permissions: any;
+  projects: any;
 
   constructor( private fb: FormBuilder,
                private projectService: ProjectService,
                private permissionService: PermissionService,
                private loginService: LoginService,
                private fileService: FileService,
-               private userService: UserService,
                private stateService: StateService,
                private zone: NgZone,
                private router: Router) {
@@ -71,21 +65,9 @@ export class ProjectsDashboardComponent {
                     });
                }
   
-  // getUserID(id: string): void {
-  //   this.userService.getUserByGmail(id)
-  //             .map(res => res.json())
-  //             .subscribe(res => {
-  //               // this.getPermissions(res.user._id);
-  //               this.userID = res.user._id;
-  //             });
-  // }
-  
-  getProjectIDs(permissions: any): void {
-    this.projectIDs = _.uniq(permissions.map(r => r.Project));
-    this.getProjects();
-  }
-  getProjects(): void {
-    this.projectService.getProjectsByIDs(this.projectIDs)
+  getProjects(permissions: any): void {
+    let projectIDs: string[] =  _.uniq(<string> permissions.map(r => r.Project));
+    this.projectService.getProjectsByIDs(projectIDs)
         .subscribe(res => {
           this.zone.run(() => {
             this.projects = res;
@@ -96,27 +78,24 @@ export class ProjectsDashboardComponent {
   getPermissions(id: string): void {
     this.permissionService.getPermissionsByUserID(id)
         .subscribe(res => {
-          this.getProjectIDs(res);
-          this.permissions = res;
+          this.getProjects(res);
         });
   }
 
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
     if (confirmDeletion) {
-      this.permissionService.getPermissionByUserByProject(this.userID, project._id)
+      this.permissionService.getPermissionByUserByProject(this.user._id, project._id)
           .subscribe(res => {
             if (res.Role !== 'admin') {
               alert ('You do not have permission to delete this dataset. Please contact author.');
               return;
             } else {
               this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
-              const index = this.projectIDs.indexOf(project._id);
-              this.projectIDs.splice(index, 1);
-              this.getProjects();
               this.fileService.removeFilesByProjectID(project._id);
               this.permissionService.removePermisionsByProjectID(project._id)
                   .subscribe(() => console.log('permissions are deleted.'));
+              this.getPermissions(res.User);
             }
           });
     } else {
@@ -125,16 +104,16 @@ export class ProjectsDashboardComponent {
   }
   add(): void {
     console.log('in add');
-    this.newProjectForm = this.fb.group({
-      Name: new FormControl('Dataset Name', Validators.required),
-      Description: new FormControl('Description'),
+    const newProjectForm = this.fb.group({
+      Name: new FormControl('', Validators.required),
+      Description: new FormControl(''),
       Private: new FormControl(true),
       Source: new FormControl('File'),
-      Author: this.userID,
+      Author: this.user._id,
       PHI: false,
       DataCompliance: {'IRBNumber': null, 'IECNumber': null, 'Waiver': null, 'ComplianceOption': 'human' , 'HumanStudy': null}
     });
-    this.projectService.create(this.newProjectForm.value)
+    this.projectService.create(newProjectForm.value)
         .subscribe((newProject) => {
           this.addPermission(newProject.json())
         });
@@ -147,7 +126,6 @@ export class ProjectsDashboardComponent {
                          'Project': Project._id};
     this.permissionService.create(newPermission)
         .subscribe((permission) => {
-          this.permissions.push(permission.json().Project);
           this.onSelect(permission.json().Project)
         });
   }

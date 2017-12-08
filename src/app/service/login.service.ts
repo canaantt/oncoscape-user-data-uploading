@@ -70,7 +70,7 @@ export class LoginService {
     .subscribe(r => {
       if (r.user !== null) {
         this.stateService.user.next(v);
-        this.stateService.internalUser = r.user;
+        this.stateService.internalUser.next(r.user);
         this.oauthServiceStatus.emit('loggedIn');
       }
     });

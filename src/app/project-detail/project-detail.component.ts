@@ -4,23 +4,27 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Project } from '../models/project';
-import { ProjectService } from '../service/project.service';
-import { PermissionService } from '../service/permission.service';
-import { File } from '../models/file';
-import { FileService } from '../service/file.service';
-import { User } from '../models/user';
-import { UserService } from '../service/user.service';
-import { LoginService } from '../service/login.service';
 import { Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/observable/of';
+
+import { User } from '../models/user';
+import { Project } from '../models/project';
+import { File } from '../models/file';
+
+import { StateService } from '../service/state.service';
+import { UserService } from '../service/user.service';
+import { LoginService } from '../service/login.service';
+import { ProjectService } from '../service/project.service';
+import { PermissionService } from '../service/permission.service';
+import { FileService } from '../service/file.service';
+import { UpdateEmitService } from '../service/update-emit.service';
+
 import { PermissionsComponent } from '../permissions/permissions.component';
 import { FilesComponent } from '../files/files.component';
-import { StateService } from '../service/state.service';
 import { DateFormatter } from '../projects-dashboard/projects-dashboard.component';
-import { UpdateEmitService } from '../service/update-emit.service';
+
 enum roles {'full-access', 'read-only'}
 
 @Component({
@@ -30,20 +34,20 @@ enum roles {'full-access', 'read-only'}
   providers: [FileService, UserService, FormBuilder, PermissionService]
 })
 export class ProjectDetailComponent implements  OnInit {
-  project: any;
   user: any;
-  authenticated: boolean;
-  userID: any;
-  id: string;
+  project: any;
   permission: any;
-  role: any;
-  files: any;
-  statusMsg = false;
-  lastModifiedTime: any;
-  errorMessage = { Name: '', PHI: '', DataCompliance: ''};
-
-  users$: Observable<any>;
-  results$: Observable<any>;
+  isCompliant= <boolean> false;
+  errorMessage : {  Name: {msg: string, pass:boolean}, 
+                    PHI:  {msg: string, pass:boolean},
+                    Human:{msg: string, pass:boolean}, 
+                    Protocol:{
+                      IRB:{msg: string, pass:boolean}, 
+                      IEC:{msg: string, pass:boolean},
+                      Waiver:{msg: string, pass:boolean}, 
+                      Exempt:{msg: string, pass:boolean}
+                  }};
+  
   newAnnotationForm: FormGroup;
   @ViewChild(PermissionsComponent) permissionComponent: PermissionsComponent;
   @ViewChild(FilesComponent) filesComponent: FilesComponent;
@@ -60,62 +64,68 @@ export class ProjectDetailComponent implements  OnInit {
     private loginService: LoginService,
     private router: Router,
     private fb: FormBuilder) {
-      this.id = this.route.snapshot.params['id'];
-      this.stateService.user.subscribe(res => {
-        if (res !== null) {
-          this.user = res;
-          this.getUserID(res.email, this.id);
-        } else {
-          this.loginService.googleLogOut();
-        }
-      });
-      this.projectService.getProjectByID(this.route.snapshot.params['id'])
-                         .subscribe(res0 => {
-                           this.project = res0[0];
-                           this.updatePreChecking();
-                         });
-      const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
-            .map(() => this.project)
-            .debounceTime(500)
-            .subscribe(input => {
-              this.update(this.project);
-            });
-      const eventStreamKeyUp = Observable.fromEvent(elementRef.nativeElement, 'keyup')
-            .map(() => this.project)
-            .debounceTime(500)
-            .subscribe(input => {
-              this.update(this.project);
-            });
-     }
 
-  getUserID(id: string, projectID: string): void {
-    this.userService.getUserByGmail(id)
-              .map(res => res.json())
-              .subscribe(res => {
-                // this.getPermission(res.user._id, projectID );
-                this.userID = res.user._id;
-                this.permissionService.getPermissionByUserByProject(res.user._id, projectID)
-                .subscribe(r => {
-                  console.log(r);
-                  console.log(res.user._id);
-                  this.permission = r;
-                });
-              });
+      this.stateService.internalUser
+      .subscribe(res => {
+        this.user = res;
+        if (this.user == null) 
+          this.loginService.googleLogOut();
+        else{
+          this.projectService.getProjectByID(this.route.snapshot.params['id'])
+                            .subscribe(res => {
+                              this.project = res[0];
+                              
+                            
+            this.permissionService.getPermissionByUserByProject(this.user._id, this.route.snapshot.params['id'])
+                            .subscribe(r => {
+                              this.permission = r;
+                              this.updatePreChecking();
+                            });
+                          });
+        }
+    });
+    const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
+      .map(() => this.project)
+      .debounceTime(500)
+      .subscribe(input => {
+        this.update(this.project);
+    });
+    const eventStreamKeyUp = Observable.fromEvent(elementRef.nativeElement, 'keyup')
+      .map(() => this.project)
+      .debounceTime(500)
+      .subscribe(input => {
+        this.update(this.project);
+    });
+  }
+
+  getPermissions(id: string, projectID: string): void {
+      this.permissionService.getPermissionByUserByProject(id, projectID)
+      .subscribe(r => {
+        this.permission = r;
+      });
     }
-  // getPermission(userID: string, projectID: string) {
-  //   this.permissionService.getPermissionByUserByProject(userID, projectID)
-  //       .subscribe(res => this.permission = res);
-  // }
+  
   ngOnInit(): void {
     this.newAnnotationForm = new FormGroup({
         key: new FormControl('', Validators.required),
         value: new FormControl('', Validators.required)
       });
+    this.errorMessage =  
+      { Name : {msg: 'Project Name is required.', pass: false} , 
+        PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
+        Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
+        Protocol: {  
+          IRB: {msg:'IRB option is checked, must fill the IRB number to proceed.', pass:false } ,
+          IEC: {msg:'IEC option is checked, must fill the IEC number to proceed.' , pass:false } ,
+          Waiver: {msg:'Waiver option is checked, must fill the Waiver number to proceed.' , pass:false } ,
+          Exempt: {msg:'Waiver option is checked, must fill the Waiver number to proceed.', pass:false } 
+      }} 
+    
   }
   update(project: Project): void {
     this.updatePreChecking();
-    console.log('STATUS:', this.statusMsg);
-    if (!this.statusMsg) {
+    console.log('STATUS:', this.isCompliant);
+    if (!this.isCompliant) {
       console.log('Dataset error Message: ', this.errorMessage);
     } else {
        this.projectService.update(project).subscribe(() => {
@@ -125,53 +135,33 @@ export class ProjectDetailComponent implements  OnInit {
     }
   }
   updatePreChecking (): void {
-    if (this.project.Name === '') {
-        this.errorMessage.Name = 'Project Name is required.';
-        // this.statusMsg = false;
-      } else {
-        this.errorMessage.Name = '';
-        // this.statusMsg = true;
-      }
-    if (this.project.DataCompliance.ComplianceOption === 'human'
-      && (this.project.DataCompliance.HumanStudy === ''
-      || typeof(this.project.DataCompliance.HumanStudy) === 'undefined')
-      ) {
-      console.log('no exempt is checked.');
-      this.errorMessage.DataCompliance = 'Any dataset derived from human study needs more specification.';
-      // this.statusMsg = false;
-    } else {
-      if (this.project.DataCompliance.HumanStudy === 'IRBChecked'
-          && this.project.DataCompliance.IRBNumber === '') {
-            this.errorMessage.DataCompliance = 'IRB option is checked, must fill the IRB number to proceed.';
-            // this.statusMsg = false;
-      } else if (this.project.DataCompliance.HumanStudy === 'IECChecked'
-          && this.project.DataCompliance.IECNumber === '') {
-            this.errorMessage.DataCompliance = 'IEC option is checked, must fill the IEC number to proceed.';
-            // this.statusMsg = false;
-      } else if (this.project.DataCompliance.HumanStudy === 'ExemptedCheckedWithWaiver'
-          && this.project.DataCompliance.Waiver === '') {
-            this.errorMessage.DataCompliance = 'Waiver option is checked, must fill the Waiver number to proceed.';
-            // this.statusMsg = false;
-      } else {
-        this.errorMessage.DataCompliance = '';
-        // this.statusMsg = true;
-      }
+    this.isCompliant = false
+    this.errorMessage.Name.pass = this.project.Name === '' ?  false : true;
+    this.errorMessage.PHI.pass = this.project.PHI  ?  true : false;
+
+    this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy ?  false : true;  
+
+    if (this.project.DataCompliance.HumanStudy === 'IRB' && this.project.Protocol.IRBNumber !== '') {
+      this.errorMessage.Protocol.IRB.pass = true;       
+    } else if (this.project.DataCompliance.HumanStudy === 'IEC' && this.project.Protocol.IECNumber !== '') {
+      this.errorMessage.Protocol.IEC.pass = true ;       
+    } else if (this.project.DataCompliance.HumanStudy === 'ExemptWithWaiver' && this.project.Protocol.Waiver !== '') {
+      this.errorMessage.Protocol.Waiver.pass = true ;           
+    } else if (this.project.DataCompliance.HumanStudy == 'Exempt'){
+      this.errorMessage.Protocol.Exempt.pass = true;
     }
-    if (!this.project.PHI) {
-      this.errorMessage.PHI = 'You must agree that all data is free of PHI.';
-      // this.statusMsg = false;
-    } else {
-      this.errorMessage.PHI = '';
-      // this.statusMsg = true;
+    
+    
+    if ( this.errorMessage.Name.pass  &&   // has project name
+          this.errorMessage.PHI.pass   &&  // certify not PHI
+         ( this.errorMessage.Human ||      // either not Human Subjects OR provides Protocol# or claims exemption
+         (this.errorMessage.Protocol.IRB.pass   || this.errorMessage.Protocol.IEC.pass || 
+          this.errorMessage.Protocol.Waiver.pass|| this.errorMessage.Protocol.Exempt.pass) )
+        ) {
+          this.isCompliant = true;
     }
-    if (this.errorMessage.Name === '' &&
-        this.errorMessage.PHI === '' &&
-        this.errorMessage.DataCompliance === '') {
-          this.statusMsg = true;
-        } else {
-          this.statusMsg = false;
-        }
   }
+
   refresh() {
     this.projectService.getProjectByID(this.route.snapshot.params['id'])
                        .subscribe(res0 => {
@@ -190,14 +180,14 @@ export class ProjectDetailComponent implements  OnInit {
       this.newAnnotationForm.reset({key: '', value: ''});
     }
   }
-  collectDataCompliance(value: string) {
+  collectProtocol(value: string) {
     if (value === 'human') {
       this.update(this.project);
     } else if (value === 'non-human') {
-      this.project.DataCompliance.IRBNumber = '';
-      this.project.DataCompliance.IECNumber = '';
-      this.project.DataCompliance.Waiver = '';
-      this.project.DataCompliance.HumanStudy = '';
+      this.project.Protocol.IRBNumber = '';
+      this.project.Protocol.IECNumber = '';
+      this.project.Protocol.Waiver = '';
+      this.project.Protocol.HumanStudy = '';
       this.update(this.project);
     }
   }

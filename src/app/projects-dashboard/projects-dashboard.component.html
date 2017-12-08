@@ -33,7 +33,7 @@
                         </div>
                         <div class="col-8 text right">
                             <button (click)="delete(project)" class=" btn btn-primary ">Delete</button>
-                            <button type="button" [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</button>
+                            <button type="button" (click)="onSelect(project._id)" class="btn btn-primary">Edit</button>
                         </div>
                     </div>
                 </div>
