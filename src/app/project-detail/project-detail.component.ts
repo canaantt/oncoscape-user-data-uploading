@@ -35,8 +35,8 @@ enum roles {'full-access', 'read-only'}
 })
 export class ProjectDetailComponent implements  OnInit {
   user: any;
-  project: any;
-  permission: any;
+  project: any ;
+  permission: any ;
   isCompliant= <boolean> false;
   errorMessage : {  Name: {msg: string, pass:boolean}, 
                     PHI:  {msg: string, pass:boolean},
@@ -46,7 +46,16 @@ export class ProjectDetailComponent implements  OnInit {
                       IEC:{msg: string, pass:boolean},
                       Waiver:{msg: string, pass:boolean}, 
                       Exempt:{msg: string, pass:boolean}
-                  }};
+                  }}=  
+                  { Name : {msg: 'Project Name is required.', pass: false} , 
+                    PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
+                    Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
+                    Protocol: {  
+                      IRB: {msg:'IRB option is checked, must fill the IRB number to proceed.', pass:false } ,
+                      IEC: {msg:'IEC option is checked, must fill the IEC number to proceed.' , pass:false } ,
+                      Waiver: {msg:'Waiver option is checked, must fill the Waiver number to proceed.' , pass:false } ,
+                      Exempt: {msg:'Waiver option is checked, must fill the Waiver number to proceed.', pass:false } 
+                  }} ;
   
   newAnnotationForm: FormGroup;
   @ViewChild(PermissionsComponent) permissionComponent: PermissionsComponent;
@@ -64,7 +73,16 @@ export class ProjectDetailComponent implements  OnInit {
     private loginService: LoginService,
     private router: Router,
     private fb: FormBuilder) {
-
+      this.errorMessage =  
+      { Name : {msg: 'Project Name is required.', pass: false} , 
+        PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
+        Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
+        Protocol: {  
+          IRB: {msg:'IRB option is checked, must fill the IRB number to proceed.', pass:false } ,
+          IEC: {msg:'IEC option is checked, must fill the IEC number to proceed.' , pass:false } ,
+          Waiver: {msg:'Waiver option is checked, must fill the Waiver number to proceed.' , pass:false } ,
+          Exempt: {msg:'Waiver option is checked, must fill the Waiver number to proceed.', pass:false } 
+      }} 
       this.stateService.internalUser
       .subscribe(res => {
         this.user = res;
@@ -73,15 +91,15 @@ export class ProjectDetailComponent implements  OnInit {
         else{
           this.projectService.getProjectByID(this.route.snapshot.params['id'])
                             .subscribe(res => {
-                              this.project = res[0];
-                              
+                              this.setProject(res[0]);
+                              this.updatePreChecking();
+                            });        
                             
             this.permissionService.getPermissionByUserByProject(this.user._id, this.route.snapshot.params['id'])
                             .subscribe(r => {
-                              this.permission = r;
-                              this.updatePreChecking();
+                              this.setPermission(r);
                             });
-                          });
+                          
         }
     });
     const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
@@ -98,28 +116,19 @@ export class ProjectDetailComponent implements  OnInit {
     });
   }
 
-  getPermissions(id: string, projectID: string): void {
-      this.permissionService.getPermissionByUserByProject(id, projectID)
-      .subscribe(r => {
-        this.permission = r;
-      });
-    }
+  setPermission(permission: any): void {
+    this.permission = permission;
+  }
+  setProject(project: any): void {
+    this.project = project;
+  }
   
   ngOnInit(): void {
     this.newAnnotationForm = new FormGroup({
         key: new FormControl('', Validators.required),
         value: new FormControl('', Validators.required)
       });
-    this.errorMessage =  
-      { Name : {msg: 'Project Name is required.', pass: false} , 
-        PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
-        Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
-        Protocol: {  
-          IRB: {msg:'IRB option is checked, must fill the IRB number to proceed.', pass:false } ,
-          IEC: {msg:'IEC option is checked, must fill the IEC number to proceed.' , pass:false } ,
-          Waiver: {msg:'Waiver option is checked, must fill the Waiver number to proceed.' , pass:false } ,
-          Exempt: {msg:'Waiver option is checked, must fill the Waiver number to proceed.', pass:false } 
-      }} 
+    
     
   }
   update(project: Project): void {
@@ -139,13 +148,15 @@ export class ProjectDetailComponent implements  OnInit {
     this.errorMessage.Name.pass = this.project.Name === '' ?  false : true;
     this.errorMessage.PHI.pass = this.project.PHI  ?  true : false;
 
-    this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy ?  false : true;  
+    this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy == 'false' ?  true : false;  
 
-    if (this.project.DataCompliance.HumanStudy === 'IRB' && this.project.Protocol.IRBNumber !== '') {
+    var reg = /^\d+$/;
+
+    if (this.project.DataCompliance.HumanStudy === 'IRB' && reg.test(this.project.DataCompliance.IRBNumber)) {
       this.errorMessage.Protocol.IRB.pass = true;       
-    } else if (this.project.DataCompliance.HumanStudy === 'IEC' && this.project.Protocol.IECNumber !== '') {
+    } else if (this.project.DataCompliance.HumanStudy === 'IEC' && reg.test(this.project.DataCompliance.IECNumber)) {
       this.errorMessage.Protocol.IEC.pass = true ;       
-    } else if (this.project.DataCompliance.HumanStudy === 'ExemptWithWaiver' && this.project.Protocol.Waiver !== '') {
+    } else if (this.project.DataCompliance.HumanStudy === 'ExemptWithWaiver' && reg.test(this.project.DataCompliance.Waiver)) {
       this.errorMessage.Protocol.Waiver.pass = true ;           
     } else if (this.project.DataCompliance.HumanStudy == 'Exempt'){
       this.errorMessage.Protocol.Exempt.pass = true;
@@ -154,7 +165,7 @@ export class ProjectDetailComponent implements  OnInit {
     
     if ( this.errorMessage.Name.pass  &&   // has project name
           this.errorMessage.PHI.pass   &&  // certify not PHI
-         ( this.errorMessage.Human ||      // either not Human Subjects OR provides Protocol# or claims exemption
+         ( this.errorMessage.Human.pass ||      // either not Human Subjects OR provides Protocol# or claims exemption
          (this.errorMessage.Protocol.IRB.pass   || this.errorMessage.Protocol.IEC.pass || 
           this.errorMessage.Protocol.Waiver.pass|| this.errorMessage.Protocol.Exempt.pass) )
         ) {
@@ -184,10 +195,10 @@ export class ProjectDetailComponent implements  OnInit {
     if (value === 'human') {
       this.update(this.project);
     } else if (value === 'non-human') {
-      this.project.Protocol.IRBNumber = '';
-      this.project.Protocol.IECNumber = '';
-      this.project.Protocol.Waiver = '';
-      this.project.Protocol.HumanStudy = '';
+      this.project.DataCompliance.IRBNumber = '';
+      this.project.DataCompliance.IECNumber = '';
+      this.project.DataCompliance.Waiver = '';
+      this.project.DataCompliance.HumanStudy = '';
       this.update(this.project);
     }
   }
