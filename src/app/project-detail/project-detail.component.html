@@ -101,36 +101,20 @@
               <!-- START appropriate Documentation -->
               <div *ngIf="project.DataCompliance.HumanStudy == 'true'">
                 <br>
-                <div>Please provide appropriate protocol approval documentation </div>
-                <small class="text-danger" *ngIf="!errorMessage.Human.pass">{{errorMessage.Human.msg}}</small>
+                <div>Please provide reference to appropriate protocol approval documentation<span class="text-danger">*</span> </div>
                 <br>
                 <div class="row">
+                  
+                  
                   <div class="col-3">
-                    <input type="radio" value="IRB" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IRB
-                    <div *ngIf="project.DataCompliance.HumanStudy === 'IRB'">
-                      <label>Enter IRB Number</label>
-                      <input name="IRBNumber" class="form-control" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1">
-                    </div>
+                    <select [(ngModel)]="project.DataCompliance.Protocol" class="form-control" >
+                      <option *ngFor="let protocol of protocols" [value]="protocol">{{protocol}}</option>
+                    </select>
                   </div>
-                  <div class="col-3">
-                    <input type="radio" value="IEC" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IEC
+                  <div *ngIf="project.DataCompliance.Protocol !== 'Exempt'">
+                    <input name="ProtocolNumber" class="form-control" [(ngModel)]="project.DataCompliance.ProtocolNumber" placeholder="Protocol #">
+                  </div>
 
-                    <div *ngIf="project.DataCompliance.HumanStudy  === 'IEC'">
-                      <label>Enter IEC Number </label>
-                      <input name="IECNumber" class="form-control" [(ngModel)]="project.DataCompliance.IECNumber" rows="1">
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <input type="radio" value="ExemptWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempt
-                    with Waiver
-                    <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptWithWaiver'">
-                      <label>Enter Waiver Number </label>
-                      <input name="exempted" class="form-control" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <input type="radio" value="Exempt" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempt
-                  </div>
                 </div>
               </div>
               <!-- END appropriate documentation -->

@@ -111,7 +111,7 @@ export class ProjectsDashboardComponent {
       Source: new FormControl('File'),
       Author: this.user._id,
       PHI: false,
-      DataCompliance: {'IRBNumber': null, 'IECNumber': null, 'Waiver': null, 'ComplianceOption': 'human' , 'HumanStudy': null}
+      DataCompliance: {'ProtocolNumber': '', 'Protocol': '' , 'HumanStudy': ''}
     });
     this.projectService.create(newProjectForm.value)
         .subscribe((newProject) => {

@@ -37,25 +37,18 @@ export class ProjectDetailComponent implements  OnInit {
   user: any;
   project: any ;
   permission: any ;
+  protocols= ['IRB', 'IEC', 'Exempt with Waiver', 'Exempt'];
   isCompliant= <boolean> false;
   errorMessage : {  Name: {msg: string, pass:boolean}, 
                     PHI:  {msg: string, pass:boolean},
                     Human:{msg: string, pass:boolean}, 
-                    Protocol:{
-                      IRB:{msg: string, pass:boolean}, 
-                      IEC:{msg: string, pass:boolean},
-                      Waiver:{msg: string, pass:boolean}, 
-                      Exempt:{msg: string, pass:boolean}
-                  }}=  
+                    Protocol:{msg: string, pass:boolean}
+                  }=  
                   { Name : {msg: 'Project Name is required.', pass: false} , 
-                    PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
-                    Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
-                    Protocol: {  
-                      IRB: {msg:'IRB option is checked, must fill the IRB number to proceed.', pass:false } ,
-                      IEC: {msg:'IEC option is checked, must fill the IEC number to proceed.' , pass:false } ,
-                      Waiver: {msg:'Waiver option is checked, must fill the Waiver number to proceed.' , pass:false } ,
-                      Exempt: {msg:'Waiver option is checked, must fill the Waiver number to proceed.', pass:false } 
-                  }} ;
+                  PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
+                  Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
+                  Protocol: {msg:'A protocol ID is required for non-exempt studies.', pass:false }   
+                } ;
   
   newAnnotationForm: FormGroup;
   @ViewChild(PermissionsComponent) permissionComponent: PermissionsComponent;
@@ -77,12 +70,8 @@ export class ProjectDetailComponent implements  OnInit {
       { Name : {msg: 'Project Name is required.', pass: false} , 
         PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
         Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
-        Protocol: {  
-          IRB: {msg:'IRB option is checked, must fill the IRB number to proceed.', pass:false } ,
-          IEC: {msg:'IEC option is checked, must fill the IEC number to proceed.' , pass:false } ,
-          Waiver: {msg:'Waiver option is checked, must fill the Waiver number to proceed.' , pass:false } ,
-          Exempt: {msg:'Waiver option is checked, must fill the Waiver number to proceed.', pass:false } 
-      }} 
+        Protocol: {msg:'A protocol ID is required for non-exempt studies.', pass:false }   
+      } 
       this.stateService.internalUser
       .subscribe(res => {
         this.user = res;
@@ -151,23 +140,19 @@ export class ProjectDetailComponent implements  OnInit {
     this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy == 'false' ?  true : false;  
 
     var reg = /^\d+$/;
-
-    if (this.project.DataCompliance.HumanStudy === 'IRB' && reg.test(this.project.DataCompliance.IRBNumber)) {
-      this.errorMessage.Protocol.IRB.pass = true;       
-    } else if (this.project.DataCompliance.HumanStudy === 'IEC' && reg.test(this.project.DataCompliance.IECNumber)) {
-      this.errorMessage.Protocol.IEC.pass = true ;       
-    } else if (this.project.DataCompliance.HumanStudy === 'ExemptWithWaiver' && reg.test(this.project.DataCompliance.Waiver)) {
-      this.errorMessage.Protocol.Waiver.pass = true ;           
-    } else if (this.project.DataCompliance.HumanStudy == 'Exempt'){
-      this.errorMessage.Protocol.Exempt.pass = true;
+    if (this.project.DataCompliance.Protocol == 'Exempt'){
+      this.project.DataCompliance.ProtocolNumber = ''
+      this.errorMessage.Protocol.pass = true;
+    } else if (reg.test(this.project.DataCompliance.ProtocolNumber)){
+      this.errorMessage.Protocol.pass = true; 
+    } else {
+      this.errorMessage.Protocol.pass = false; 
     }
-    
     
     if ( this.errorMessage.Name.pass  &&   // has project name
           this.errorMessage.PHI.pass   &&  // certify not PHI
          ( this.errorMessage.Human.pass ||      // either not Human Subjects OR provides Protocol# or claims exemption
-         (this.errorMessage.Protocol.IRB.pass   || this.errorMessage.Protocol.IEC.pass || 
-          this.errorMessage.Protocol.Waiver.pass|| this.errorMessage.Protocol.Exempt.pass) )
+         this.errorMessage.Protocol.pass  )
         ) {
           this.isCompliant = true;
     }
@@ -195,10 +180,8 @@ export class ProjectDetailComponent implements  OnInit {
     if (value === 'human') {
       this.update(this.project);
     } else if (value === 'non-human') {
-      this.project.DataCompliance.IRBNumber = '';
-      this.project.DataCompliance.IECNumber = '';
-      this.project.DataCompliance.Waiver = '';
-      this.project.DataCompliance.HumanStudy = '';
+      this.project.DataCompliance.Protocol = '';
+      this.project.DataCompliance.ProtocolNumber = '';
       this.update(this.project);
     }
   }

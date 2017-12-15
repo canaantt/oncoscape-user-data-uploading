@@ -29,17 +29,17 @@ export class FilesComponent implements OnInit {
   public uploader: FileUploader;
   headerValue: string;
   files$: Observable<any>;
-  hasFiles = false;
-  id: string;
+  
+  
   errorMsg = {
     'requiredField': '',
     'fileSizeError': '',
     'fileTypeError': ''
   };
   uploadedstring = 'Not Uploaded';
-  uploadStatus = {
-    'uploadSummaryClinical': [],
-    'uploadSummaryMolecular': []
+  upload = {
+    complete: false,
+    'collections': []
   };
   @Input() project: any;
   @Input() user: any;
@@ -51,6 +51,10 @@ export class FilesComponent implements OnInit {
   uploadComplete(message: string) {
     this.uploaded.emit(message);
   }
+  private handleError(error: any): Promise<any> {
+    return Promise.reject('No file is uploaded yet.');
+  }
+
   constructor(private fb: FormBuilder,
               private stateService: StateService,
               private fileService: FileService) {
@@ -64,34 +68,26 @@ export class FilesComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.id = this.project._id;
-    this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.id  + '/' + this.user.email,
+    this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.project._id + '/' + this.user.email,
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
-    // this.uploader.onErrorItem = function(item) {
-    //   debugger;
-    //   item.isUploaded = false;
-    //   };
+    
     this.filerefresh();
   }
   filerefresh() {
     console.log('in File component refresh()');
-    this.fileService.uploadingValidation(this.id + '_collections')
-        // .catch(this.handleError)
+    this.fileService.getFilesByProjectID(this.project._id + '_collections')
         .subscribe(res => {
-          if (res.text() !== 'Not Found or No File has been uploaded yet.' ) {
-            this.hasFiles = true;
-            res = res.json();
-            this.uploadStatus.uploadSummaryClinical = res[0].filter(function(m){return 'sheet' in m  && 'patients' in m; });
-            this.uploadStatus.uploadSummaryMolecular = res[0].filter(function(m){return 'sheet' in m  && 'markers' in m; });
-          } else {
-            console.log('No File has been uploaded to this dataset yet. ');
-          }
+          if (typeof res === "string" ) {
+            console.log(res);
+          }else{
+            this.upload.complete = true;
+            this.upload.collections = res[0].filter(function(m){return ! (m.type in ["map"])});
+            
+          } 
         });
   }
-  private handleError(error: any): Promise<any> {
-    return Promise.reject('No file is uploaded yet.');
-  }
+  
   updateStatus(fileitem: any) {
       if (this.projectValidChecking(fileitem)) {
         fileitem.upload();
@@ -103,7 +99,6 @@ export class FilesComponent implements OnInit {
         };
         this.uploadComplete('Being uploaded');
         this.filerefresh();
-        // tslint:disable-next-line:max-line-length
         alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
       } else {
         alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileTypeError + ' ' + this.errorMsg.fileSizeError);
@@ -118,10 +113,10 @@ export class FilesComponent implements OnInit {
   removeAllFiles() {
     const confirmDeletion = confirm('Are you sure you want to delete all the files related to this dataset? ');
     if (confirmDeletion) {
-      this.fileService.removeFilesByProjectID(this.id);
+      this.fileService.removeFilesByProjectID(this.project._id);
       this.project.File = null;
       this.uploadComplete('Being removed');
-      this.hasFiles = false;
+      this.upload.complete = false;
       this.uploader.queue = [];
     } else {
       console.log('file deletion is canceled.');
