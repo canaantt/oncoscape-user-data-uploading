@@ -64,10 +64,12 @@ export class ProjectsDashboardComponent {
                       }
                     });
                }
+
   
   getProjects(permissions: any): void {
     let projectIDs: string[] =  _.uniq(<string> permissions.map(r => r.Project));
     this.projectService.getProjectsByIDs(projectIDs)
+
         .subscribe(res => {
           this.zone.run(() => {
             this.projects = res;

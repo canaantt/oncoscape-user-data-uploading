@@ -105,6 +105,7 @@ export class ProjectDetailComponent implements  OnInit {
     });
   }
 
+
   setPermission(permission: any): void {
     this.permission = permission;
   }

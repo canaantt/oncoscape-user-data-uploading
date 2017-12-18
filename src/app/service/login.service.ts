@@ -46,7 +46,7 @@ export class LoginService {
 
   authLogin(auth) {
     const token = auth.authResponse.access_token;
-    console.log(token)
+
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
@@ -66,7 +66,7 @@ export class LoginService {
 
   updateUserInfo (v) {
     this.userService.getUserByGmail(v.email)
-    .map(res => res.json())
+    .map(res => res.json()[0])
     .subscribe(r => {
       if (r.user !== null) {
         this.stateService.user.next(v);
