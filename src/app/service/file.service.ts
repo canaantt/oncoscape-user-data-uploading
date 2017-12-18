@@ -41,7 +41,7 @@ export class FileService {
       .post(this.filesUrl, JSON.stringify(file), {headers: this.headers});
   }
 
-  uploadingValidation(id: string): Observable<Response> {
+  getFileDescriptions(id: string): Observable<Response> {
     return this.http.get(this.filesUrl + '/' + id, {headers: this.headers});
                     // .map(res => res.json());
   }

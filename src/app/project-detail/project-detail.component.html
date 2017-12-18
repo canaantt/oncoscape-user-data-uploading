@@ -3,17 +3,14 @@
     <div class="container">
       <div class="row ">
         <div class="col-12 ">
-          <div *ngIf="!statusMsg">
-            <h5 class="text-warning">The content will Not be saved automatically untill the <strong>Regulatory Information</strong> is filled appropriately.</h5>
-            <br>
-          </div>
           <h5 class="detail-header">Dataset Details</h5>
-          <small class="text-danger" *ngIf="errorMessage.Name!==''">{{errorMessage.Name}}</small>
+          
           <form>
             <div class="row ">
               <div class="col-10">
                 <div class="form-group ">
                   <label class="detail-label">Dataset Name<span class="text-danger">*</span></label>
+                  <small class="text-danger" *ngIf="!errorMessage?.Name.pass"><br/>{{errorMessage?.Name.msg}}</small>
                   <input [(ngModel)]="project.Name" name="projectName" class="form-control" placeholder="Dataset Name">
                 </div>
                 <div class="form-group">
@@ -90,9 +87,8 @@
             </div>
             <div *ngIf="permission.Role==='admin'" class="well form-group">
               <div>
-                <p class="mb-0">I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/" target="_blank">Personal Health Information (PHI)</a><span class="text-danger">*</span></p>
-                <input type="checkbox" [(ngModel)]="project.PHI">&nbsp;I agree<br />
-                <small class="text-danger" *ngIf="errorMessage.PHI !==''">{{errorMessage.PHI}}</small>
+                <input type="checkbox" [(ngModel)]="project.PHI">&nbsp;I certify this dataset does not contain any <a href="http://www.hipaa.com/hipaa-protected-health-information-what-does-phi-include/" target="_blank">Personal Health Information (PHI)</a><span class="text-danger">*</span><br />
+                <small class="text-danger" *ngIf="!errorMessage.PHI.pass">{{errorMessage.PHI.msg}}</small>
               </div>
               <!-- START human yes/no -->
               <div class="mt-3">
@@ -100,52 +96,36 @@
               </div>  
               <div class="row">
                 <div class="col-1">
-                  <input type="radio" value="human" name="human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('human')">&nbsp;Yes
+                  <input type="radio" value=true name="human" [(ngModel)]="project.DataCompliance.HumanStudy" >&nbsp;Yes
                 </div>
                 <div class="col-1">
-                  <input type="radio" value="non-human" name="non-human" [(ngModel)]="project.DataCompliance.ComplianceOption" (change)="collectDataCompliance('non-human')">&nbsp;No
+                  <input type="radio" value=false name="non-human" [(ngModel)]="project.DataCompliance.HumanStudy" >&nbsp;No
                 </div>
               </div>
               <!-- END human yes/no -->
               <!-- START appropriate Documentation -->
-              <div *ngIf="project.DataCompliance.ComplianceOption === 'human'">
+              <div *ngIf="project.DataCompliance.HumanStudy == 'true'">
                 <br>
-                <div>Please Select Appropriate Documentation </div>
-                <small class="text-danger" *ngIf="errorMessage.DataCompliance !==''">{{errorMessage.DataCompliance}}</small>
+                <div>Please provide reference to appropriate protocol approval documentation<span class="text-danger">*</span> </div>
                 <br>
                 <div class="row">
+                  
+                  
                   <div class="col-3">
-                    <input type="radio" value="IRBChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IRB
-                    <div *ngIf="project.DataCompliance.HumanStudy === 'IRBChecked'">
-                      <label>Enter IRB Number</label>
-                      <input name="IRBNumber" class="form-control" [(ngModel)]="project.DataCompliance.IRBNumber" rows="1">
-                    </div>
+                    <select [(ngModel)]="project.DataCompliance.Protocol" class="form-control" >
+                      <option *ngFor="let protocol of protocols" [value]="protocol">{{protocol}}</option>
+                    </select>
                   </div>
-                  <div class="col-3">
-                    <input type="radio" value="IECChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;IEC
+                  <div *ngIf="project.DataCompliance.Protocol !== 'Exempt'">
+                    <input name="ProtocolNumber" class="form-control" [(ngModel)]="project.DataCompliance.ProtocolNumber" placeholder="Protocol #">
+                  </div>
 
-                    <div *ngIf="project.DataCompliance.HumanStudy  === 'IECChecked'">
-                      <label>Enter IEC Number </label>
-                      <input name="IECNumber" class="form-control" [(ngModel)]="project.DataCompliance.IECNumber" rows="1">
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <input type="radio" value="ExemptedCheckedWithWaiver" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempted
-                    with Waiver
-                    <div *ngIf="project.DataCompliance.HumanStudy  === 'ExemptedCheckedWithWaiver'">
-                      <label>Enter Waiver Number </label>
-                      <input name="exempted" class="form-control" [(ngModel)]="project.DataCompliance.Waiver" rows="1">
-                    </div>
-                  </div>
-                  <div class="col-3">
-                    <input type="radio" value="ExemptedChecked" name="humanStudy" [(ngModel)]="project.DataCompliance.HumanStudy">&nbsp;Exempted
-                  </div>
                 </div>
               </div>
               <!-- END appropriate documentation -->
               <hr>
             </div>
-            <app-files [project]="project" [user]="user" [permission]="permission" [statusMsg]="statusMsg" (uploaded)="fileUpdates($event)"></app-files>
+            <app-files [project]="project" [user]="user" [permission]="permission" [isCompliant]="isCompliant" (uploaded)="fileUpdates($event)"></app-files>
           </div>
           <!-- END permissions -->
         </div>

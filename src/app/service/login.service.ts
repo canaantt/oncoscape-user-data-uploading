@@ -46,10 +46,11 @@ export class LoginService {
 
   authLogin(auth) {
     const token = auth.authResponse.access_token;
-    console.log(auth);
+
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
+          console.log(res)
           this.stateService.jwtToken.next(res);
           if ('token' in res) {
             hello('google').api('me').then( this.updateUserInfo.bind(this));
@@ -69,6 +70,7 @@ export class LoginService {
     .subscribe(r => {
       if (r.user !== null) {
         this.stateService.user.next(v);
+        this.stateService.internalUser.next(r.user);
         this.oauthServiceStatus.emit('loggedIn');
       }
     });

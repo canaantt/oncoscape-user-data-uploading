@@ -69,6 +69,11 @@ export class LandingComponent implements OnInit {
     });
   }
 
+  toggleLogin() {
+    if(this.user === null) this.googleLogin()
+    else this.googleLogOut()
+  }
+  
   googleLogin() {
     this.loginService.googleLogin();
   }

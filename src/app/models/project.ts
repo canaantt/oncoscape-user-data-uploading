@@ -11,7 +11,7 @@ export class Project {
     Private: boolean;
     PHI: boolean;
     Source: string;
-    DataCompliance:  {HumanStudy: string, IRBNumber: string, IECNumber: string, Waiver: string, ComplianceOption: string};
+    DataCompliance:  {HumanStudy: string, ProtocolNumber: string, Protocol: string};
     File: {filename: string, size: number, timestamp: Date};
     Date: Date;
     Author: string;
