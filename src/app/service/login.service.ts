@@ -68,9 +68,9 @@ export class LoginService {
     this.userService.getUserByGmail(v.email)
     .map(res => res.json()[0])
     .subscribe(r => {
-      if (r.user !== null) {
+      if (typeof r !== "undefined") {
         this.stateService.user.next(v);
-        this.stateService.internalUser.next(r.user);
+        this.stateService.internalUser.next(r);
         this.oauthServiceStatus.emit('loggedIn');
       }
     });

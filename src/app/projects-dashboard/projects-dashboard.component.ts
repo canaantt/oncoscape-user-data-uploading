@@ -57,7 +57,7 @@ export class ProjectsDashboardComponent {
                 this.stateService.internalUser
                     .subscribe(res => {
                       this.user = res;
-                      if (this.user !== null) {
+                      if (typeof this.user !== "undefined") {
                         this.getPermissions(this.user._id);
                       } else {
                         this.loginService.googleLogOut();
