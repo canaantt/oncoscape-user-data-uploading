@@ -31,8 +31,6 @@ export class UserService {
   }
 
   getUserByGmail(gmail: string): Observable<Response> {
-    // const url = environment.apiBaseUrl + 'users/checkGmail/' + gmail;
-    // return this.http.post(url, {headers: this.headers});
     const url = environment.apiBaseUrl + 'users/' +  JSON.stringify({'Gmail': gmail});
     return this.http.get(url, {headers: this.headers});
   }

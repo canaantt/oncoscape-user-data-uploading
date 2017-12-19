@@ -75,7 +75,7 @@ export class ProjectDetailComponent implements  OnInit {
       this.stateService.internalUser
       .subscribe(res => {
         this.user = res;
-        if (this.user == null) 
+        if (typeof this.user == "undefined") 
           this.loginService.googleLogOut();
         else{
           this.projectService.getProjectByID(this.route.snapshot.params['id'])

@@ -33,7 +33,7 @@ export class LandingComponent implements OnInit {
     const timer = Observable.timer(10, 200);
     this.subscription = timer.subscribe(() => {
       this.getUser();
-      if (this.user !== null) {
+      if (typeof this.user !== "undefined") {
         this.subscription.unsubscribe();
       }
     });
