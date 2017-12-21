@@ -76,14 +76,12 @@ export class FilesComponent implements OnInit {
   }
   filerefresh() {
     console.log('in File component refresh()');
-    this.fileService.getFilesByProjectID(this.project._id + '_collections')
+    this.fileService.getCollectionsByProjectID(this.project._id)
+    // this.fileService.getFilesByProjectID(this.project._id + '_collections')
         .subscribe(res => {
-          if (typeof res === "string" ) {
-            console.log(res);
-          }else{
+          if (typeof res[0] !== "undefined"){
             this.upload.complete = true;
             this.upload.collections = res[0].filter(function(m){return ! (m.type in ["map"])});
-            
           } 
         });
   }

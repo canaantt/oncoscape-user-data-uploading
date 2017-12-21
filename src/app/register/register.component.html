@@ -76,8 +76,7 @@
 
 
                 <form [formGroup]="newUserForm">
-                    <label>
-                        <span class="text-danger">*</span>All Fields Required</label>
+                    <label><span class="text-danger">*</span>All Fields Required</label>
 
                     <div class="form-group ">
                         <div class="col-6">
@@ -94,8 +93,8 @@
                     <div class="form-group ">
                         <div class="col-6">
                             <input type="text" class="form-control" id="Email" formControlName="Email" placeholder="Institutional Email">
-                            <p *ngIf="error.email.empty !=='' || error.email.format !=='' || error.email.duplicate !==''">
-                                <small class="text-danger">{{error.email.empty}}{{error.email.format}}{{error.email.duplicate}}
+                            <p *ngIf="error.email !=='' ">
+                                <small class="text-danger">{{error.email}}
                                 </small>
                             </p>
                         </div>
@@ -107,8 +106,8 @@
                         </div>
                     </div>
                     <div class="form-group ">
-                        <div class="col-6">
-                            <input type="submit" (click)="submit()" class="btn btn-primary" value="Agree">
+                        <div class="col-6" >
+                            <input type="submit" (click)="submit()" class="btn btn-primary" value="Agree" >
                         </div>
                     </div>
                     <!-- <p>Form Status: {{ newUserForm.status }}</p>

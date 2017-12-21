@@ -132,7 +132,7 @@ export class ProjectsDashboardComponent {
         });
   }
   onSelect(ProjectID: string): void {
-    this.router.navigate([ `/projects/${ProjectID}/`]);
+    this.zone.run(() => {this.router.navigate([ `/projects/${ProjectID}/`]) });
   }
 
 }

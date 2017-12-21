@@ -31,6 +31,13 @@ export class FileService {
                   return res.json();
                 });
   }
+  getCollectionsByProjectID(id: string): Observable<Response> {
+    const url = environment.apiBaseUrl + id + "_collections";
+    return this.http.get(url, {headers: this.headers})
+               .map(res => {
+                  return res.json();
+                });
+  }
 
   removeFilesByProjectID(id: string): any {
     const url = `${this.filesUrl}/` + id;
