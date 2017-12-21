@@ -51,11 +51,18 @@ export class LoginService {
         .map(res => res.json())
         .subscribe((res) => {
           console.log(res)
-          this.stateService.jwtToken.next(res);
+          
           if ('token' in res) {
+            this.stateService.jwtToken.next(res);
             hello('google').api('me').then( this.updateUserInfo.bind(this));
-          } else if ('gmail' in res) {
-            this.stateService.internalUser.next({'Gmail': res});
+          } else  {
+            // res = res.map(function(d){ return {
+            //   email: res.email,
+            //   first: res.first_name,
+            //   last: res.last_name,
+            //   verified: res.verified
+            // }})
+            this.stateService.user.next(res);
             this.oauthServiceStatus.emit('register');
           }
         });

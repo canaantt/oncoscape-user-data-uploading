@@ -46,7 +46,7 @@ export class LandingComponent implements OnInit {
                 break;
             case 'register':
                 // alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
-                this.router.navigate(['/register']);
+                this.zone.run(() => {this.router.navigate(['/register'])});
                 break;
             case 'loggedOut':
                 this.googleLogOut();
