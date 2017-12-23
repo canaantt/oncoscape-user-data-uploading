@@ -75,9 +75,9 @@ export class ProjectDetailComponent implements  OnInit {
       this.stateService.internalUser
       .subscribe(res => {
         this.user = res;
-        if (typeof this.user == "undefined") 
+        if (typeof this.user === "undefined") {
           this.loginService.googleLogOut();
-        else{
+        }else{
           this.projectService.getProjectByID(this.route.snapshot.params['id'])
                             .subscribe(res => {
                               this.setProject(res[0]);
@@ -93,7 +93,7 @@ export class ProjectDetailComponent implements  OnInit {
     });
     const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
       .map(() => this.project)
-      .debounceTime(500)
+      .debounceTime(100)
       .subscribe(input => {
         this.update(this.project);
     });
@@ -122,14 +122,16 @@ export class ProjectDetailComponent implements  OnInit {
     
   }
   update(project: Project): void {
+    
     this.updatePreChecking();
     console.log('STATUS:', this.isCompliant);
+    
     if (!this.isCompliant) {
       console.log('Dataset error Message: ', this.errorMessage);
     } else {
        this.projectService.update(project).subscribe(() => {
         this.statusReport();
-        this.refresh();
+        this.filerefresh();
       });
     }
   }
@@ -140,6 +142,7 @@ export class ProjectDetailComponent implements  OnInit {
 
     this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy == 'false' ?  true : false;  
 
+    console.log(this.project.DataCompliance.Protocol)
     var reg = /^\d+$/;
     if (this.project.DataCompliance.Protocol == 'Exempt'){
       this.project.DataCompliance.ProtocolNumber = ''
@@ -159,32 +162,19 @@ export class ProjectDetailComponent implements  OnInit {
     }
   }
 
-  refresh() {
-    this.projectService.getProjectByID(this.route.snapshot.params['id'])
-                       .subscribe(res0 => {
-                         this.filesComponent.filerefresh();
-                        });
+  filerefresh() {
+    this.filesComponent.filerefresh();                
   }
   statusReport() {
     setTimeout(() => this.updateEmitService.updateState());
   }
-  fileUpdates(event) {
-    this.update(this.project);
-  }
+  
   submitAnnotations(): void {
     if (this.newAnnotationForm.valid) {
       this.project.Annotations.push(this.newAnnotationForm.value);
       this.newAnnotationForm.reset({key: '', value: ''});
     }
   }
-  collectProtocol(value: string) {
-    if (value === 'human') {
-      this.update(this.project);
-    } else if (value === 'non-human') {
-      this.project.DataCompliance.Protocol = '';
-      this.project.DataCompliance.ProtocolNumber = '';
-      this.update(this.project);
-    }
-  }
+
 }
 

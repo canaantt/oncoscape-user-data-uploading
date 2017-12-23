@@ -7,7 +7,7 @@ export class UpdateEmitService {
     this.updateStatus = new EventEmitter<any>();
    }
   updateState() {
-    console.log('In update-emit updating statue...................');
+    console.log('In update-emit updating service...................');
     this.updateStatus.emit('Saving update ...');
   }
 }

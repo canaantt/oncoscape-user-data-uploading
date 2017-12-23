@@ -35,13 +35,14 @@ export class FileService {
     const url = environment.apiBaseUrl + id + "_collections";
     return this.http.get(url, {headers: this.headers})
                .map(res => {
-                  return res.json();
+                  return res;
                 });
   }
 
-  removeFilesByProjectID(id: string): any {
+  removeFilesByProjectID(id: string): Observable<Response> {
     const url = `${this.filesUrl}/` + id;
-    this.http.delete(url, {headers: this.headers}).subscribe(() => console.log('files are deleted.'));
+    return this.http.delete(url, {headers: this.headers})
+      .map((msg) => {return msg});
   }
   create(file: File): Observable<Response> {
     return this.http

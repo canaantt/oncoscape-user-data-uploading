@@ -108,8 +108,8 @@
                   
                   
                   <div class="col-3">
-                    <select [(ngModel)]="project.DataCompliance.Protocol" class="form-control" >
-                      <option *ngFor="let protocol of protocols" [value]="protocol">{{protocol}}</option>
+                    <select [(ngModel)]="project.DataCompliance.Protocol" class="form-control" (change)="updatePreChecking()">
+                      <option *ngFor="let protocol of protocols" [ngValue]="protocol">{{protocol}}</option>
                     </select>
                   </div>
                   <div *ngIf="project.DataCompliance.Protocol !== 'Exempt'">
@@ -121,7 +121,7 @@
               <!-- END appropriate documentation -->
               <hr>
             </div>
-            <app-files [project]="project" [user]="user" [permission]="permission" [isCompliant]="isCompliant" (uploaded)="fileUpdates($event)"></app-files>
+            <app-files [project]="project" [user]="user" [permission]="permission" [isCompliant]="isCompliant"></app-files>
           </div>
           <!-- END permissions -->
         </div>

@@ -7,7 +7,7 @@
       <div id="fileUploadForm" class="form-group" [class.disabled]="!isCompliant">
         <label class=" btn-primary" for="exampleInputFile">&nbsp;&nbsp; Choose File
         <input #fileInput type="file"  name="single" id="exampleInputFile" aria-describedby="fileHelp" ng2FileSelect
-          [uploader]="uploader" (change)="updateStatus(uploader.queue[0])" hidden [disabled]="!isCompliant"/>
+          [uploader]="uploader"  hidden [disabled]="!isCompliant"/>
         </label>
       </div>
     </div>

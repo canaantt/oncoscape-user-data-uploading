@@ -113,7 +113,7 @@ export class ProjectsDashboardComponent {
       Source: new FormControl('File'),
       Author: this.user._id,
       PHI: false,
-      DataCompliance: {'ProtocolNumber': '', 'Protocol': '' , 'HumanStudy': ''}
+      DataCompliance: {'ProtocolNumber': '', 'Protocol': 'IRB' , 'HumanStudy': ''}
     });
     this.projectService.create(newProjectForm.value)
         .subscribe((newProject) => {
