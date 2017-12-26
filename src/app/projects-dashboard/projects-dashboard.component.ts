@@ -56,11 +56,11 @@ export class ProjectsDashboardComponent {
                 console.log('Dashboard Component constructor');
                 this.stateService.internalUser
                     .subscribe(res => {
-                      this.user = res;
-                      if (typeof this.user !== "undefined") {
-                        this.getPermissions(this.user._id);
+                      if (res === null) {
+                      //  this.loginService.googleLogOut();
                       } else {
-                        this.loginService.googleLogOut();
+                        this.user = res;
+                        this.getPermissions(this.user._id);
                       }
                     });
                }
@@ -113,7 +113,7 @@ export class ProjectsDashboardComponent {
       Source: new FormControl('File'),
       Author: this.user._id,
       PHI: false,
-      DataCompliance: {'ProtocolNumber': '', 'Protocol': '' , 'HumanStudy': ''}
+      DataCompliance: {'ProtocolNumber': '', 'Protocol': 'IRB' , 'HumanStudy': ''}
     });
     this.projectService.create(newProjectForm.value)
         .subscribe((newProject) => {

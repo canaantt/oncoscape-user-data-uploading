@@ -1,17 +1,20 @@
 import { Component,  OnInit, Input, Output, EventEmitter} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Headers, Http, Response } from '@angular/http';
+import { Pipe, PipeTransform } from '@angular/core';
+import { FileUploader, FileSelectDirective } from 'ng2-file-upload';
+import { Observable } from 'rxjs/Observable';
+import * as _ from 'underscore';
+
 import { File } from '../models/file';
 import { FileService } from '../service/file.service';
-import { FileUploader, FileSelectDirective } from 'ng2-file-upload';
-import { Headers, Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { Pipe, PipeTransform } from '@angular/core';
 import { StateService } from '../service/state.service';
 import { environment } from '../../environments/environment';
-import * as _ from 'underscore';
+
 @Pipe({
   name: 'Overlapping'
 })
+
 export class Overlapping implements PipeTransform {
   constructor() {}
   transform(arr1, arr2): any {
@@ -30,29 +33,26 @@ export class FilesComponent implements OnInit {
   headerValue: string;
   files$: Observable<any>;
   
-  
   errorMsg = {
     'requiredField': '',
-    'fileSizeError': '',
-    'fileTypeError': ''
+    'fileSize': '',
+    'fileType': ''
   };
-  uploadedstring = 'Not Uploaded';
+
   upload = {
     complete: false,
     'collections': []
   };
+
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
   @Input() isCompliant: boolean;
   @Output()
-    uploaded: EventEmitter<string> = new EventEmitter();
+    filesExist: EventEmitter<boolean> = new EventEmitter();
 
-  uploadComplete(message: string) {
-    this.uploaded.emit(message);
-  }
-  private handleError(error: any): Promise<any> {
-    return Promise.reject('No file is uploaded yet.');
+  emitFilesExist(message: boolean) {
+    this.filesExist.emit(message);
   }
 
   constructor(private fb: FormBuilder,
@@ -71,77 +71,88 @@ export class FilesComponent implements OnInit {
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.project._id + '/' + this.user.email,
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
+    this.uploader.onAfterAddingFile = (file) => { this.updateStatus(file); };
     
     this.filerefresh();
   }
+
   filerefresh() {
     console.log('in File component refresh()');
     this.fileService.getCollectionsByProjectID(this.project._id)
-    // this.fileService.getFilesByProjectID(this.project._id + '_collections')
-        .subscribe(res => {
+    .map((res: Response) => res.json())    
+    .subscribe(res => {
           if (typeof res[0] !== "undefined"){
             this.upload.complete = true;
-            this.upload.collections = res[0].filter(function(m){return ! (m.type in ["map"])});
+            this.upload.collections = res.filter(function(m){return ! (m.type in ["map"])});
+            this.emitFilesExist(this.upload.complete);
           } 
         });
   }
   
-  updateStatus(fileitem: any) {
-      if (this.projectValidChecking(fileitem)) {
-        fileitem.upload();
-        this.uploadedstring = 'Uploaded';
-        this.project.File = {
-          'filename': fileitem.file.name,
-          'size' : fileitem.file.size,
-          'timestamp' : Date()
-        };
-        this.uploadComplete('Being uploaded');
-        this.filerefresh();
-        alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
+ updateStatus(fileitem: any):void {
+      if (this.isValidFile(fileitem)) {
+        this.fileService.removeFilesByProjectID(this.project._id).subscribe((msg) => {
+          this.upload.complete = false;
+          this.upload.collections = [];
+
+          fileitem.upload();
+          
+          this.project.File = {
+            'filename': fileitem.file.name,
+            'size' : fileitem.file.size,
+            'timestamp' : Date()
+          };
+          this.filerefresh();
+        });
+        
+        //alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
+        
+
       } else {
-        alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileTypeError + ' ' + this.errorMsg.fileSizeError);
+        alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileType + ' ' + this.errorMsg.fileSize);
         this.uploader.clearQueue();
       }
   }
   cancelUpdate(fileitem: any) {
     const len = this.uploader.queue.length;
     this.uploader.queue.pop();
-    this.uploadComplete('Being canceled');
   }
-  removeAllFiles() {
+  removeAllFiles(): boolean {
     const confirmDeletion = confirm('Are you sure you want to delete all the files related to this dataset? ');
     if (confirmDeletion) {
-      this.fileService.removeFilesByProjectID(this.project._id);
-      this.project.File = null;
-      this.uploadComplete('Being removed');
-      this.upload.complete = false;
-      this.uploader.queue = [];
+      this.fileService.removeFilesByProjectID(this.project._id).subscribe((msg) => {
+        this.project.File = null;
+        this.upload.complete = false;
+        this.uploader.queue = [];
+        this.emitFilesExist(this.upload.complete);
+        return true
+      });
+      
     } else {
       console.log('file deletion is canceled.');
+      return false;
     }
   }
-  projectValidChecking( fileitem ): boolean {
+  isValidFile( fileitem ): boolean {
+    this.errorMsg = { requiredField: '', fileSize: '', fileType: '' }
+    
     if (!this.isCompliant) {
       this.errorMsg.requiredField = 'Please fill all the required fields before proceeding with data uploading.';
-    } else {
-      this.errorMsg.requiredField = '';
-    }
+    } 
     if (fileitem.file.size > 400 * 1000 * 1000) {
-      this.errorMsg.fileSizeError = 'File size should be greater than 400Mb';
-    } else {
-      this.errorMsg.fileSizeError = '';
-    }
+      this.errorMsg.fileSize = 'File size should be less than 400Mb';
+    } 
     if (fileitem.file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      this.errorMsg.fileTypeError = 'File format should be xlsx';
-    } else {
-      this.errorMsg.fileTypeError = '';
-    }
+      this.errorMsg.fileType = 'File format should be xlsx';
+    } 
+    
     if (this.errorMsg.requiredField === '' &&
-        this.errorMsg.fileSizeError === '' &&
-        this.errorMsg.fileTypeError === '') {
+        this.errorMsg.fileSize === '' &&
+        this.errorMsg.fileType === '') {
           return true;
-        } else {
-          return false;
-        }
+        } 
+      
+    return false;
+      
   }
 }

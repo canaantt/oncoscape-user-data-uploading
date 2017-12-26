@@ -1,5 +1,5 @@
 import { Component, Input, Output, SimpleChanges,  AfterViewInit, OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
@@ -61,6 +61,7 @@ export class ProjectDetailComponent implements  OnInit {
     private fileService: FileService,
     private userService: UserService,
     private stateService: StateService,
+    private zone: NgZone,
     private elementRef: ElementRef,
     private updateEmitService: UpdateEmitService,
     private loginService: LoginService,
@@ -74,26 +75,31 @@ export class ProjectDetailComponent implements  OnInit {
       } 
       this.stateService.internalUser
       .subscribe(res => {
-        this.user = res;
-        if (typeof this.user == "undefined") 
-          this.loginService.googleLogOut();
-        else{
+        
+        if (res === null) {
+          //this.loginService.googleLogOut();
+        }else{
+          this.user = res;
           this.projectService.getProjectByID(this.route.snapshot.params['id'])
                             .subscribe(res => {
-                              this.setProject(res[0]);
-                              this.updatePreChecking();
+                              this.zone.run(() => {
+                                this.setProject(res[0]);
+                                this.updatePreChecking();
+                              });
                             });        
                             
             this.permissionService.getPermissionByUserByProject(this.user._id, this.route.snapshot.params['id'])
                             .subscribe(r => {
-                              this.setPermission(r);
+                              this.zone.run(() => {
+                                this.setPermission(r);
+                              })
                             });
                           
         }
     });
     const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
       .map(() => this.project)
-      .debounceTime(500)
+      .debounceTime(100)
       .subscribe(input => {
         this.update(this.project);
     });
@@ -122,14 +128,16 @@ export class ProjectDetailComponent implements  OnInit {
     
   }
   update(project: Project): void {
+    
     this.updatePreChecking();
     console.log('STATUS:', this.isCompliant);
+    
     if (!this.isCompliant) {
       console.log('Dataset error Message: ', this.errorMessage);
     } else {
        this.projectService.update(project).subscribe(() => {
         this.statusReport();
-        this.refresh();
+        this.filerefresh();
       });
     }
   }
@@ -140,6 +148,7 @@ export class ProjectDetailComponent implements  OnInit {
 
     this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy == 'false' ?  true : false;  
 
+    console.log(this.project.DataCompliance.Protocol)
     var reg = /^\d+$/;
     if (this.project.DataCompliance.Protocol == 'Exempt'){
       this.project.DataCompliance.ProtocolNumber = ''
@@ -159,32 +168,19 @@ export class ProjectDetailComponent implements  OnInit {
     }
   }
 
-  refresh() {
-    this.projectService.getProjectByID(this.route.snapshot.params['id'])
-                       .subscribe(res0 => {
-                         this.filesComponent.filerefresh();
-                        });
+  filerefresh() {
+    this.filesComponent.filerefresh();                
   }
   statusReport() {
     setTimeout(() => this.updateEmitService.updateState());
   }
-  fileUpdates(event) {
-    this.update(this.project);
-  }
+  
   submitAnnotations(): void {
     if (this.newAnnotationForm.valid) {
       this.project.Annotations.push(this.newAnnotationForm.value);
       this.newAnnotationForm.reset({key: '', value: ''});
     }
   }
-  collectProtocol(value: string) {
-    if (value === 'human') {
-      this.update(this.project);
-    } else if (value === 'non-human') {
-      this.project.DataCompliance.Protocol = '';
-      this.project.DataCompliance.ProtocolNumber = '';
-      this.update(this.project);
-    }
-  }
+
 }
 
