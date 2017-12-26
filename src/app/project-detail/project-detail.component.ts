@@ -1,5 +1,5 @@
 import { Component, Input, Output, SimpleChanges,  AfterViewInit, OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
@@ -61,6 +61,7 @@ export class ProjectDetailComponent implements  OnInit {
     private fileService: FileService,
     private userService: UserService,
     private stateService: StateService,
+    private zone: NgZone,
     private elementRef: ElementRef,
     private updateEmitService: UpdateEmitService,
     private loginService: LoginService,
@@ -74,19 +75,24 @@ export class ProjectDetailComponent implements  OnInit {
       } 
       this.stateService.internalUser
       .subscribe(res => {
-        this.user = res;
-        if (typeof this.user === "undefined") {
-          this.loginService.googleLogOut();
+        
+        if (res === null) {
+          //this.loginService.googleLogOut();
         }else{
+          this.user = res;
           this.projectService.getProjectByID(this.route.snapshot.params['id'])
                             .subscribe(res => {
-                              this.setProject(res[0]);
-                              this.updatePreChecking();
+                              this.zone.run(() => {
+                                this.setProject(res[0]);
+                                this.updatePreChecking();
+                              });
                             });        
                             
             this.permissionService.getPermissionByUserByProject(this.user._id, this.route.snapshot.params['id'])
                             .subscribe(r => {
-                              this.setPermission(r);
+                              this.zone.run(() => {
+                                this.setPermission(r);
+                              })
                             });
                           
         }

@@ -7,17 +7,17 @@ import { Project } from '../models/project';
 
 @Injectable()
 export class ProjectService {
-  private headers = new Headers();
+  private headers = new Headers({'Content-Type': 'application/json'});
   private projectsUrl = environment.apiBaseUrl + 'projects';
   private projectPermissionJSON: any;
   constructor(private stateService: StateService,
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
-            this.headers.append('Content-Type', 'application/json');
-            this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
-            this.headers.append('Pragma', 'no-cache');
-            this.headers.append('Cache-Control', 'max-age=0');
+            // this.headers.append('Content-Type', 'application/json');
+            // this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
+            // this.headers.append('Pragma', 'no-cache');
+            // this.headers.append('Cache-Control', 'max-age=0');
             if (res !== null) {
               this.headers.append('Authorization', 'Bearer ' + res.token);
             }

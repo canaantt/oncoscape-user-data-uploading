@@ -56,11 +56,11 @@ export class ProjectsDashboardComponent {
                 console.log('Dashboard Component constructor');
                 this.stateService.internalUser
                     .subscribe(res => {
-                      this.user = res;
-                      if (typeof this.user !== "undefined") {
-                        this.getPermissions(this.user._id);
+                      if (res === null) {
+                      //  this.loginService.googleLogOut();
                       } else {
-                        this.loginService.googleLogOut();
+                        this.user = res;
+                        this.getPermissions(this.user._id);
                       }
                     });
                }
