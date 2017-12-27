@@ -57,7 +57,8 @@ export class ProjectsDashboardComponent {
                 this.stateService.internalUser
                     .subscribe(res => {
                       if (res === null) {
-                      //  this.loginService.googleLogOut();
+                        this.checkLogin()
+                       //this.loginService.googleLogOut()
                       } else {
                         this.user = res;
                         this.getPermissions(this.user._id);
@@ -65,7 +66,15 @@ export class ProjectsDashboardComponent {
                     });
                }
 
-  
+  checkLogin() {
+    const self = this
+    setTimeout(function () {
+        if (typeof self.user === "undefined") {
+            self.loginService.googleLogOut();
+        }
+    }, 2000);
+  }
+
   getProjects(permissions: any): void {
     let projectIDs: string[] =  _.uniq(<string> permissions.map(r => r.Project));
     this.projectService.getProjectsByIDs(projectIDs)

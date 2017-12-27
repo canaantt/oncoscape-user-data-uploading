@@ -29,18 +29,19 @@ export class LoginService {
         scope: 'email'
 
       });
-      hello.on('auth', function() { console.log('state changed!'); });
+      //hello.on('auth', function() { console.log('state changed!'); });
       hello.on('auth.login', this.authLogin.bind(this));
       hello.on('auth.logout', this.authLogout.bind(this));
   }
 
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
-    this.googleLogOut();
+    //this.googleLogOut();
     hello.login('google', {force: true});
   }
   googleLogOut(): any {
     window.location.assign('/upload/');
+    this.stateService.jwtToken = null;
     hello.logout('google', {force: true});
   }
 
@@ -73,7 +74,8 @@ export class LoginService {
 
   updateUserInfo (v) {
     this.userService.getUserByGmail(v.email)
-    .map(res => res.json()[0])
+    .map(res => 
+      res.json()[0])
     .subscribe(r => {
       if (typeof r !== "undefined") {
         this.stateService.user.next(v);

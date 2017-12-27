@@ -12,11 +12,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class LandingComponent implements OnInit {
   user: any;
-  previousUser: any;
-  auth: boolean;
-  user$: Observable<any>;
-  counter = 0;
   subscription: any;
+
   constructor( private fb: FormBuilder,
                private stateService: StateService,
                private userService: UserService,
@@ -26,17 +23,20 @@ export class LandingComponent implements OnInit {
                private router: Router ) {}
   getUser(): void {
     this.stateService.user.subscribe(res => {
-      this.zone.run(() => { this.user = res; });
+      this.zone.run(() => { 
+        if(res !== null){
+          this.user = res;
+          
+        }
+      });
     });
   }
   ngOnInit() {
-    const timer = Observable.timer(10, 200);
-    this.subscription = timer.subscribe(() => {
-      this.getUser();
-      if (typeof this.user !== "undefined") {
-        this.subscription.unsubscribe();
-      }
-    });
+    this.stateService.user.subscribe(res => {
+      this.user = res;
+    })
+      
+  
     this.loginService.oauthServiceStatus
         .subscribe((msg) => {
           console.log(msg);
@@ -49,7 +49,7 @@ export class LandingComponent implements OnInit {
                 this.zone.run(() => {this.router.navigate(['/register'])});
                 break;
             case 'loggedOut':
-                this.googleLogOut();
+                this.loginService.googleLogOut();
                 this.router.navigate(['/landing']);
                 break;
             default:
@@ -70,16 +70,8 @@ export class LandingComponent implements OnInit {
   }
 
   toggleLogin() {
-    if(this.user === null) this.googleLogin()
-    else this.googleLogOut()
-  }
-  
-  googleLogin() {
-    this.loginService.googleLogin();
+    if(this.user === null) this.loginService.googleLogin()
+    else this.loginService.googleLogOut()
   }
 
-  googleLogOut() {
-    console.log('in landing component, googleLogout...');
-    this.loginService.googleLogOut();
-  }
  }
