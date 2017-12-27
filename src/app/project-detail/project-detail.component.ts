@@ -77,7 +77,7 @@ export class ProjectDetailComponent implements  OnInit {
       .subscribe(res => {
         
         if (res === null) {
-          //this.loginService.googleLogOut();
+          this.checkLogin()
         }else{
           this.user = res;
           this.projectService.getProjectByID(this.route.snapshot.params['id'])
@@ -111,6 +111,15 @@ export class ProjectDetailComponent implements  OnInit {
     });
   }
 
+
+  checkLogin() {
+    const self = this
+    setTimeout(function () {
+        if (typeof self.user === "undefined") {
+            self.loginService.googleLogOut();
+        }
+    }, 2000);
+  }
 
   setPermission(permission: any): void {
     this.permission = permission;
