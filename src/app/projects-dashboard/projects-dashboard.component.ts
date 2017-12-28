@@ -103,7 +103,8 @@ export class ProjectsDashboardComponent {
               return;
             } else {
               this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
-              this.fileService.removeFilesByProjectID(project._id);
+              this.fileService.removeFilesByProjectID(project._id)
+                  .subscribe(msg => { console.log("files removed")});
               this.permissionService.removePermisionsByProjectID(project._id)
                   .subscribe(() => console.log('permissions are deleted.'));
               this.getPermissions(res.User);
@@ -122,6 +123,7 @@ export class ProjectsDashboardComponent {
       Source: new FormControl('File'),
       Author: this.user._id,
       PHI: false,
+      File: {filename: '', size: 0, timestamp: null},
       DataCompliance: {'ProtocolNumber': '', 'Protocol': 'IRB' , 'HumanStudy': ''}
     });
     this.projectService.create(newProjectForm.value)

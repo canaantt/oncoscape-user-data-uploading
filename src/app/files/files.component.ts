@@ -9,6 +9,7 @@ import * as _ from 'underscore';
 import { File } from '../models/file';
 import { FileService } from '../service/file.service';
 import { StateService } from '../service/state.service';
+import { ProjectService } from '../service/project.service';
 import { environment } from '../../environments/environment';
 
 @Pipe({
@@ -31,7 +32,6 @@ export class Overlapping implements PipeTransform {
 export class FilesComponent implements OnInit {
   public uploader: FileUploader;
   headerValue: string;
-  files$: Observable<any>;
   
   errorMsg = {
     'requiredField': '',
@@ -48,17 +48,13 @@ export class FilesComponent implements OnInit {
   @Input() user: any;
   @Input() permission: any;
   @Input() isCompliant: boolean;
-  @Output()
-    filesExist: EventEmitter<boolean> = new EventEmitter();
-
-  emitFilesExist(message: boolean) {
-    this.filesExist.emit(message);
-  }
-
+  
+  @Output() filesExist= false;
+  
   constructor(private fb: FormBuilder,
               private stateService: StateService,
+              private projectService: ProjectService,
               private fileService: FileService) {
-                console.log('IN FILE COMPONENT, project is: ', this.project);
                 this.stateService.jwtToken
                 .subscribe(res => {
                   if (res !== null) {
@@ -72,8 +68,8 @@ export class FilesComponent implements OnInit {
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
     this.uploader.onAfterAddingFile = (file) => { this.updateStatus(file); };
-    
-    this.filerefresh();
+    if(this.project.File.size !== 0)
+      this.filerefresh();
   }
 
   filerefresh() {
@@ -84,26 +80,33 @@ export class FilesComponent implements OnInit {
           if (typeof res[0] !== "undefined"){
             this.upload.complete = true;
             this.upload.collections = res.filter(function(m){return ! (m.type in ["map"])});
-            this.emitFilesExist(this.upload.complete);
+            //this.emitFilesExist(this.upload.complete);
           } 
         });
   }
   
  updateStatus(fileitem: any):void {
       if (this.isValidFile(fileitem)) {
-        this.fileService.removeFilesByProjectID(this.project._id).subscribe((msg) => {
-          this.upload.complete = false;
-          this.upload.collections = [];
+        this.fileService.removeFilesByProjectID(this.project._id)
+            .subscribe((msg) =>{
+              console.log(msg)
+            
+        
+        this.upload.complete = false;
+        this.upload.collections = [];
 
-          fileitem.upload();
-          
-          this.project.File = {
-            'filename': fileitem.file.name,
-            'size' : fileitem.file.size,
-            'timestamp' : Date()
-          };
+        fileitem.upload();
+        
+        this.project.File = {
+          'filename': fileitem.file.name,
+          'size' : fileitem.file.size,
+          'timestamp' : Date()
+        };
+        this.projectService.update(this.project).subscribe(() => {
           this.filerefresh();
-        });
+        })
+      });
+       
         
         //alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
         
@@ -120,12 +123,13 @@ export class FilesComponent implements OnInit {
   removeAllFiles(): boolean {
     const confirmDeletion = confirm('Are you sure you want to delete all the files related to this dataset? ');
     if (confirmDeletion) {
-      this.fileService.removeFilesByProjectID(this.project._id).subscribe((msg) => {
-        this.project.File = null;
-        this.upload.complete = false;
-        this.uploader.queue = [];
-        this.emitFilesExist(this.upload.complete);
-        return true
+      this.fileService.removeFilesByProjectID(this.project._id)
+        .subscribe((msg) => {
+          this.project.File = {filename:'', size:0, timestamp:null};
+          this.upload.complete = false;
+          this.uploader.queue = [];
+        // this.emitFilesExist(this.upload.complete);
+          return true
       });
       
     } else {
