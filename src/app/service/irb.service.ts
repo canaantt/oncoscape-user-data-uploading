@@ -9,7 +9,7 @@ import { IRB } from '../models/irb';
 @Injectable()
 export class IrbService {
 
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
   // private irbsUrl = 'http://localhost:3000/irbs';
   private irbsUrl =  environment.apiBaseUrl + 'irbs';
   constructor(private http: Http) {}

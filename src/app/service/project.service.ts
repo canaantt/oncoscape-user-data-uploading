@@ -7,7 +7,7 @@ import { Project } from '../models/project';
 
 @Injectable()
 export class ProjectService {
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
   private projectsUrl = environment.apiBaseUrl + 'projects';
   private projectPermissionJSON: any;
   constructor(private stateService: StateService,
