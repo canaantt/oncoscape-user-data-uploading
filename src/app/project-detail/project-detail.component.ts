@@ -1,5 +1,5 @@
 import { Component, Input, Output, SimpleChanges,  AfterViewInit, OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Pipe, PipeTransform, NgZone } from '@angular/core';
+import { Pipe, PipeTransform, NgZone, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
@@ -19,7 +19,6 @@ import { LoginService } from '../service/login.service';
 import { ProjectService } from '../service/project.service';
 import { PermissionService } from '../service/permission.service';
 import { FileService } from '../service/file.service';
-import { UpdateEmitService } from '../service/update-emit.service';
 
 import { PermissionsComponent } from '../permissions/permissions.component';
 import { FilesComponent } from '../files/files.component';
@@ -54,18 +53,20 @@ export class ProjectDetailComponent implements  OnInit {
   @ViewChild(PermissionsComponent) permissionComponent: PermissionsComponent;
   @ViewChild(FilesComponent) filesComponent: FilesComponent;
 
+  @Input()
+    filesExist: boolean;
+
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
+    private zone: NgZone,
     private projectService: ProjectService,
     private permissionService: PermissionService,
     private fileService: FileService,
     private userService: UserService,
-    private stateService: StateService,
-    private zone: NgZone,
-    private elementRef: ElementRef,
-    private updateEmitService: UpdateEmitService,
     private loginService: LoginService,
-    private router: Router,
+    private stateService: StateService,
+    private elementRef: ElementRef,
     private fb: FormBuilder) {
       this.errorMessage =  
       { Name : {msg: 'Project Name is required.', pass: false} , 
@@ -94,18 +95,19 @@ export class ProjectDetailComponent implements  OnInit {
                                 this.setPermission(r);
                               })
                             });
+            
                           
         }
     });
     const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
       .map(() => this.project)
-      .debounceTime(100)
+      .debounceTime(1000)
       .subscribe(input => {
         this.update(this.project);
     });
     const eventStreamKeyUp = Observable.fromEvent(elementRef.nativeElement, 'keyup')
       .map(() => this.project)
-      .debounceTime(500)
+      .debounceTime(1000)
       .subscribe(input => {
         this.update(this.project);
     });
@@ -124,6 +126,7 @@ export class ProjectDetailComponent implements  OnInit {
   setPermission(permission: any): void {
     this.permission = permission;
   }
+
   setProject(project: any): void {
     this.project = project;
   }
@@ -132,24 +135,24 @@ export class ProjectDetailComponent implements  OnInit {
     this.newAnnotationForm = new FormGroup({
         key: new FormControl('', Validators.required),
         value: new FormControl('', Validators.required)
-      });
-    
-    
+      });    
   }
+
   update(project: Project): void {
     
     this.updatePreChecking();
     console.log('STATUS:', this.isCompliant);
     
-    if (!this.isCompliant) {
+    if (!this.isCompliant) 
       console.log('Dataset error Message: ', this.errorMessage);
-    } else {
-       this.projectService.update(project).subscribe(() => {
-        this.statusReport();
-        this.filerefresh();
-      });
-    }
+    
+    this.projectService.update(project).subscribe(() => {
+      if(this.project.File.size !== 0)
+        this.filesComponent.filerefresh();                
+    });
+    
   }
+
   updatePreChecking (): void {
     this.isCompliant = false
     this.errorMessage.Name.pass = this.project.Name === '' ?  false : true;
@@ -175,13 +178,6 @@ export class ProjectDetailComponent implements  OnInit {
         ) {
           this.isCompliant = true;
     }
-  }
-
-  filerefresh() {
-    this.filesComponent.filerefresh();                
-  }
-  statusReport() {
-    setTimeout(() => this.updateEmitService.updateState());
   }
   
   submitAnnotations(): void {

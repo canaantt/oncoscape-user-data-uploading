@@ -16,8 +16,6 @@ export class FileService {
               private http: Http) {
                 this.stateService.jwtToken
                 .subscribe(res => {
-                  // console.log('Project service: ', res);
-                  //this.headers.append('Content-Type', 'application/json');
                   if (res !== null) {
                     this.headers.append('Authorization', 'Bearer ' + res.token);
                   }
@@ -38,11 +36,15 @@ export class FileService {
                   return res;
                 });
   }
-
+  
   removeFilesByProjectID(id: string): Observable<Response> {
     const url = `${this.filesUrl}/` + id;
+    console.log("Removing Files: ", id)
     return this.http.delete(url, {headers: this.headers})
-      .map((msg) => {return msg});
+      .map((msg) => {
+        console.log(msg)
+        return msg
+      });
   }
   create(file: File): Observable<Response> {
     return this.http
