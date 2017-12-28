@@ -10,7 +10,7 @@ import 'rxjs/add/observable/of';
 
 @Injectable()
 export class FileService {
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
   private filesUrl = environment.apiBaseUrl + 'files';
   constructor(private stateService: StateService,
               private http: Http) {
