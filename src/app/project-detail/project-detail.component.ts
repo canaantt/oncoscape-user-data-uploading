@@ -101,13 +101,13 @@ export class ProjectDetailComponent implements  OnInit {
     });
     const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
       .map(() => this.project)
-      .debounceTime(1000)
+      .debounceTime(100)
       .subscribe(input => {
         this.update(this.project);
     });
     const eventStreamKeyUp = Observable.fromEvent(elementRef.nativeElement, 'keyup')
       .map(() => this.project)
-      .debounceTime(1000)
+      .debounceTime(500)
       .subscribe(input => {
         this.update(this.project);
     });
@@ -138,11 +138,16 @@ export class ProjectDetailComponent implements  OnInit {
       });    
   }
 
+  updateProtocol(){
+    this.update(this.project)
+  }
+  
   update(project: Project): void {
     
     this.updatePreChecking();
     console.log('STATUS:', this.isCompliant);
-    
+    console.log("Protocol: ", this.project.DataCompliance.Protocol)
+
     if (!this.isCompliant) 
       console.log('Dataset error Message: ', this.errorMessage);
     
@@ -160,7 +165,6 @@ export class ProjectDetailComponent implements  OnInit {
 
     this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy == 'false' ?  true : false;  
 
-    console.log(this.project.DataCompliance.Protocol)
     var reg = /^\d+$/;
     if (this.project.DataCompliance.Protocol == 'Exempt'){
       this.project.DataCompliance.ProtocolNumber = ''

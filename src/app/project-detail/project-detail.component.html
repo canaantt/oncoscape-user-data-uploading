@@ -1,4 +1,5 @@
 <div class="detail">
+  <h4 *ngIf= "!user" class="detail-header">Checking Login status...</h4>
   <div *ngIf="project">
     <div class="container">
       <div class="row ">
@@ -108,7 +109,7 @@
                   
                   
                   <div class="col-3">
-                    <select [(ngModel)]="project.DataCompliance.Protocol" class="form-control" (change)="updatePreChecking()">
+                    <select [(ngModel)]="project.DataCompliance.Protocol" class="form-control" (change)="updateProtocol()">
                       <option *ngFor="let protocol of protocols" [ngValue]="protocol">{{protocol}}</option>
                     </select>
                   </div>
