@@ -7,17 +7,15 @@ import { User } from '../models/user';
 
 @Injectable()
 export class UserService {
-  private headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
+  private headers;
   private usersUrl = environment.apiBaseUrl + 'users';
 
   constructor(private stateService: StateService,
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
-            // this.headers.append('Content-Type', 'application/json');
-            // this.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate');
+            this.headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
             // this.headers.append('Pragma', 'no-cache');
-            // this.headers.append('Cache-Control', 'max-age=0');
             if (res !== null) {
               this.headers.append('Authorization', 'Bearer ' + res.token);
             }
