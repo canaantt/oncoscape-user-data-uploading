@@ -20,8 +20,21 @@ var File = require("./models/file");
 var IRB = require("./models/irb");
 var Permission = require("./models/permission");
 var GeneSymbolLookupTable;
-var HugoGenes;
-
+var HugoGenes = require("./HugoGenes.json")
+const aws = require('aws-sdk');
+aws.config.update({
+    region: 'us-west-2',
+    accessKeyId: process.env.AWS_ACCESS_KEY, 
+    secretAccessKey: process.env.AWS_SECRET_KEY
+})
+var lambda = new aws.Lambda();
+lambda.invoke({
+    FunctionName: 'hello-world-node-dev-hello'
+  }, function(error, data) {
+    if (error) {
+     console.log(error);
+    }
+  });
 
 // ----------------------- //
 // -----  Middleware ----- //
@@ -44,13 +57,13 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 // ------------- Begin Data Upload Functions ------------- //
-request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apikey=password', function(err, resp, body){
-    GeneSymbolLookupTable = JSON.parse(body);
-    HugoGenes = GeneSymbolLookupTable.map(function(m){return m.hugo;});
-    jsonfile.writeFile("HugoGenes.json", HugoGenes, {spaces: 2}, function(err){ console.error(err);});  
-    if(err) console.log(err);
-    console.log(HugoGenes.length);
-});
+// request('http://dev.oncoscape.sttrcancer.io/api/lookup_oncoscape_genes/?q=&apikey=password', function(err, resp, body){
+//     GeneSymbolLookupTable = JSON.parse(body);
+//     HugoGenes = GeneSymbolLookupTable.map(function(m){return m.hugo;});
+//     jsonfile.writeFile("HugoGenes.json", HugoGenes, {spaces: 2}, function(err){ console.error(err);});  
+//     if(err) console.log(err);
+//     console.log(HugoGenes.length);
+// });
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -208,7 +221,7 @@ function camelToDash(str) {
 };
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-       cb(null, '/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/uploads')
+       cb(null, '/Users/jennyzhang/Downloads/CODEBASE/NG4-Data-Upload/uploads')
     },
     filename: function (req, file, cb) {
       var newFileName = file.fieldname + '-' + Date.now() + '.xlsx';
@@ -382,7 +395,7 @@ app.post('/api/upload/:id/:email', function (req, res) {
             console.log(err);
             return;
         } else {
-            const writing2Mongo = fork('/Users/jennyzhang/Desktop/canaantt/NG4-Data-Upload/server/fileUpload.js', 
+            const writing2Mongo = fork('/Users/jennyzhang/Downloads/CODEBASE/NG4-Data-Upload/server/fileUpload.js', 
             { execArgv: ['--max-old-space-size=1000']});
             writing2Mongo.send({ filePath: res.req.file.path, 
                                  projectID: projectID
