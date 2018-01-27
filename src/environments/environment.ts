@@ -7,5 +7,6 @@ export const environment = {
   production: false,
   // apiBaseUrl: 'https://dev.oncoscape.sttrcancer.io/api/',
   apiBaseUrl: 'http://localhost:7776/api/',
+  // apiBaseUrl: 'http://dev.oncoscape.sttrcancer.io/api/',
   oAuthRedirectUri: '/landing'
 };

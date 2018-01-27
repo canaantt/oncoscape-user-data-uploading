@@ -43,14 +43,12 @@ export class FilesComponent implements OnInit {
     complete: false,
     'collections': []
   };
-
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
   @Input() isCompliant: boolean;
-  
   @Output() filesExist= false;
-  
+
   constructor(private fb: FormBuilder,
               private stateService: StateService,
               private projectService: ProjectService,
@@ -68,35 +66,33 @@ export class FilesComponent implements OnInit {
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
     this.uploader.onAfterAddingFile = (file) => { this.updateStatus(file); };
-    if(this.project.File.size !== 0)
+
+    if (this.project.File.size !== 0) {
       this.filerefresh();
+    }
   }
 
   filerefresh() {
     console.log('in File component refresh()');
     this.fileService.getCollectionsByProjectID(this.project._id)
-    .map((res: Response) => res.json())    
+    .map((res: Response) => res.json())
     .subscribe(res => {
-          if (typeof res[0] !== "undefined"){
+          if (typeof res[0] !== 'undefined'){
             this.upload.complete = true;
-            this.upload.collections = res.filter(function(m){return ! (m.type in ["map"])});
-            //this.emitFilesExist(this.upload.complete);
-          } 
+            this.upload.collections = res.filter(function(m){return ! (m.type in ['map']); });
+            // this.emitFilesExist(this.upload.complete);
+          }
         });
   }
-  
- updateStatus(fileitem: any):void {
+ updateStatus(fileitem: any): void {
       if (this.isValidFile(fileitem)) {
         this.fileService.removeFilesByProjectID(this.project._id)
-            .subscribe((msg) =>{
-              console.log(msg)
-            
-        
+            .subscribe((msg) => {
+              console.log(msg);
         this.upload.complete = false;
         this.upload.collections = [];
 
         fileitem.upload();
-        
         this.project.File = {
           'filename': fileitem.file.name,
           'size' : fileitem.file.size,
@@ -104,13 +100,8 @@ export class FilesComponent implements OnInit {
         };
         this.projectService.update(this.project).subscribe(() => {
           this.filerefresh();
-        })
+        });
       });
-       
-        
-        //alert('An email will be sent to your Gmail account shortly after the operation is complete. If you don\'t receive email in 10 minutes. Please contact us.');
-        
-
       } else {
         alert(this.errorMsg.requiredField + ' ' + this.errorMsg.fileType + ' ' + this.errorMsg.fileSize);
         this.uploader.clearQueue();
@@ -125,13 +116,12 @@ export class FilesComponent implements OnInit {
     if (confirmDeletion) {
       this.fileService.removeFilesByProjectID(this.project._id)
         .subscribe((msg) => {
-          this.project.File = {filename:'', size:0, timestamp:null};
+          this.project.File = {filename: '', size: 0, timestamp: null};
           this.upload.complete = false;
           this.uploader.queue = [];
         // this.emitFilesExist(this.upload.complete);
-          return true
-      });
-      
+          return true;
+
     } else {
       console.log('file deletion is canceled.');
       return false;
@@ -139,23 +129,19 @@ export class FilesComponent implements OnInit {
   }
   isValidFile( fileitem ): boolean {
     this.errorMsg = { requiredField: '', fileSize: '', fileType: '' }
-    
     if (!this.isCompliant) {
       this.errorMsg.requiredField = 'Please fill all the required fields before proceeding with data uploading.';
-    } 
+    }
     if (fileitem.file.size > 400 * 1000 * 1000) {
       this.errorMsg.fileSize = 'File size should be less than 400Mb';
-    } 
+    }
     if (fileitem.file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       this.errorMsg.fileType = 'File format should be xlsx';
-    } 
-    
+    }
     if (this.errorMsg.requiredField === '' &&
         this.errorMsg.fileSize === '' &&
         this.errorMsg.fileType === '') {
           return true;
-        } 
-      
     return false;
       
   }

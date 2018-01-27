@@ -29,14 +29,12 @@ export class LoginService {
         scope: 'email'
 
       });
-      //hello.on('auth', function() { console.log('state changed!'); });
       hello.on('auth.login', this.authLogin.bind(this));
       hello.on('auth.logout', this.authLogout.bind(this));
   }
 
   // Google service called by authLogin & authLogout using hello
   googleLogin(): any {
-    //this.googleLogOut();
     hello.login('google', {force: true});
   }
   googleLogOut(): any {
@@ -52,7 +50,6 @@ export class LoginService {
         .map(res => res.json())
         .subscribe((res) => {
           console.log(res)
-          
           if ('token' in res) {
             this.stateService.jwtToken.next(res);
             hello('google').api('me').then( this.updateUserInfo.bind(this));
@@ -74,10 +71,9 @@ export class LoginService {
 
   updateUserInfo (v) {
     this.userService.getUserByGmail(v.email)
-    .map(res => 
-      res.json()[0])
+    .map(res => res.json()[0])
     .subscribe(r => {
-      if (typeof r !== "undefined") {
+      if (typeof r !== 'undefined') {
         this.stateService.user.next(v);
         this.stateService.internalUser.next(r);
         this.oauthServiceStatus.emit('loggedIn');

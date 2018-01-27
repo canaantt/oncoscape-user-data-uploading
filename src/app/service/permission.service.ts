@@ -21,7 +21,8 @@ export class PermissionService {
                       // this.headers.append('Pragma', 'no-cache');
                       // this.headers.append('Cache-Control', 'max-age=0');
                       if (res !== null) {
-                        this.headers.append('Authorization', 'Bearer ' + res.token);
+                        // this.headers.append('Authorization', 'Bearer ' + res.token);
+                        this.headers.append('Authorization', res.token);
                       }
                     });
               }
