@@ -3,6 +3,10 @@ const jsonfile = require("jsonfile");
 const _ = require("underscore");
 const asyncLoop = require('node-async-loop');
 const XLSX =require("xlsx");
+const fs = require('fs');
+const moment = require('moment');
+const zlib = require('zlib');
+
 const HugoGenes = require('./HugoGenes.json');
 const mongoose = require('mongoose');
 var option = {
@@ -51,6 +55,135 @@ var camelToDash = (str) => {
               .toLowerCase();
 
  };
+
+ var CompressionFactory = {  
+    compress_clinical: function(clinicalData) {
+        var obj = {};
+        var ids = clinicalData.map(c=>c.id);
+        var fields = {};
+        var keys = ['enum',
+                    'num',
+                    'date',
+                    'boolean',
+                    'other'];
+        var flattened = []; 
+        clinicalData.forEach(function(d){
+            var o = {};
+            o['id'] = d.id;
+            keys.forEach(function(key){
+                if(Object.keys(d[key]).length !== 0){
+                    Object.keys(d[key]).forEach(function(k){
+                        o[k+'--'+key] = d[key][k];
+                    });
+                }
+            });
+            flattened.push(o);
+        });
+        var compiledfields = flattened.map(f=>Object.keys(f)).reduce(function(a,b){return _.uniq(a.concat(b))});
+        compiledfields.shift();
+        compiledfields.forEach(function(f){
+            if(f.indexOf('--num') > -1 || f.indexOf('--date') > -1) {
+                if(f.indexOf('--date') > -1){
+                    fields[f] = {
+                        'min': _.min(flattened.map(d=>d[f])),
+                        'max': _.max(flattened.map(d=>d[f]))
+                    }
+                }else{
+                    fields[f] = {
+                        'min': _.min(flattened.map(d=>parseFloat(d[f]))),
+                        'max': _.max(flattened.map(d=>parseFloat(d[f])))
+                    }
+                }
+                
+            } else {
+                fields[f] = _.uniq(flattened.map(d=>d[f]));
+            }
+        });
+        var values = flattened.map(fd=>{
+            return compiledfields.map(key => {
+                if(key.indexOf('--num') > -1 || key.indexOf('--date') > -1) {
+                    return fd[key];
+                } else {
+                   return fields[key].indexOf(fd[key]);
+                }
+            });
+        });
+        obj.ids = ids;
+        obj.fields = fields;
+        obj.values = values;
+        return obj;
+    },
+    compress_clinicalEvent: function(clinicalEventData){
+        var events = clinicalEventData.map(c=>c.events);
+        if( _.uniq(events).length != 1){
+            events = events.reduce(function(a,b){return a.concat(b)});
+            var mapkeys = _.uniq(events.map(e=>e.subType));
+            var map = {};
+            mapkeys.forEach(k => {
+                map[k] = events.find(e => e.subType==k).type;
+            });
+            var data = events.map(e=>{
+                var arr = [];
+                arr.push(e.PatientId);
+                arr.push(mapkeys.indexOf(e.subType));
+                arr.push(new Date(e.startDate).getTime()/1000);
+                arr.push(new Date(e.endDate).getTime()/1000);
+                arr.push(_.omit(e, "type", "PatientId", "startDate", "endDate"));
+                return arr;
+            });
+            var obj = {};
+            obj.map = map;
+            obj.data = data;
+            return obj;
+        } else {
+            return null;
+        } 
+    },
+    compress_molecularMatrix: function(molecularData) {
+        var obj = {};
+        var ids = molecularData[0].s;
+        var genes = molecularData.map(c=>c.m);
+        var values = molecularData.map(c=>c.d);
+        obj.ids = ids;
+        obj.genes = genes;
+        obj.values = values;
+        return obj;
+    },
+    compress_mutation: function(mutationData) {
+        var obj = {};
+        var ids = mutationData[0].s;
+        var genes = mutationData.map(c=>c.m);
+        var values = [];
+        var i = 0;
+        var j = 0;
+        mutationData.forEach(function(byMarker){
+            byMarker.d.forEach(function(bySample){
+                if(bySample !== 'NA'){
+                    values.push(i + '-' + j + '-' + 1);
+                } else {
+                    values.push(i + '-' + j + '-' + 0);
+                } 
+                j++;
+            });
+            i++;
+        });
+        obj.ids = ids;
+        obj.genes = genes;
+        obj.values = values;
+        return obj;
+    },
+    compress_sample: function(samplePatientData) {
+        var sampleData = samplePatientData[0];
+        var keys = _.uniq(_.values(sampleData));
+        console.log(keys);
+        keys.shift();
+        var obj = {};
+        keys.forEach(function(key){
+            obj[key] = Object.keys(sampleData).filter(sk=> sampleData[sk] == key)
+        });
+        return obj;
+    }
+};
 
 
 const writingXLSX2Mongo = (msg) => {
