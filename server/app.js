@@ -111,14 +111,12 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
                     kong_configure.send({
                         projectID: projectID,
                         collections: collections
-                    })
+                    });
                     kong_configure.on('message', () => {
                         console.log("Kong configuration complete")
                         res.end("Writing is done")
                         console.log("*********************")
-
-                        })
-
+                    });
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
                           console.log(error);
