@@ -43,12 +43,12 @@ export class FilesComponent implements OnInit {
     complete: false,
     'collections': []
   };
-
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
   @Input() isCompliant: boolean;
   @Output() filesExist= false;
+
   constructor(private fb: FormBuilder,
               private stateService: StateService,
               private projectService: ProjectService,
@@ -66,6 +66,7 @@ export class FilesComponent implements OnInit {
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
     this.uploader.onAfterAddingFile = (file) => { this.updateStatus(file); };
+
     if (this.project.File.size !== 0) {
       this.filerefresh();
     }
@@ -92,7 +93,6 @@ export class FilesComponent implements OnInit {
         this.upload.collections = [];
 
         fileitem.upload();
-
         this.project.File = {
           'filename': fileitem.file.name,
           'size' : fileitem.file.size,
@@ -121,7 +121,7 @@ export class FilesComponent implements OnInit {
           this.uploader.queue = [];
         // this.emitFilesExist(this.upload.complete);
           return true;
-      });
+
     } else {
       console.log('file deletion is canceled.');
       return false;
@@ -142,7 +142,7 @@ export class FilesComponent implements OnInit {
         this.errorMsg.fileSize === '' &&
         this.errorMsg.fileType === '') {
           return true;
-        }
     return false;
+      
   }
 }
