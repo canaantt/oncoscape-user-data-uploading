@@ -10,68 +10,76 @@ import { UserService } from '../service/user.service';
 import { User } from '../models/user';
 @Injectable()
 export class LoginService {
-    GOOGLE_CLIENT_ID = '1098022410981-p7n5ejjji8qlvdtff274pol54jo5i8ks.apps.googleusercontent.com';
-    oauthServiceStatus: EventEmitter<any> ;
-    constructor(private stateService: StateService,
-                private userService: UserService,
-                private http: Http,
-                private router: Router) {
-        this.oauthServiceStatus = new EventEmitter<any>();
-        hello.init({
-          google: this.GOOGLE_CLIENT_ID,
-        }, {
-          force: true,
-          redirect_uri: environment.oAuthRedirectUri,
-          display: 'popup',
-          response_type: 'token',
-          scope: 'email'
-        });
-        hello.on('auth', function() {console.log('state changed!'); });
-        hello.on('auth.login', this.authLogin.bind(this));
-        hello.on('auth.logout', this.authLogout.bind(this));
-    }
-    googleLogin(): any {
-      hello.logout('google', {});
-      this.stateService.user.next(null);
-      hello.login('google');
-    }
-    googleLogOut(): any {
-      this.oauthServiceStatus.emit('loggedOut');
-      hello.logout('google', {});
-      this.stateService.user.next(null);
-    }
-    authLogin(auth) {
-      console.log(auth.authResponse.access_token);
-      this.http.post(environment.apiBaseUrl + 'token', {'token': auth.authResponse.access_token})
-          .map(res => res.json())
-          .subscribe((res) => {
-            console.log('Google Access Token Sent to Server: ', res);
-            this.stateService.jwtToken.next(res);
-          });
-      hello('google').api('me').then( this.updateUserInfo.bind(this));
-    }
-    authLogout(auth) {
-      this.updateUserInfo.bind(this, null);
-    }
-    updateUserInfo(v) {
-      this.stateService.internalUser.subscribe(res => {
-        const internalUser = res;
-        console.log('internal user is: ', res);
-        if (internalUser !== null && internalUser.Gmail === '') {
-          internalUser.Gmail = v.email;
-          this.userService.create(internalUser)
-              .subscribe(() => console.log('New User is added to database'));
-        } else {
-          this.userService.getUserIDByGmail(v.email)
-              .subscribe(r => {
-                if (typeof(r[0]) !== 'undefined') {
-                  this.stateService.user.next(v);
-                  this.oauthServiceStatus.emit('loggedIn');
-                } else {
-                  this.oauthServiceStatus.emit('register');
-                }
-              });
-          }
+
+  GOOGLE_CLIENT_ID = '459144121975-lp2p5kahpqahm2gffgtl31vv0nes9hj4.apps.googleusercontent.com';
+  oauthServiceStatus: EventEmitter<any> ;
+  constructor(private stateService: StateService,
+              private userService: UserService,
+              private http: Http,
+              private router: Router) {
+      this.oauthServiceStatus = new EventEmitter<any>();
+      hello.init({
+        google: this.GOOGLE_CLIENT_ID,
+      }, {
+        force: true,
+        // redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/',
+        redirect_uri: environment.oAuthRedirectUri,
+        display: 'popup',
+        response_type: 'token',
+        scope: 'email'
+
       });
-    }
+      // hello.on('auth', function() { console.log('state changed!'); });
+      hello.on('auth.login', this.authLogin.bind(this));
+      hello.on('auth.logout', this.authLogout.bind(this));
+  }
+
+  // Google service called by authLogin & authLogout using hello
+  googleLogin(): any {
+    // this.googleLogOut();
+    hello.login('google', {force: true});
+  }
+  googleLogOut(): any {
+    window.location.assign('/upload/');
+    this.stateService.jwtToken = null;
+    hello.logout('google', {force: true});
+  }
+
+  authLogin(auth) {
+    const token = auth.authResponse.access_token;
+
+    this.http.post(environment.apiBaseUrl + 'token', {'token': token})
+        .map(res => res.json())
+        .subscribe((res) => {
+          console.log(res);
+          if ('token' in res) {
+            this.stateService.jwtToken.next(res);
+            hello('google').api('me').then( this.updateUserInfo.bind(this));
+          } else  {
+            // res = res.map(function(d){ return {
+            //   email: res.email,
+            //   first: res.first_name,
+            //   last: res.last_name,
+            //   verified: res.verified
+            // }})
+            this.stateService.user.next(res);
+            this.oauthServiceStatus.emit('register');
+          }
+        });
+  }
+  authLogout(auth) {
+    this.oauthServiceStatus.emit('loggedOut');
+  }
+
+  updateUserInfo (v) {
+    this.userService.getUserByGmail(v.email)
+    .map(res => res.json()[0])
+    .subscribe(r => {
+      if (typeof r !== 'undefined') {
+        this.stateService.user.next(v);
+        this.stateService.internalUser.next(r);
+        this.oauthServiceStatus.emit('loggedIn');
+      }
+    });
+  }
 }

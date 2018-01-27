@@ -10,14 +10,13 @@ import 'rxjs/add/observable/of';
 
 @Injectable()
 export class FileService {
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers; 
   private filesUrl = environment.apiBaseUrl + 'files';
   constructor(private stateService: StateService,
               private http: Http) {
                 this.stateService.jwtToken
                 .subscribe(res => {
-                  // console.log('Project service: ', res);
-                  this.headers.append('Content-Type', 'application/json');
+                  this.headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
                   if (res !== null) {
                     // this.headers.append('Authorization', 'Bearer ' + res.token);
                     this.headers.append('Authorization', res.token);
@@ -32,19 +31,31 @@ export class FileService {
                   return res.json();
                 });
   }
-
-  removeFilesByProjectID(id: string): any {
+  getCollectionsByProjectID(id: string): Observable<Response> {
+    const url = environment.apiBaseUrl + id + "_collections";
+    return this.http.get(url, {headers: this.headers})
+               .map(res => {
+                  return res;
+                });
+  }
+  
+  removeFilesByProjectID(id: string): Observable<Response> {
     const url = `${this.filesUrl}/` + id;
-    this.http.delete(url, {headers: this.headers}).subscribe(err => console.log(err));
+    console.log("Removing Files: ", id)
+    return this.http.delete(url, {headers: this.headers})
+      .map((msg) => {
+        console.log(msg)
+        return msg
+      });
   }
   create(file: File): Observable<Response> {
     return this.http
       .post(this.filesUrl, JSON.stringify(file), {headers: this.headers});
   }
 
-  uploadingValidation(id: string): Observable<Response> {
-    return this.http.get(this.filesUrl + '/' + id, {headers: this.headers})
-                    .map(res => res.json());
+  getFileDescriptions(id: string): Observable<Response> {
+    return this.http.get(this.filesUrl + '/' + id, {headers: this.headers});
+                    // .map(res => res.json());
   }
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only

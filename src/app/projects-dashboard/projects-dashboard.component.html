@@ -1,6 +1,7 @@
 <div class="dashboard">
     <div class="container">
-        <div class="row">
+
+        <div class="row" *ngIf="this.user">
             <div class="col-6">
                 <h5 class="dashboard-header">Datasets Dashboard</h5>
             </div>
@@ -8,6 +9,9 @@
                 <button class='btn btn-primary' (click)='add()'><span class="fa fa-plus"></span> &nbsp; Dataset</button>
             </div>
         </div>
+        <h4 *ngIf= "!this.user" class="dashboard-header">Checking Login status...</h4>
+        <h4 *ngIf= "this.user && !projects || (projects.length === 0)" class="dashboard-header">Please click <strong>+ Datasets</strong> to add new project.</h4>
+        
         <div class="mb-5" *ngFor="let project of projects">
             <!--START card-->
             <div class="card card-cascade ">
@@ -31,8 +35,7 @@
                         </div>
                         <div class="col-8 text right">
                             <button (click)="delete(project)" class=" btn btn-primary ">Delete</button>
-                            <button type="button" [class.selected]="project === selectedProject" (click)="onSelect(project)" class="btn btn-primary">Edit</button>
-                            <button type="button" class=" btn btn-primary ">Visualize</button>
+                            <button type="button" (click)="onSelect(project._id)" class="btn btn-primary">Edit</button>
                         </div>
                     </div>
                 </div>

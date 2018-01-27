@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://dev.oncoscape.sttrcancer.io/api/',
-  oAuthRedirectUri: '/index.html'
+  apiBaseUrl: 'https://dev.oncoscape.sttrcancer.io/api/',
+  oAuthRedirectUri: 'https://dev.oncoscape.sttrcancer.io/upload/index.html'
 };

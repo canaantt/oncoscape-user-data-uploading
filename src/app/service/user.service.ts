@@ -7,47 +7,38 @@ import { User } from '../models/user';
 
 @Injectable()
 export class UserService {
-  private headers = new Headers();
+  private headers;
   private usersUrl = environment.apiBaseUrl + 'users';
 
   constructor(private stateService: StateService,
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
-            // console.log('User service: ', res);
-            this.headers.append('Content-Type', 'application/json');
+            this.headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
+            // this.headers.append('Pragma', 'no-cache');
             if (res !== null) {
               // this.headers.append('Authorization', 'Bearer ' + res.token);
               this.headers.append('Authorization', res.token);
             }
           });
     }
-  getUsers():  Observable<Response> {
-    return this.http.get(this.usersUrl, {headers: this.headers});
-  }
-  getUsersByID(id: string): Observable<Response> {
-    return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => id.indexOf(value._id) > -1));
-  }
-  getUserIDByGmail(gmail: string): Observable<Response> {
-    console.log('In User service, getUserIDByGmail function, gmail received is: ');
-    console.log(gmail);
-    return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => value.Gmail === gmail));
-  }
-  getUsersByIDs(ids: string[]): Observable<Response> {
-    return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => ids.indexOf(value._id) > -1));
-  }
-  userValidationByEmail(email: string): Observable<Response> {
-    return this.http.get(this.usersUrl, {headers: this.headers})
-               .map(res => res.json().filter(value => value.Email === email))
-               .catch(err => Observable.throw(err));
+
+  getUserByID(id: string): Observable<Response> {
+    const url = `${this.usersUrl}/` + JSON.stringify({'_id': id});
+    return this.http.get(url, {headers: this.headers})
+               .map(res => res.json());
   }
 
-  delete(user: User): Observable<Response> {
-    const url = `${this.usersUrl}/` + user._id;
-    return this.http.delete(url, {headers: this.headers});
+  getUserByGmail(gmail: string): Observable<Response> {
+    const url = environment.apiBaseUrl + 'users/' +  JSON.stringify({'Gmail': gmail});
+    return this.http.get(url, {headers: this.headers});
+  }
+
+  userValidationByEmail(email: string): Observable<Response> {
+    const query = {'$or': [{'Email': email}, {'Gmail': email}]};
+    const url = `${this.usersUrl}/` + JSON.stringify(query);
+    return this.http.get(url, {headers: this.headers})
+               .map(res => res.json());
   }
 
   create(user: User): Observable<Response> {
@@ -56,7 +47,7 @@ export class UserService {
   }
 
   update(user: User): Observable<Response> {
-    const url = `${this.usersUrl}/` + user._id;
+    const url = `${this.usersUrl}/`  + JSON.stringify({'_id': user._id});
     return this.http.put(url, JSON.stringify(user), {headers: this.headers});
   }
 

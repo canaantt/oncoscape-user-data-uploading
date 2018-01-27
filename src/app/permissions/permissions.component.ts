@@ -13,8 +13,10 @@ enum roles {'admin', 'read-write', 'read-only'}
 export class UserFullNamePipe implements PipeTransform {
   constructor(private userService: UserService) {}
   transform(id: string): Observable<string> {
-      return this.userService.getUsersByID(id)
-      .map(res => res[0].FirstName + ' ' + res[0].LastName);
+      return this.userService.getUserByID(id)
+      .map(res => {
+        return res[0].FirstName + ' ' + res[0].LastName;
+      });
   }
 }
 @Component({
@@ -24,7 +26,7 @@ export class UserFullNamePipe implements PipeTransform {
   providers: [ PermissionService, UserService, FormBuilder ]
 })
 export class PermissionsComponent implements OnInit {
-  permissions: any;
+  // permissions: Array<any>;
   newPermissionForm: FormGroup;
   permissions$: Observable<any>;
   roles= ['admin', 'read-write', 'read-only'];
@@ -44,7 +46,6 @@ export class PermissionsComponent implements OnInit {
     });
     this.id = this.project._id;
     this.getPermissions();
-    console.log('Current role is...........', this.role);
   }
 
   getPermissions(): void {
@@ -62,14 +63,13 @@ export class PermissionsComponent implements OnInit {
     const p =  new Permission();
     this.userService.userValidationByEmail(formValue.Email)
         .subscribe(res => {
-          console.log(res[0]);
           if (typeof(res[0]) !== 'undefined') {
             p.User = res[0]._id;
             p.Project = this.project._id;
             p.Role = formValue.Role;
             this.permissionService.getPermissionByUserByProject(p.User, p.Project)
-                .subscribe(res => {
-                  if (typeof(res) === 'undefined') {
+                .subscribe((re) => {
+                  if (typeof(re) === 'undefined') {
                     this.emailError = '';
                     this.permissionService.create(p).subscribe(() => this.getPermissions());
                   } else {
@@ -94,12 +94,11 @@ export class PermissionsComponent implements OnInit {
   }
   updatePermissions() {
     this.newPermissionForm.get('Permissions').value.forEach(element => {
-      console.log(element);
       this.updatePermission(element, element.Role);
     });
   }
 
   deletePermission(permission: Permission) {
-    this.permissionService.delete(permission).subscribe(() => this.getPermissions());
+    this.permissionService.deleteById(permission._id).subscribe(() => this.getPermissions());
   }
 }

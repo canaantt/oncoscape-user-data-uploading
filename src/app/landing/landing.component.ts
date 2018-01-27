@@ -12,11 +12,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class LandingComponent implements OnInit {
   user: any;
-  previousUser: any;
-  auth: boolean;
-  user$: Observable<any>;
-  counter = 0;
   subscription: any;
+
   constructor( private fb: FormBuilder,
                private stateService: StateService,
                private userService: UserService,
@@ -25,21 +22,21 @@ export class LandingComponent implements OnInit {
                private zone: NgZone,
                private router: Router ) {}
   getUser(): void {
-    // console.log('Landing getUser being called', this.counter++);
     this.stateService.user.subscribe(res => {
-      this.zone.run(() => { this.user = res; });
+      this.zone.run(() => { 
+        if(res !== null){
+          this.user = res;
+          
+        }
+      });
     });
   }
   ngOnInit() {
-    // this.getUser();
-    console.log('in landing component ngOnInit');
-    const timer = Observable.timer(10, 200);
-    this.subscription = timer.subscribe(() => {
-      this.getUser();
-      if (this.user !== null) {
-        this.subscription.unsubscribe();
-      }
-    });
+    this.stateService.user.subscribe(res => {
+      this.user = res;
+    })
+      
+  
     this.loginService.oauthServiceStatus
         .subscribe((msg) => {
           console.log(msg);
@@ -48,10 +45,11 @@ export class LandingComponent implements OnInit {
                 this.router.navigate(['/projects', 'dashboard']);
                 break;
             case 'register':
-                alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
-                this.router.navigate(['/register']);
+                // alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
+                this.zone.run(() => {this.router.navigate(['/register'])});
                 break;
             case 'loggedOut':
+                this.loginService.googleLogOut();
                 this.router.navigate(['/landing']);
                 break;
             default:
@@ -61,14 +59,19 @@ export class LandingComponent implements OnInit {
   }
 
   goRegister() {
-    this.router.navigate(['/register']);
+    this.stateService.internalUser.subscribe(res => {
+      if (res !== null) {
+        this.router.navigate(['/register']);
+      } else {
+        // alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
+        this.loginService.googleLogin();
+      }
+    });
   }
 
-  googleLogin() {
-    this.loginService.googleLogin();
+  toggleLogin() {
+    if(this.user === null) this.loginService.googleLogin()
+    else this.loginService.googleLogOut()
   }
 
-  googleLogOut() {
-    this.loginService.googleLogOut();
-  }
  }

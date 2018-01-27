@@ -2,6 +2,12 @@
   <hr>
   <h5 class="permissions-header">Permissions</h5>
   <br>
+  <!-- <div class="row">
+    <div class="form-group"><div class="col-12">
+      <input type="checkbox" [(ngModel)]="project.Private" name='private' [checked]="project.Private" [disabled]="permission.Role!=='admin'">
+      <label><strong>Private Dataset:</strong> Only assigned users have access.</label>
+    </div></div>
+  </div> -->
   <!-- START of title row -->
   <div class="row ">
     <div class="col-3">
@@ -63,14 +69,14 @@
           </div>
           <div class="col-3">
             <select formControlName="Role" class="form-control">
-                          <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
-                        </select>
+              <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+            </select>
           </div>
           <div class="col-2">
             <span (click)="submitPermissions()" class="fa fa-plus-circle permission-fa"></span>
           </div>
         </div>
-        <small [hidden]="newPermissionForm.controls.Email.valid" class="text-danger">Please Add Valid Email</small>
+        <small [hidden]="newPermissionForm.controls.Email.valid" class="text-warning">Please Add Valid Email</small>
       </div>
     </form>
     <small class="text-danger">{{emailError}}</small>

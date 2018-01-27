@@ -2,20 +2,21 @@ import { Component, OnInit, Input, Output, Pipe, PipeTransform, NgZone } from '@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Project } from '../models/project';
-import { ProjectService } from '../service/project.service';
-import { Permission } from '../models/permission';
-import { PermissionService } from '../service/permission.service';
-import { IRB } from '../models/irb';
-import { IrbService } from '../service/irb.service';
-import { User } from '../models/user';
-import { UserService } from '../service/user.service';
-import { FileService } from '../service/file.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
-import { StateService } from '../service/state.service';
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
+
+import { Project } from '../models/project';
+import { Permission } from '../models/permission';
+import { User } from '../models/user';
+
+import { StateService } from '../service/state.service';
+import { LoginService } from '../service/login.service';
+import { PermissionService } from '../service/permission.service';
+import { ProjectService } from '../service/project.service';
+import { FileService } from '../service/file.service';
+
 @Pipe({
   name: 'DateFormatter'
 })
@@ -33,121 +34,116 @@ export class DateFormatter implements PipeTransform {
       }
   }
 }
+
 @Component({
   selector: 'app-projects-dashboard',
   templateUrl: './projects-dashboard.component.html',
   styleUrls: ['./projects-dashboard.component.scss'],
-  providers: [IrbService, UserService, PermissionService, FileService]
+  providers: [PermissionService, FileService]
 })
 export class ProjectsDashboardComponent {
-  projects: any;
-  selectedProject: Project;
-  newProjectForm: FormGroup;
   user: any;
-  userID: string;
-  authenticated: boolean;
-  projectIDs: any;
-  newAddedProject: any;
-  permissions: any;
+  projects: any;
 
   constructor( private fb: FormBuilder,
                private projectService: ProjectService,
                private permissionService: PermissionService,
-               private irbService: IrbService,
+               private loginService: LoginService,
                private fileService: FileService,
-               private userService: UserService,
                private stateService: StateService,
                private zone: NgZone,
                private router: Router) {
                 console.log('Dashboard Component constructor');
-                this.stateService.user
+                this.stateService.internalUser
                     .subscribe(res => {
-                      this.user = res;
-                      if (this.user !== null) {
-                        this.getUserID(this.user.email);
+                      if (res === null) {
+                        this.checkLogin()
+                       //this.loginService.googleLogOut()
+                      } else {
+                        this.user = res;
+                        this.getPermissions(this.user._id);
                       }
                     });
                }
-  onSelect(Project: Project): void {
-    this.selectedProject = Project;
-    const id = this.selectedProject._id;
-    this.router.navigate([ `/projects/${id}/`]);
+
+  checkLogin() {
+    const self = this
+    setTimeout(function () {
+        if (typeof self.user === "undefined") {
+            self.loginService.googleLogOut();
+        }
+    }, 2000);
   }
-  getUserID(id: string): void {
-    this.userService.getUserIDByGmail(id)
-              .subscribe(res => {
-                this.getPermissions(res[0]._id);
-                this.userID = res[0]._id;
-              });
-  }
+
+  getProjects(permissions: any): void {
+    let projectIDs: string[] =  _.uniq(<string> permissions.map(r => r.Project));
+    this.projectService.getProjectsByIDs(projectIDs)
+
+        .subscribe(res => {
+          this.zone.run(() => {
+            this.projects = res;
+            this.projects = this.projects.reverse();
+          });
+        });
+    }
   getPermissions(id: string): void {
     this.permissionService.getPermissionsByUserID(id)
         .subscribe(res => {
-          this.getProjectIDs(res);
-          this.permissions = res;
+          this.getProjects(res);
         });
   }
-  getProjectIDs(permissions: any): void {
-    this.projectIDs = _.uniq(permissions.map(function(r){return r.Project; }));
-    this.getProjects();
-  }
-  getProjects(): void {
-    this.projectService.getProjectsByIDs(this.projectIDs)
-        .subscribe(res => {
-          this.zone.run(() => { this.projects = res; });
-        });
-  }
+
   delete(project: Project): void {
     const confirmDeletion = confirm('Are you absolutely sure you want to delete?');
     if (confirmDeletion) {
-      this.permissionService.getPermissionByUserByProject(this.userID, project._id)
+      this.permissionService.getPermissionByUserByProject(this.user._id, project._id)
           .subscribe(res => {
-            console.log('******************* permission is...', res);
             if (res.Role !== 'admin') {
               alert ('You do not have permission to delete this dataset. Please contact author.');
               return;
             } else {
               this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
-              const index = this.projectIDs.indexOf(project._id);
-              this.projectIDs.splice(index, 1);
-              this.getProjects();
-              this.fileService.removeFilesByProjectID(project._id);
-              this.permissionService.removePermisionsByProjectID(project._id);
+              this.fileService.removeFilesByProjectID(project._id)
+                  .subscribe(msg => { console.log("files removed")});
+              this.permissionService.removePermisionsByProjectID(project._id)
+                  .subscribe(() => console.log('permissions are deleted.'));
+              this.getPermissions(res.User);
             }
           });
-    }else {
+    } else {
       console.log('Deletion cancled.');
     }
   }
   add(): void {
     console.log('in add');
-    this.newProjectForm = this.fb.group({
-      Name: new FormControl('Name Your New Dataset', Validators.required),
-      Description: new FormControl('Enter a dataset description.', Validators.minLength(4)),
+    const newProjectForm = this.fb.group({
+      Name: new FormControl('', Validators.required),
+      Description: new FormControl(''),
       Private: new FormControl(true),
       Source: new FormControl('File'),
-      Author: this.userID,
-      DataCompliance: {'IRBNumber': null, 'IECNumber': null, 'Waiver': null, 'ComplianceOption': 'human' }
+      Author: this.user._id,
+      PHI: false,
+      File: {filename: '', size: 0, timestamp: null},
+      DataCompliance: {'ProtocolNumber': '', 'Protocol': 'IRB' , 'HumanStudy': ''}
     });
-    this.projectService.create(this.newProjectForm.value)
-        .subscribe(() => {
-          this.getRecentAddedProject();
-        });
-    this.getProjects();
-  }
-  getRecentAddedProject(): void {
-    this.projectService.getRecentProject(this.userID)
-        .subscribe(res => {
-          this.addPermission(res['_id']);
-          this.newAddedProject = res;
+    this.projectService.create(newProjectForm.value)
+        .subscribe((newProject) => {
+          this.addPermission(newProject.json())
         });
   }
-  addPermission(projectID: string): void {
+  
+  addPermission(Project: Project): void {
     const newPermission = {
-                         'User': this.userID,
+                         'User': Project.Author,
                          'Role': 'admin',
-                         'Project': projectID};
+                         'Project': Project._id};
     this.permissionService.create(newPermission)
-        .subscribe(() => this.getPermissions(this.userID));
+        .subscribe((permission) => {
+          this.onSelect(permission.json().Project)
+        });
   }
+  onSelect(ProjectID: string): void {
+    this.zone.run(() => {this.router.navigate([ `/projects/${ProjectID}/`]) });
+  }
+
 }

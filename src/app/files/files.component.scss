@@ -12,3 +12,12 @@
 [hidden] {
     display: none !important;
 }
+.btn-primary{
+    cursor: pointer;
+}
+.disabled label{
+    background-color: rgb(201, 201, 201);
+    color: white ;
+    cursor: not-allowed;
+}
+
