@@ -1,0 +1,23 @@
+[{ "name": "pca",
+	"and": [ {"type": "matrix", "field":"type", "logic": "in",  "value":["prot_expr", "expr", "cnv","cnv_thd", "mut01"]},
+			 {"type": "matrix", "field":"schema", "logic":"in", "value":["hugo_sample", "prot_sample"]}
+	]
+},{ "name": "survival",
+	"and": [ {"type": "clinical", "field":"enum.status_vital", "logic": "in",  "value":["ALIVE", "DEAD"]},
+			 {"type": "clinical", "field":"num.days_to_death", "logic": "matches",  "value":"^\\d+$"}
+	]
+},{ "name": "spreadsheet",
+	"and": [ {"type": "clinical", "field":"id", "logic": "matches",  "value":"\\w+"}
+	]
+},{ "name": "markers",
+	"and": [ {"type": "network", "field":"geneset", "logic": "matches",  "value":"\\w+"}
+	]
+},{ "name": "timelines",
+	"and": [ {"type": "events"}
+	]
+},{ "name": "heatmap",
+	"and": [ {"type": "matrix", "field":"type", "logic": "in",  "value":["prot_expr", "expr", "cnv","cnv_thd", "mut01"]},
+			 {"type": "matrix", "field":"schema", "logic":"in", "value":["hugo_sample", "prot_sample"]}
+	]
+}
+]
