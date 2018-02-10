@@ -99,24 +99,27 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
                 text: 'Data are in database, ready to share.'
               };
             try {
-                const writing2Mongo = 
-                    fork(process.env.APP_ROOT + '/server/fileUpload.js',
+                const writing2S3 = 
+                    fork(process.env.APP_ROOT + '/server/xlsx2json2S3.js',
                         { execArgv: ['--max-old-space-size=4000']});
-                writing2Mongo.send({ filePath: req.file.path, 
+                        // fork(process.env.APP_ROOT + '/server/fileUpload.js',
+                        // { execArgv: ['--max-old-space-size=4000']});
+                writing2S3.send({ filePath: req.file.path, 
                                      projectID: projectID
                                   });
-                writing2Mongo.on('message', (collections) => {
-                    console.log('XLS file upload complete; Updating Kong');
-                    const kong_configure = fork(process.env.APP_ROOT + '/server/kong_configure.js');
-                    kong_configure.send({
-                        projectID: projectID,
-                        collections: collections
-                    });
-                    kong_configure.on('message', () => {
-                        console.log("Kong configuration complete")
-                        res.end("Writing is done")
-                        console.log("*********************")
-                    });
+                writing2S3.on('message', (URL) => {
+                    console.log('{', URL, '}');
+                    // console.log('XLS file upload complete; Updating Kong');
+                    // const kong_configure = fork(process.env.APP_ROOT + '/server/kong_configure.js');
+                    // kong_configure.send({
+                    //     projectID: projectID,
+                    //     collections: collections
+                    // });
+                    // kong_configure.on('message', () => {
+                    //     console.log("Kong configuration complete")
+                    //     res.end("Writing is done")
+                    //     console.log("*********************")
+                    // });
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
                           console.log(error);

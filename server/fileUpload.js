@@ -512,10 +512,7 @@ const writingXLSX2Mongo = (msg) => {
 }
 
 process.on('message', (filePath, HugoGenes, db) => {
-    
-        var collections = writingXLSX2Mongo(filePath, HugoGenes, db);
-        process.send(collections);
-    
-
+    var collections = writingXLSX2Mongo(filePath, HugoGenes, db);
+    process.send(collections);
 });
 
