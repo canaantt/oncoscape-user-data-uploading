@@ -32,7 +32,6 @@ export class Overlapping implements PipeTransform {
 export class FilesComponent implements OnInit {
   public uploader: FileUploader;
   headerValue: string;
-  
   errorMsg = {
     'requiredField': '',
     'fileSize': '',
@@ -119,16 +118,16 @@ export class FilesComponent implements OnInit {
           this.project.File = {filename: '', size: 0, timestamp: null};
           this.upload.complete = false;
           this.uploader.queue = [];
+        });
         // this.emitFilesExist(this.upload.complete);
           return true;
-
     } else {
       console.log('file deletion is canceled.');
       return false;
     }
   }
-  isValidFile( fileitem ): boolean {
-    this.errorMsg = { requiredField: '', fileSize: '', fileType: '' }
+  isValidFile(fileitem: any): boolean {
+    this.errorMsg = { requiredField: '', fileSize: '', fileType: '' };
     if (!this.isCompliant) {
       this.errorMsg.requiredField = 'Please fill all the required fields before proceeding with data uploading.';
     }
@@ -142,7 +141,7 @@ export class FilesComponent implements OnInit {
         this.errorMsg.fileSize === '' &&
         this.errorMsg.fileType === '') {
           return true;
+        }
     return false;
-      
   }
 }
