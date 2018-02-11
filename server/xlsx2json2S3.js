@@ -34,8 +34,8 @@ var gzip_upload2S3_private = function(JSONOBJ, FILENAME){
 };
 var signURL = function(FILENAME){
     var params = { Bucket: 'canaantt-test', 
-                Key: FILENAME, 
-                Expires: 10000000};
+                   Key: FILENAME, 
+                   Expires: 15552000}; // url expires in 180 Days
     return s3.getSignedUrl('getObject', params);
 }
 
@@ -334,12 +334,43 @@ const json2S3 = (msg) => {
 
     var jsonResult = xlsx2json(workbook);
     console.log('*********************(Generating JSON)****************');
-    var allURLs = jsonResult.map(j=>{
+    var manifest = {};
+    var files = [] ;
+    var allURLs = jsonResult.forEach(j=>{
+        var obj = {};
         var filename = msg.projectID + '_' + j.name + '_' + 'json.gz';
         gzip_upload2S3_private(j.res, filename);
-        return signURL(filename);
+        
+        obj['name'] = j.name;
+        obj['dataType'] = j.type;
+        obj['file'] = signURL(filename);
+        files.push(obj);
     });
-    return allURLs;
+    manifest['files'] = files;
+    var eventJSON = jsonResult.find(r=>r.type === 'EVENT');
+    if(eventJSON !== undefined) { manifest['events'] = eventJSON.res.map; }
+    var patientJSON = jsonResult.find(r=>r.type === 'PATIENT');
+    if(patientJSON !== undefined) { manifest['fields'] = patientJSON.res.fields;}
+    var schema = {
+        'dataset' : 'name',
+        'events' : '++, p',
+        'patientSampleMap': 's, p',
+        'patientMeta': 'key'
+    };
+    schema['patient'] = ['p'].concat(Object.keys(manifest['fields'])).join(',');
+    jsonResult.filter(res=> res.type === 'MATRIX' || res.type === 'MUTATION').forEach(res=>{
+        if(res.type === 'MATRIX') {
+            schema[res.name] = 'm',
+            schema[res.name+'Map'] = 's'
+        } else {
+            schema[res.name] = '++, m, p, t'
+        }
+    })
+    manifest['schema'] = schema;
+    var manifest_filename = msg.projectID + '_manifest_json.gz';
+    gzip_upload2S3_private(manifest, manifest_filename);
+        
+    return signURL(manifest_filename);
 }
 
 process.on('message', (filePath) => {

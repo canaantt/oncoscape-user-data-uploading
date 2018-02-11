@@ -109,17 +109,7 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
                                   });
                 writing2S3.on('message', (URL) => {
                     console.log('{', URL, '}');
-                    // console.log('XLS file upload complete; Updating Kong');
-                    // const kong_configure = fork(process.env.APP_ROOT + '/server/kong_configure.js');
-                    // kong_configure.send({
-                    //     projectID: projectID,
-                    //     collections: collections
-                    // });
-                    // kong_configure.on('message', () => {
-                    //     console.log("Kong configuration complete")
-                    //     res.end("Writing is done")
-                    //     console.log("*********************")
-                    // });
+                
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
                           console.log(error);
