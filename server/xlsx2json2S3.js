@@ -271,7 +271,7 @@ var xlsx2json = function(workbook){
             // jsonfile.writeFile('demo-genesets.json', genesets, function (err) {
             //     console.error(err)
             //   });
-        } else if (sheet.type === 'MUTATION') {
+        } else if (sheet.type === 'MUT') {
             var obj = {};
             var res = {};
             sheet.tableType = data[0][1];
@@ -358,7 +358,7 @@ const json2S3 = (msg) => {
         'patientMeta': 'key'
     };
     schema['patient'] = ['p'].concat(Object.keys(manifest['fields'])).join(',');
-    jsonResult.filter(res=> res.type === 'MATRIX' || res.type === 'MUTATION').forEach(res=>{
+    jsonResult.filter(res=> res.type === 'MATRIX' || res.type === 'MUT').forEach(res=>{
         if(res.type === 'MATRIX') {
             schema[res.name] = 'm',
             schema[res.name+'Map'] = 's'
