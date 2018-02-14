@@ -35,6 +35,7 @@
 // regionend
 
 var exports = module.exports = {};
+const XLSX =require("xlsx");
 const _ = require('underscore');
 const zlib = require('zlib');
 const AWS = require('aws-sdk');
@@ -648,12 +649,12 @@ exports.xlsx2json = function(workbook) {
     return result;
 };
 
-exports.json2S3 = function(jsonResult){
+exports.json2S3 = function(jsonResult, projectID){
     var manifest = {};
     var files = [] ;
     var allURLs = jsonResult.forEach(j=>{
         var obj = {};
-        var filename = msg.projectID + '_' + j.name + '_' + 'json.gz';
+        var filename = projectID + '_' + j.name + '_' + 'json.gz';
         s3Factory.gzip_upload2S3_private(j.res, filename);
         
         obj['name'] = j.name;
@@ -682,7 +683,7 @@ exports.json2S3 = function(jsonResult){
         }
     })
     manifest['schema'] = schema;
-    var manifest_filename = msg.projectID + '_manifest_json.gz';
+    var manifest_filename = projectID + '_manifest_json.gz';
     s3Factory.gzip_upload2S3_private(manifest, manifest_filename);       
     return s3Factory.signURL(manifest_filename);
 };
