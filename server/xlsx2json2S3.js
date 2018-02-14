@@ -1,4 +1,3 @@
-// var exports = module.exports = {};
 const express = require('express');
 const jsonfile = require("jsonfile");
 const _ = require("underscore");
