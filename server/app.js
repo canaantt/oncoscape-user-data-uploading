@@ -10,16 +10,16 @@ var File = require("./models/file");
 db = require('./app.db.js');
 var Permission = require("./models/permission");
 
-// var apm = require('elastic-apm-node').start({
-//     // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
-//     serviceName: '',
+var apm = require('elastic-apm-node').start({
+    // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
+    serviceName: 'oncoscape-uploading',
   
-//     // Use if APM Server requires a token
-//     secretToken: '',
+    // Use if APM Server requires a token
+    // secretToken: '',
   
-//     // Set custom APM Server URL (default: http://localhost:8200)
-//     serverUrl: '',
-//   })
+    // Set custom APM Server URL (default: http://localhost:8200)
+    // serverUrl: '',
+  })
 // var apm = require('elastic-apm-node').start({
 //     // Required app name (allowed characters:a-z, A-Z, 0-9, -, _, and space)
 //     appName: 'oncoscape-v3-data-uploading',

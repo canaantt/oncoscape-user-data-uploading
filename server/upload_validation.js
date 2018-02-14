@@ -197,7 +197,7 @@ exports.readXLSX = function(xlsxFile) {
     return XLSX.readFile("demo.xlsx", {sheetStubs: true});
 };
 
-exports.preUploading_sheetLevel_checking = function(sheet) {
+exports.preUploading_sheetLevel_checking = function(sheet, sheetName) {
     var err = {};
     var type = sheetName.split('-')[0].toUpperCase();
     if('required_fields' in requirements[type]) {
