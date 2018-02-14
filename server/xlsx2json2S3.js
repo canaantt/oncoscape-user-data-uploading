@@ -1,3 +1,4 @@
+// var exports = module.exports = {};
 const express = require('express');
 const jsonfile = require("jsonfile");
 const _ = require("underscore");
@@ -7,7 +8,7 @@ const fs = require('fs');
 const zlib = require('zlib');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
-
+const upload_validation = require('./upload_validation.js');
 // #region S3 config
 var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
 //AWSConfigsS3.UseSignatureVersion4 = false;
@@ -38,11 +39,20 @@ var signURL = function(FILENAME){
                    Expires: 15552000}; // url expires in 180 Days
     return s3.getSignedUrl('getObject', params);
 }
-
 // #endregion
+var validation = function(workbook) {
+    var report = {};
+    workbook.SheetNames.forEach(sheetName=>{
+        report[sheetName] = upload_validation.preUploading_sheetLevel_checking(workbook.Sheets[sheetName]);
+    });
+    report['allSheets_existance']= upload_validation.preUploading_allSheets_checking.allSheets_existance(workbook);
+    report['patientID_overlapping']= upload_validation.preUploading_allSheets_checking.patientID_overlapping(workbook);
+    report['sampleID_overlapping']= upload_validation.preUploading_allSheets_checking.sampleID_overlapping(workbook);
+    report['geneIDs_overlapping']= upload_validation.preUploading_allSheets_checking.geneIDs_overlapping(workbook);
+    return report;
+}
 
-
-var xlsx2json = function(workbook){
+var xlsx2json = function(workbook) {
     var result = [];
     var allSheetNames =  Object.keys(workbook.Sheets);
     allSheetNames.forEach(function(sheetName){
@@ -331,9 +341,11 @@ const json2S3 = (msg) => {
     var filePath = msg.filePath;
     var projectID = msg.projectID;
     var workbook = XLSX.readFile(filePath, {sheetStubs: true});
-
+    console.log('**********************(Workbook Validation)*************');
+    var validation_result = validation(workbook);
+    
     var jsonResult = xlsx2json(workbook);
-    console.log('*********************(Generating JSON)****************');
+    console.log('*********************(Serialization)****************');
     var manifest = {};
     var files = [] ;
     var allURLs = jsonResult.forEach(j=>{
@@ -368,8 +380,7 @@ const json2S3 = (msg) => {
     })
     manifest['schema'] = schema;
     var manifest_filename = msg.projectID + '_manifest_json.gz';
-    gzip_upload2S3_private(manifest, manifest_filename);
-        
+    gzip_upload2S3_private(manifest, manifest_filename);       
     return signURL(manifest_filename);
 }
 
