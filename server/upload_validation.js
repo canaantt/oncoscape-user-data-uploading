@@ -36,7 +36,7 @@
 
 var exports = module.exports = {};
 const XLSX =require("xlsx");
-const _ = require('underscore');
+const _ = require('lodash');
 const zlib = require('zlib');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
