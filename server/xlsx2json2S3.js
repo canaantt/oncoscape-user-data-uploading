@@ -9,14 +9,14 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const upload_validation = require('./upload_validation.js');
 // #region S3 config
-var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
-//AWSConfigsS3.UseSignatureVersion4 = false;
-AWS.config.credentials = credentials;
+// var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
+// AWSConfigsS3.UseSignatureVersion4 = false;
+// AWS.config.credentials = credentials;
 s3.config.region = 'us-west-2';
-var params = {Bucket:'canaantt-test'};
+var params = {Bucket:'oncoscape-users-data'};
 var gzip_upload2S3_private = function(JSONOBJ, FILENAME){
     zlib.gzip(JSON.stringify(JSONOBJ), level=9, function(err, result){
-        s3.putObject({Bucket:'canaantt-test', 
+        s3.putObject({Bucket:'oncoscape-users-data', 
                   Key: FILENAME, 
                   Body: result, 
                   ACL:'private',
@@ -341,7 +341,7 @@ const json2S3 = (msg) => {
     var projectID = msg.projectID;
     var workbook = XLSX.readFile(filePath, {sheetStubs: true});
     console.log('**********************(Workbook Validation)*************');
-    var validation_result = validation(workbook);
+    // var validation_result = validation(workbook);
     
     var jsonResult = xlsx2json(workbook);
     console.log('*********************(Serialization)****************');
