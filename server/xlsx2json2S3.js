@@ -325,6 +325,8 @@ const json2S3 = (msg) => {
     errors['sampleID_overlapping'] = validate.validateWorkbookSampleIDOverlapping(sheets, requirements, genemap, _, helper);
     errors['geneID_overlapping'] = validate.validateWorkbookGeneIDsOverlapping(sheets, requirements, genemap, _, helper);
     
+    console.log('====== Error Message =======');
+    console.log(errors);
 
     // Serialize Sheets (Generic)
     sheetsSerialized = [];

@@ -5,14 +5,15 @@ const asyncLoop = require('node-async-loop');
 const _ = require('underscore');
 Query = require('./app.query.js');
 Permissions = require('./app.permissions.js');
-var User = require("./models/user");
-var Project = require("./models/project");
-var File = require("./models/file");
-var IRB = require("./models/irb");
-var Permission = require("./models/permission");
-var Openprojects = require("./models/publicprojects");
-var Lookup = require("./models/lookup");
-
+var User = require('./models/user');
+var Project = require('./models/project');
+var File = require('./models/file');
+var IRB = require('./models/irb');
+var Permission = require('./models/permission');
+var Openprojects = require('./models/publicprojects');
+var Lookup = require('./models/lookup');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 const jwt = require('jsonwebtoken');
 
 var objectIDArrayCompare = {
@@ -78,12 +79,12 @@ function queryStringConverter (queryString) {
 }
 
 function processResult(req, res, next) {
-    console.log("   ", Object.keys(req.route.methods), ' : ', req.route.path);
+    console.log('   ', Object.keys(req.route.methods), ' : ', req.route.path);
     
     return function (err, data) {
         if (err) {
-            console.log("ERROR: ",err);
-            res.status(404).send("Not Found").end();
+            console.log('ERROR: ',err);
+            res.status(404).send('Not Found').end();
         } else {
             res.json(data).end();
         }
@@ -92,7 +93,7 @@ function processResult(req, res, next) {
 
 function checkUserExistance(gmail){
     return new Promise((resolve, reject) => {
-        User.findOne({"Gmail": gmail }, function(req, result){
+        User.findOne({'Gmail': gmail }, function(req, result){
            resolve(result);
         });
     });   
@@ -100,7 +101,7 @@ function checkUserExistance(gmail){
 
 var init = function (app) {
 
-    app.get("/api/ping", function (req, res, next) {
+    app.get('/api/ping', function (req, res, next) {
         res.send((new Date()).toString());
         res.end();
     });
@@ -143,7 +144,7 @@ var init = function (app) {
         } else {
             // convert queryString to query
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> get project: ", query)
+            console.log('-> get project: ', query)
 
             // Security: compare to req.permissions
             var permitted = req.permissions.map(m => m.Project);
@@ -176,7 +177,7 @@ var init = function (app) {
             res.status(404).send('Not Authenticated!');
         } else {
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> put projects: ", query)
+            console.log('-> put projects: ', query)
 
             if (!'_id' in query) {res.status(404).send('Query doesn\'n have _id field!');};
             var permission = req.permissions.find( v => String(v.Project) == String(query['_id']['$in'][0]));
@@ -214,13 +215,13 @@ var init = function (app) {
             res.status(404).send('Not Authenticated!');
         } else {
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> delete projects: ", query)
+            console.log('-> delete projects: ', query)
             if (!'_id' in query) {res.status(404).send('Query doesn\'n have _id field!');};
             var permission = req.permissions.find( v => String(v.Project) == String(query['_id']['$in'][0]));
             if (permission === null || permission.Role == 'read-only') { 
                 res.status(404).send('Current user does NOT have permission to DELETE the project.'); 
             } else {
-                console.log("-> delete project: ", query)
+                console.log('-> delete project: ', query)
                 Project.remove(query, processResult(req, res));
             }
         } 
@@ -237,7 +238,7 @@ var init = function (app) {
         } else {
              // convert queryString to query
              var query = queryStringConverter(JSON.parse(req.params.query));
-             console.log("-> get permissions: ", query)
+             console.log('-> get permissions: ', query)
 
              // Security: compare to req.permissions
              var permittedProjects = req.permissions.map(m => m.Project);
@@ -278,7 +279,7 @@ var init = function (app) {
             res.status(404).send('Not Authenticated!');
         } else {
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> put permissions: ", query)
+            console.log('-> put permissions: ', query)
             Object.keys(query).forEach(k => {
                 if (k == '_id') {
                     var currentUserRole;
@@ -321,7 +322,7 @@ var init = function (app) {
             res.status(404).send('Not Authenticated!');
         } else {
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> delete permissions: ", query)
+            console.log('-> delete permissions: ', query)
             Object.keys(query).forEach(k => {
                 if (k == '_id') {
                     var currentUserRole;
@@ -375,7 +376,7 @@ var init = function (app) {
             // convert queryString to query
             
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> get users: ", query)
+            console.log('-> get users: ', query)
 
             // Security: compare to req.permissions
             if ('_id' in query) {
@@ -401,8 +402,8 @@ var init = function (app) {
         } else {
             var query = queryStringConverter(JSON.parse(req.params.query));
             console.log('-- Updating User --');
-            console.log("_id: ", query['_id']);
-            console.log("_id in: ", query['_id']['$in']);
+            console.log('_id: ', query['_id']);
+            console.log('_id in: ', query['_id']['$in']);
             
             if ('_id' in query && JSON.stringify(query['_id']['$in'][0]) != req.userID) {
                 res.status(404).send('Not current user, cannot update user profile.');
@@ -419,7 +420,7 @@ var init = function (app) {
             res.status(404).send('Not Authenticated!');
         } else {
             var query = queryStringConverter(JSON.parse(req.params.query));
-            console.log("-> delete users: ", query)
+            console.log('-> delete users: ', query)
             if (!'_id' in query) {res.status(404).send('Query doesn\'n have _id field!');};
             if (JSON.stringify(query['_id']['$in'][0]) != req.userID) {
                 res.status(404).send('Not current user, cannot update user profile.');
@@ -471,15 +472,15 @@ var init = function (app) {
                             });
             
                             if (projectCollections.length === 0) {
-                                res.status(200).send("Not Found or No File has been uploaded yet.").end()
+                                res.status(200).send('Not Found or No File has been uploaded yet.').end()
                             } else {
                                 var arr = [];
                                 asyncLoop(projectCollections, function (m, next) {
                                     db.collection(m).find().toArray(function (err, data) {
                                         var obj = {};
                                         obj.collection = m;
-                                        if (m.indexOf("clinical") > -1) {
-                                            obj.category = "clinical";
+                                        if (m.indexOf('clinical') > -1) {
+                                            obj.category = 'clinical';
                                             obj.patients = data.map(function (m) { return m.id });
                                             obj.metatdata = data[0].metadata;
                                             obj.enums_fields = data.map(function (m) { return Object.keys(m.enums); })
@@ -491,8 +492,8 @@ var init = function (app) {
                                             obj.boolean_fields = data.map(function (m) { return Object.keys(m.boolean); })
                                                 .reduce(function (a, b) { return a = _.uniq(a.concat(b)); });
                                             arr.push(obj);
-                                        } else if (m.indexOf("molecular") > -1) {
-                                            obj.category = "molecular";
+                                        } else if (m.indexOf('molecular') > -1) {
+                                            obj.category = 'molecular';
                                             var types = _.uniq(data.map(function (m) { return m.type }));
                                             types.forEach(function (n) {
                                                 obj[n] = {};
@@ -527,8 +528,8 @@ var init = function (app) {
     });
 
     app.delete('/api/files/:id', Permissions.jwtVerification, function (req, res) {
-        console.log("--- Deleting File");
-        console.log("id: ",req.params.id);
+        console.log('--- Deleting File');
+        console.log('id: ',req.params.id);
         var projectID = req.params.id;
 
         if (!req.isAuthenticated) {
@@ -552,37 +553,41 @@ var init = function (app) {
                 res.status(404).send('The Current User does not have priviledge to delete file to this project. Please contact the Author of this Dataset.');
             } else {
                 console.log('     - Delete Permitted');
-                db.getConnection().then(db => {
-                    db.db.listCollections().toArray(function (err, collectionMeta) {
-                        if (err) {
-                            console.log(err);
-                        }
-                        else {
-                            collectionMeta.map(function (m) {
-                                return m.name;
-                            }).filter(function (m) {
-                                return m.indexOf(projectID) > -1;
-                            }).forEach(function (m) {
-                                db.db.dropCollection(m, function (err, result) {
-                                    console.log("DELETING", m);
-                                    if (err) console.log(err);
-                                    console.log(result);
+                
+                var params = {
+                    Bucket: 'oncoscape-users-data',
+                    Prefix: projectID + '_'
+                }
+                var fileList = [];
+                s3.listObjectsV2(params, function(err, data) {
+                    fileList = data.Contents.map(s=>{
+                        var obj = {};
+                        obj.Key = s.Key
+                        return obj;
+                    });  
+                    if (fileList.length > 0) {
+                        var par = {
+                            Bucket: 'oncoscape-users-data',
+                            Delete: {
+                                Objects: fileList
+                            }
+                        };
+                        s3.deleteObjects(par, function(err, data) {
+                            if (err) {
+                                console.log(err, err.stack); // an error occurred
+                            } else {
+                                console.log(data);           // successful response
+                                Project.findOneAndUpdate({_id: projectID}, {Metadata: null, File: {filename: '', size: 0, timestamp: null}}, { upsert: false }, function(err, res) {
+                                    console.log('files are deleted.');
                                 });
-                            });
-                        }
-                    });
-                    
-                    var query = {"dataset": projectID}
-                    Lookup.find(query)
-                            .remove(()=> {console.log("removed from lookup datasources")} );
-                    
-                    
-                    res.status(200).send("files are deleted").end();
-                });
+                            }
+                        });
+                    }
+                    res.status(200).send('files are cleared').end();
+                });  
             }
         }
     });
-
     //#endregion
     
     app.get('/api/:collection/:query', Permissions.jwtVerification, function (req, res, next) {
@@ -590,7 +595,7 @@ var init = function (app) {
         console.log('/api/:collection/:query', collection);
         console.log('req.permittedCollections', req.permittedCollections);
         var query = (req.params.query) ? JSON.parse(req.params.query) : {};
-        if (req.permittedCollections.indexOf(collection.split("_")[0]) > -1) {
+        if (req.permittedCollections.indexOf(collection.split('_')[0]) > -1) {
             db.getConnection().then(db => {
                 Query.exec(db, collection, query).then(results => {
                     res.send(results);
@@ -607,7 +612,7 @@ var init = function (app) {
         var query = {};
         console.log('/api/:collection*', collection);
         console.log('req.permittedCollections', req.permittedCollections);
-        if (req.permittedCollections.indexOf(collection.split("_")[0]) > -1) {
+        if (req.permittedCollections.indexOf(collection.split('_')[0]) > -1) {
             db.getConnection().then(db => {
                 Query.exec(db, collection, query).then(results => {
                     res.send(results);

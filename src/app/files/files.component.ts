@@ -64,7 +64,6 @@ export class FilesComponent implements OnInit {
     this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.project._id + '/' + this.user.Gmail,
                                       headers: [{name: 'Authorization', value: this.headerValue }]
                                     });
-    console.log('WHAT IS USER EMAIL?', this.user.email);
     this.uploader.onAfterAddingFile = (file) => { this.updateStatus(file); };
 
     if (this.project.File.size !== 0) {

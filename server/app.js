@@ -131,9 +131,6 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
                 writing2S3.on('message', (URL) => {
                     console.log('{', URL, '}');
                     // update project collection
-                    Project.find({_id:projectID}, function(err, res){
-                        console.log(res);
-                    });
                     Project.findOneAndUpdate({_id: projectID}, {Metadata: URL}, { upsert: false }, function(err, res) {
                         console.log("metadatafile url is added to the project document.");
                     });
