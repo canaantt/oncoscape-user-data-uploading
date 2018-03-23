@@ -9,9 +9,7 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const upload_validation = require('./upload_validation.js');
 // #region S3 config
-// var credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
-// AWSConfigsS3.UseSignatureVersion4 = false;
-// AWS.config.credentials = credentials;
+// AWS credentials are passed through environment variables
 s3.config.region = 'us-west-2';
 var params = {Bucket:'oncoscape-users-data'};
 var gzip_upload2S3_private = function(JSONOBJ, FILENAME){
@@ -33,7 +31,7 @@ var gzip_upload2S3_private = function(JSONOBJ, FILENAME){
     });
 };
 var signURL = function(FILENAME){
-    var params = { Bucket: 'canaantt-test', 
+    var params = { Bucket: 'oncoscape-users-data', 
                    Key: FILENAME, 
                    Expires: 15552000}; // url expires in 180 Days
     return s3.getSignedUrl('getObject', params);

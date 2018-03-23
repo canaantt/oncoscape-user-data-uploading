@@ -19,7 +19,7 @@ const routes = require('./app.routes.js');
 var File = require("./models/file");
 db = require('./app.db.js');
 var Permission = require("./models/permission");
-
+var Project = require("./models/project");
 // var apm = require('elastic-apm-node').start({
 //     // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
 //     serviceName: 'oncoscape-uploading'
@@ -122,7 +122,7 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
             try {
                 const writing2S3 = 
                     fork(process.env.APP_ROOT + '/server/xlsx2json2S3.js',
-                        { execArgv: ['--max-old-space-size=4000']});
+                        { execArgv: ['--max-old-space-size=2000']});
                         // fork(process.env.APP_ROOT + '/server/fileUpload.js',
                         // { execArgv: ['--max-old-space-size=4000']});
                 writing2S3.send({ filePath: req.file.path, 
@@ -130,7 +130,13 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
                                   });
                 writing2S3.on('message', (URL) => {
                     console.log('{', URL, '}');
-                
+                    // update project collection
+                    Project.find({_id:projectID}, function(err, res){
+                        console.log(res);
+                    });
+                    Project.findOneAndUpdate({_id: projectID}, {Metadata: URL}, { upsert: false }, function(err, res) {
+                        console.log("metadatafile url is added to the project document.");
+                    });
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
                           console.log(error);

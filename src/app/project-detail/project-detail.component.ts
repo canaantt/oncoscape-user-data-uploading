@@ -38,17 +38,16 @@ export class ProjectDetailComponent implements  OnInit {
   permission: any ;
   protocols= ['IRB', 'IEC', 'Exempt with Waiver', 'Exempt'];
   isCompliant= <boolean> false;
-  errorMessage : {  Name: {msg: string, pass:boolean}, 
-                    PHI:  {msg: string, pass:boolean},
-                    Human:{msg: string, pass:boolean}, 
-                    Protocol:{msg: string, pass:boolean}
-                  }=  
-                  { Name : {msg: 'Project Name is required.', pass: false} , 
-                  PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
-                  Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
-                  Protocol: {msg:'A protocol ID is required for non-exempt studies.', pass:false }   
-                } ;
-  
+  errorMessage: {  Name: {msg: string, pass: boolean},
+                    PHI:  {msg: string, pass: boolean},
+                    Human: {msg: string, pass: boolean},
+                    Protocol: {msg: string, pass: boolean}
+                  }=
+                  { Name : {msg: 'Project Name is required.', pass: false} ,
+                  PHI: {msg: 'You must agree that all data is free of PHI.', pass: false },
+                  Human: {msg: 'Human Subject research requires additional protocol approval', pass: false }  ,
+                  Protocol: {msg: 'A protocol ID is required for non-exempt studies.', pass: false }
+                };
   newAnnotationForm: FormGroup;
   @ViewChild(PermissionsComponent) permissionComponent: PermissionsComponent;
   @ViewChild(FilesComponent) filesComponent: FilesComponent;
@@ -68,18 +67,16 @@ export class ProjectDetailComponent implements  OnInit {
     private stateService: StateService,
     private elementRef: ElementRef,
     private fb: FormBuilder) {
-      this.errorMessage =  
-      { Name : {msg: 'Project Name is required.', pass: false} , 
-        PHI: {msg:'You must agree that all data is free of PHI.', pass:false } , 
-        Human: {msg:'Human Subject research requires additional protocol approval', pass:false }  ,
-        Protocol: {msg:'A protocol ID is required for non-exempt studies.', pass:false }   
-      } 
+      this.errorMessage = { Name : {msg: 'Project Name is required.', pass: false},
+        PHI: {msg: 'You must agree that all data is free of PHI.', pass: false },
+        Human: {msg: 'Human Subject research requires additional protocol approval', pass: false }  ,
+        Protocol: {msg: 'A protocol ID is required for non-exempt studies.', pass: false }
+      };
       this.stateService.internalUser
       .subscribe(res => {
-        
         if (res === null) {
-          this.checkLogin()
-        }else{
+          this.checkLogin();
+        } else {
           this.user = res;
           this.projectService.getProjectByID(this.route.snapshot.params['id'])
                             .subscribe(res => {
@@ -87,16 +84,13 @@ export class ProjectDetailComponent implements  OnInit {
                                 this.setProject(res[0]);
                                 this.updatePreChecking();
                               });
-                            });        
-                            
+                            });
             this.permissionService.getPermissionByUserByProject(this.user._id, this.route.snapshot.params['id'])
                             .subscribe(r => {
                               this.zone.run(() => {
                                 this.setPermission(r);
-                              })
+                              });
                             });
-            
-                          
         }
     });
     const eventStreamClick = Observable.fromEvent(elementRef.nativeElement, 'click')
@@ -115,9 +109,9 @@ export class ProjectDetailComponent implements  OnInit {
 
 
   checkLogin() {
-    const self = this
+    const self = this;
     setTimeout(function () {
-        if (typeof self.user === "undefined") {
+        if (typeof self.user === 'undefined') {
             self.loginService.googleLogOut();
         }
     }, 2000);
@@ -130,51 +124,50 @@ export class ProjectDetailComponent implements  OnInit {
   setProject(project: any): void {
     this.project = project;
   }
-  
+
   ngOnInit(): void {
     this.newAnnotationForm = new FormGroup({
         key: new FormControl('', Validators.required),
         value: new FormControl('', Validators.required)
-      });    
+      });
   }
 
-  updateProtocol(){
-    this.update(this.project)
+  updateProtocol() {
+    this.update(this.project);
   }
-  
+
   update(project: Project): void {
-    
     this.updatePreChecking();
     console.log('STATUS:', this.isCompliant);
-    console.log("Protocol: ", this.project.DataCompliance.Protocol)
+    console.log('Protocol: ', this.project.DataCompliance.Protocol);
 
-    if (!this.isCompliant) 
+    if (!this.isCompliant) {
       console.log('Dataset error Message: ', this.errorMessage);
-    
+    }
+
     this.projectService.update(project).subscribe(() => {
-      if(this.project.File.size !== 0)
-        this.filesComponent.filerefresh();                
+      if (this.project.File.size !== 0) {
+        this.filesComponent.filerefresh();
+      }
     });
-    
   }
 
   updatePreChecking (): void {
-    this.isCompliant = false
+    this.isCompliant = false;
     this.errorMessage.Name.pass = this.project.Name === '' ?  false : true;
     this.errorMessage.PHI.pass = this.project.PHI  ?  true : false;
 
-    this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy == 'false' ?  true : false;  
+    this.errorMessage.Human.pass = this.project.DataCompliance.HumanStudy === 'false' ?  true : false;
 
-    var reg = /^\d+$/;
-    if (this.project.DataCompliance.Protocol == 'Exempt'){
-      this.project.DataCompliance.ProtocolNumber = ''
+    const reg = /^\d+$/;
+    if (this.project.DataCompliance.Protocol === 'Exempt') {
+      this.project.DataCompliance.ProtocolNumber = '';
       this.errorMessage.Protocol.pass = true;
-    } else if (reg.test(this.project.DataCompliance.ProtocolNumber)){
-      this.errorMessage.Protocol.pass = true; 
+    } else if (reg.test(this.project.DataCompliance.ProtocolNumber)) {
+      this.errorMessage.Protocol.pass = true;
     } else {
-      this.errorMessage.Protocol.pass = false; 
+      this.errorMessage.Protocol.pass = false;
     }
-    
     if ( this.errorMessage.Name.pass  &&   // has project name
           this.errorMessage.PHI.pass   &&  // certify not PHI
          ( this.errorMessage.Human.pass ||      // either not Human Subjects OR provides Protocol# or claims exemption
@@ -183,7 +176,6 @@ export class ProjectDetailComponent implements  OnInit {
           this.isCompliant = true;
     }
   }
-  
   submitAnnotations(): void {
     if (this.newAnnotationForm.valid) {
       this.project.Annotations.push(this.newAnnotationForm.value);
