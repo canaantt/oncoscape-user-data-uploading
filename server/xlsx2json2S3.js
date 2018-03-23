@@ -1,53 +1,26 @@
 const express = require('express');
 const jsonfile = require("jsonfile");
-const _ = require("underscore");
+var _ = require('lodash');
 const asyncLoop = require('node-async-loop');
 const XLSX =require("xlsx");
 const fs = require('fs');
 const zlib = require('zlib');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
-const upload_validation = require('./upload_validation.js');
-// #region S3 config
-// AWS credentials are passed through environment variables
-s3.config.region = 'us-west-2';
-var params = {Bucket:'oncoscape-users-data'};
-var gzip_upload2S3_private = function(JSONOBJ, FILENAME){
-    zlib.gzip(JSON.stringify(JSONOBJ), level=9, function(err, result){
-        s3.putObject({Bucket:'oncoscape-users-data', 
-                  Key: FILENAME, 
-                  Body: result, 
-                  ACL:'private',
-                  'ContentEncoding': 'gzip',
-                  'ContentType': 'application/json'
-                  }, 
-                  function(res, err){
-                      console.log(res);
-                      if(err){
-                          console.log(err);
-                      }
-                      console.log('Success!');
-                    });
-    });
-};
-var signURL = function(FILENAME){
-    var params = { Bucket: 'oncoscape-users-data', 
-                   Key: FILENAME, 
-                   Expires: 15552000}; // url expires in 180 Days
-    return s3.getSignedUrl('getObject', params);
+
+var genemap = require('./data_uploading_modules/DatasetGenemap.json');
+var requirements = require('./data_uploading_modules/DatasetRequirements.json');
+var validate = require('./data_uploading_modules/DatasetValidate.js');
+var serialize = require('./data_uploading_modules/DatasetSerialize.js');
+var save = require('./data_uploading_modules/DatasetSave.js');
+var load = require('./data_uploading_modules/DatasetLoad.js');
+var helper = require('./data_uploading_modules/DatasetHelping.js');
+
+var s3UploadConfig = {
+    region: 'us-west-2',
+    params: {Bucket:'oncoscape-users-data'}
 }
-// #endregion
-var validation = function(workbook) {
-    var report = {};
-    workbook.SheetNames.forEach(sheetName=>{
-        report[sheetName] = upload_validation.preUploading_sheetLevel_checking(workbook.Sheets[sheetName], sheetName);
-    });
-    report['allSheets_existance']= upload_validation.preUploading_allSheets_checking.allSheets_existance(workbook);
-    report['patientID_overlapping']= upload_validation.preUploading_allSheets_checking.patientID_overlapping(workbook);
-    report['sampleID_overlapping']= upload_validation.preUploading_allSheets_checking.sampleID_overlapping(workbook);
-    report['geneIDs_overlapping']= upload_validation.preUploading_allSheets_checking.geneIDs_overlapping(workbook);
-    return report;
-}
+s3.config.region = s3UploadConfig.region;
 
 var xlsx2json = function(workbook) {
     var result = [];
@@ -337,48 +310,39 @@ const json2S3 = (msg) => {
 
     var filePath = msg.filePath;
     var projectID = msg.projectID;
-    var workbook = XLSX.readFile(filePath, {sheetStubs: true});
-    console.log('**********************(Workbook Validation)*************');
-    // var validation_result = validation(workbook);
+
+     var errors = {};
+
+    // Load Excel (Specific)
+    var sheets = load.xlsx(filePath, XLSX); // Array of sheets [ {name:'xxx', data:data}, {name:'xxx', data:data} ]
+
+    // Validate Sheets (Generic)
+    errors['sheet_level'] = sheets.map(sheet => validate.validateSheet(sheet, requirements, _, helper));
     
-    var jsonResult = xlsx2json(workbook);
-    console.log('*********************(Serialization)****************');
-    var manifest = {};
-    var files = [] ;
-    var allURLs = jsonResult.forEach(j=>{
-        var obj = {};
-        var filename = msg.projectID + '_' + j.name + '_' + 'json.gz';
-        gzip_upload2S3_private(j.res, filename);
-        
-        obj['name'] = j.name;
-        obj['dataType'] = j.type;
-        obj['file'] = signURL(filename);
-        files.push(obj);
-    });
-    manifest['files'] = files;
-    var eventJSON = jsonResult.find(r=>r.type === 'EVENT');
-    if(eventJSON !== undefined) { manifest['events'] = eventJSON.res.map; }
-    var patientJSON = jsonResult.find(r=>r.type === 'PATIENT');
-    if(patientJSON !== undefined) { manifest['fields'] = patientJSON.res.fields;}
-    var schema = {
-        'dataset' : 'name',
-        'events' : '++, p',
-        'patientSampleMap': 's, p',
-        'patientMeta': 'key'
-    };
-    schema['patient'] = ['p'].concat(Object.keys(manifest['fields'])).join(',');
-    jsonResult.filter(res=> res.type === 'MATRIX' || res.type === 'MUT').forEach(res=>{
-        if(res.type === 'MATRIX') {
-            schema[res.name] = 'm',
-            schema[res.name+'Map'] = 's'
-        } else {
-            schema[res.name] = '++, m, p, t'
-        }
-    })
-    manifest['schema'] = schema;
-    var manifest_filename = msg.projectID + '_manifest_json.gz';
-    gzip_upload2S3_private(manifest, manifest_filename);       
-    return signURL(manifest_filename);
+    // Validate Workbook (Generic)
+    errors['sheets_existence'] = validate.validateWorkbookExistence(sheets, requirements, genemap, _, helper);
+    errors['patientID_overlapping'] = validate.validateWorkbookPatientIDOverlapping(sheets, requirements, genemap, _, helper);
+    errors['sampleID_overlapping'] = validate.validateWorkbookSampleIDOverlapping(sheets, requirements, genemap, _, helper);
+    errors['geneID_overlapping'] = validate.validateWorkbookGeneIDsOverlapping(sheets, requirements, genemap, _, helper);
+    
+
+    // Serialize Sheets (Generic)
+    sheetsSerialized = [];
+    sheets.forEach(sheet => {
+        sheetsSerialized = sheetsSerialized.concat(serialize.sheet(sheet, _, XLSX));
+    }); 
+
+    // Upload Sheets To S3 (Specific)
+    uploadResults = sheetsSerialized.map(sheet => save.server(sheet, 'projectId', s3UploadConfig, AWS, s3, zlib));
+    
+    // Serialize Manifest (Generic)
+    manifestSerialized = serialize.manifest(sheetsSerialized, uploadResults);
+
+    // Upload Manifest To S3 (Specific)
+    manifestURL = save.s3(manifestSerialized, projectID, s3UploadConfig, AWS, s3, zlib);
+    
+     
+    return manifestURL;
 }
 
 process.on('message', (filePath) => {

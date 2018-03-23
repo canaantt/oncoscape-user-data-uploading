@@ -30,6 +30,7 @@
     "hellojs": "^1.15.1",
     "jl-tether": "^0.1.0",
     "jquery": "^3.2.1",
+    "lodash": "^4.17.5",
     "mongoose": "^4.11.5",
     "ng2-file-upload": "^1.2.1",
     "ng2-slim-loading-bar": "^4.0.0",

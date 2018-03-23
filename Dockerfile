@@ -21,7 +21,7 @@ RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/uploads
 RUN chmod +x /usr/src/app/uploads
 RUN mkdir -p /usr/src/app/server
-ADD docker-supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
+# ADD docker-supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
 # Get client and server to the app
 # COPY client-build/. /usr/src/app
 COPY server/package.json   /usr/src/app/server
