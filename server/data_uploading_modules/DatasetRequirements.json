@@ -1,0 +1,29 @@
+{
+    "PATIENT":{
+        "required_fields":["PATIENTID"],
+        "unique_fields":["PATIENTID"],
+        "headerLineNum": 1
+    },
+    "SAMPLE":{
+        "required_fields":["SAMPLEID", "PATIENTID"],
+        "unique_fields":["SAMPLEID"],
+        "headerLineNum": 1
+    },
+    "EVENT":{
+        "required_fields":["PATIENTID", "CATEGORY", "TYPE", "STARTDATE", "ENDDATE"],
+        "headerLineNum": 1,
+        "dependencies": ["PATIENT"],
+        "sheet_specific_checking": ["Type_Category_inclusion"]
+    },
+    "GENESETS":{
+        "headerLineNum": null
+    },
+    "MUT":{
+        "headerLineNum": 3,
+        "dependencies": ["SAMPLE"]
+    },
+    "MATRIX":{
+        "headerLineNum": 3,
+        "dependencies": ["SAMPLE"]
+    }
+}
