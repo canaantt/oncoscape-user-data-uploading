@@ -32,20 +32,20 @@ export class FileService {
                 });
   }
   getCollectionsByProjectID(id: string): Observable<Response> {
-    const url = environment.apiBaseUrl + id + "_collections";
+    const url = environment.apiBaseUrl + id + '_collections';
     return this.http.get(url, {headers: this.headers})
                .map(res => {
                   return res;
                 });
   }
-  
+
   removeFilesByProjectID(id: string): Observable<Response> {
     const url = `${this.filesUrl}/` + id;
-    console.log("Removing Files: ", id)
+    console.log('Removing Files: ', id);
     return this.http.delete(url, {headers: this.headers})
       .map((msg) => {
-        console.log(msg)
-        return msg
+        console.log(msg);
+        return msg;
       });
   }
   create(file: File): Observable<Response> {
