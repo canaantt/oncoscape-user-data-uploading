@@ -36,7 +36,7 @@ var app = express();
 app.use(function (req, res, next) { //allow cross origin requests
     res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
     // res.header("Access-Control-Allow-Origin", "http://localhost:" + process.env.NODE_PORT + "/api")
-    res.header("Access-Control-Allow-Origin", "http://uploading.os-user-data.jennylou.info/api");
+    res.header("Access-Control-Allow-Origin", "http://uploading.os-user-data.jennylou.info");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Credentials", true);
     next();
@@ -83,9 +83,9 @@ var upload = multer({
 }).single('file');
 //#endregion
 
-app.use('/api/upload', express.static(process.env.APP_ROOT + '/uploads'));
+app.use('/upload', express.static(process.env.APP_ROOT + '/uploads'));
 
-app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function (req, res, next) {
+app.post('/upload/:id/:email', Permissions.jwtVerification, upload, function (req, res, next) {
     // upload(req, res, function (err) {
     console.log("Uploading by ID and Email");
     var projectID = req.params.id;

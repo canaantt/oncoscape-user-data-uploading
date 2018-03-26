@@ -101,11 +101,11 @@ function checkUserExistance(gmail){
 
 var init = function (app) {
 
-    app.get('/api/ping', function (req, res, next) {
+    app.get('/ping', function (req, res, next) {
         res.send((new Date()).toString());
         res.end();
     });
-    app.post('/api/token', function(req, res, next) {
+    app.post('/token', function(req, res, next) {
         // Pull Token Out Of Request Body
         
         var token = req.body.token;
@@ -123,12 +123,12 @@ var init = function (app) {
             });
         });
     }); 
-    app.post('/api/users/checkGmail/:gmail', function(req, res, next){
+    app.post('/users/checkGmail/:gmail', function(req, res, next){
         checkUserExistance(req.params.gmail).then(user => {
             res.send({user: user}).end();
         })
     });
-    app.get('api/users/checkGmail/:query', function(req, res, next){
+    app.get('/users/checkGmail/:query', function(req, res, next){
         checkUserExistance(req.params.query['Gmail']).then(user => {
             console.log(' Get User by Email', user);
             res.send({user: user}).end();
@@ -137,7 +137,7 @@ var init = function (app) {
 
     //#region PROJECTS
 
-    app.get('/api/projects/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.get('/projects/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -158,7 +158,7 @@ var init = function (app) {
             Project.find(query, processResult(req, res));
         }
     });
-    app.post('/api/projects', Permissions.jwtVerification, function (req, res, next) {
+    app.post('/projects', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -171,7 +171,7 @@ var init = function (app) {
             }    
         }
     });
-    app.put('/api/projects/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.put('/projects/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -209,7 +209,7 @@ var init = function (app) {
             }
         }
     });
-    app.delete('/api/projects/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.delete('/projects/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -231,7 +231,7 @@ var init = function (app) {
 
     //#region PERMISSIONS
 
-    app.get('/api/permissions/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.get('/permissions/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -257,7 +257,7 @@ var init = function (app) {
         }
     });
 
-    app.post('/api/permissions', Permissions.jwtVerification, function (req, res, next) {
+    app.post('/permissions', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -273,7 +273,7 @@ var init = function (app) {
         }
     });
     
-    app.put('/api/permissions/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.put('/permissions/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -316,7 +316,7 @@ var init = function (app) {
         }
     });
     
-    app.delete('/api/permissions/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.delete('/permissions/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -363,12 +363,12 @@ var init = function (app) {
 
     //#region USERS
 
-    app.post('/api/users', function (req, res, next) {
+    app.post('/users', function (req, res, next) {
         User.create(req.body, processResult(req, res));
         console.log('***** NO AUTH is REQUIRED ****');
     });
 
-    app.get('/api/users/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.get('/users/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -395,7 +395,7 @@ var init = function (app) {
         }
     });
 
-    app.put('/api/users/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.put('/users/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -414,7 +414,7 @@ var init = function (app) {
     });
 
     // User Deletion is not being used by anyone //
-    app.delete('/api/users/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.delete('/users/:query', Permissions.jwtVerification, function (req, res, next) {
         if (!req.isAuthenticated) {
             console.log('!@! NOT AUTH');
             res.status(404).send('Not Authenticated!');
@@ -434,7 +434,7 @@ var init = function (app) {
 
     //#region FILES
 
-    app.get('/api/files/:id', Permissions.jwtVerification, function (req, res) {
+    app.get('/files/:id', Permissions.jwtVerification, function (req, res) {
         var projectID = req.params.id;
         // security
         if (!req.isAuthenticated) {
@@ -527,7 +527,7 @@ var init = function (app) {
         }
     });
 
-    app.delete('/api/files/:id', Permissions.jwtVerification, function (req, res) {
+    app.delete('/files/:id', Permissions.jwtVerification, function (req, res) {
         console.log('--- Deleting File');
         console.log('id: ',req.params.id);
         var projectID = req.params.id;
@@ -590,9 +590,9 @@ var init = function (app) {
     });
     //#endregion
     
-    app.get('/api/:collection/:query', Permissions.jwtVerification, function (req, res, next) {
+    app.get('/:collection/:query', Permissions.jwtVerification, function (req, res, next) {
         var collection = req.params.collection;
-        console.log('/api/:collection/:query', collection);
+        console.log('/:collection/:query', collection);
         console.log('req.permittedCollections', req.permittedCollections);
         var query = (req.params.query) ? JSON.parse(req.params.query) : {};
         if (req.permittedCollections.indexOf(collection.split('_')[0]) > -1) {
@@ -607,10 +607,10 @@ var init = function (app) {
         }
     });
 
-    app.get('/api/:collection*', Permissions.jwtVerification, function (req, res, next) {
+    app.get('/:collection*', Permissions.jwtVerification, function (req, res, next) {
         var collection = req.params.collection;
         var query = {};
-        console.log('/api/:collection*', collection);
+        console.log('/:collection*', collection);
         console.log('req.permittedCollections', req.permittedCollections);
         if (req.permittedCollections.indexOf(collection.split('_')[0]) > -1) {
             db.getConnection().then(db => {
