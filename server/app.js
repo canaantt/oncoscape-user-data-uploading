@@ -161,6 +161,6 @@ app.post('/api/upload/:id/:email', Permissions.jwtVerification, upload, function
 
 
 // Start Listening
-app.listen(process.env.NODE_PORT, function () {
+app.listen(process.env.NODE_PORT, '0.0.0.0', function () {
     console.log("UP");
 });
