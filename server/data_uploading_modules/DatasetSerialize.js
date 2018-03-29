@@ -165,21 +165,33 @@
               var map = {};
               var headerUpperCase = meta.header.map(n=>n.toUpperCase());
               var patientIDLocation = headerUpperCase.indexOf('PATIENTID');
-              var categoryLocation = headerUpperCase.indexOf('CATEGORY');
-              var typeLocation = headerUpperCase.indexOf('TYPE');
-              var startDateLocation = headerUpperCase.indexOf('STARTDATE');
-              var endDateLocation = headerUpperCase.indexOf('ENDDATE');
-              var reservedHeaderLocations = [patientIDLocation, categoryLocation, typeLocation, startDateLocation, endDateLocation];
+            //   var categoryLocation = headerUpperCase.indexOf('CATEGORY');
+            //   var typeLocation = headerUpperCase.indexOf('TYPE');
+              var category = sheet.name.split('-')[1].toUpperCase();
+              map['category'] = category;
+              var type; 
+              if (sheet.name.split('-').length > 2) {
+                  type = sheet.name.split('-')[2].toUpperCase();
+                  map['type'] = type;
+              }
+              var startDateLocation = headerUpperCase.indexOf('START');
+              var endDateLocation = headerUpperCase.indexOf('END');
+              var reservedHeaderLocations = [patientIDLocation, startDateLocation, endDateLocation];
               var customHeaders = meta.header.filter((h, i)=>reservedHeaderLocations.indexOf(i) === -1);
 
-              var uniqueTypes = _.uniq(data.map(d=>d[typeLocation]));
-              uniqueTypes.forEach(t=>{
-                  map[t]=data.find(d=>d[typeLocation]===t)[categoryLocation];
-              });
+            //   var uniqueTypes = _.uniq(data.map(d=>d[typeLocation]));
+            //   uniqueTypes.forEach(t=>{
+            //       map[t]=data.find(d=>d[typeLocation]===t)[categoryLocation];
+            //   });
               var value = data.map(d=>{
                   var arr = [];
                   arr[0] = d[0];
-                  arr[1] = uniqueTypes.indexOf(d[typeLocation]);
+                //   arr[1] = uniqueTypes.indexOf(d[typeLocation]);
+                  if (typeof(type) !== 'undefined') {
+                    arr[1] = type;
+                  } else {
+                    arr[1] = category;
+                  }
                   arr[2] = parseInt(d[startDateLocation]);
                   arr[3] = parseInt(d[endDateLocation]);
                   var o = {};
@@ -197,32 +209,28 @@
               return obj;
           } else if (meta.type === 'GENESETS') {
               var genesets = {};
-              data.forEach(d=>{
-                  if(d.length !== 0){
-                      var k = d[0];
-                      d.splice(0, 1);
-                      genesets[k] = _.uniq(d);
-                  }
+              var genesetNames = data[0];
+              data.splice(0, 1);
+              genesetNames.forEach((k,i)=>{
+                genesets[k] = _.compact(data.map(d=>d[i]));
               });
               var obj = {};
               obj.type = meta.type;
               obj.name = sheet.name;
               obj.res = genesets;
               return obj;
-          } else if (meta.type === 'MUT') {
+          } else if (meta.type === 'MUTATION') {
               var obj = {};
               var res = {};
-              meta.tableType = data[0][1];
-              meta.tableName = data[1][1];
-              meta.header = data[2];
-              data.splice(0, 3);
-              var ids = _.uniq(data.map(d=>d[1]));
-              var genes = _.uniq(data.map(d=>d[0]));
-              var mutTypes = _.uniq(data.map(d=>d[2]));
+              meta.header = data[0].map(n=>n.toUpperCase());
+              data.splice(0, 1);
+              var ids = _.uniq(data.map(d=>d[meta.header.indexOf('SAMPLEID')]));
+              var genes = _.uniq(data.map(d=>d[meta.header.indexOf('HGNCID')]));
+              var mutTypes = _.uniq(data.map(d=>d[meta.header.indexOf('TYPE')]));
               var values = data.map((d)=>{
                   return(ids.indexOf(d[1]) + '-' +
-                        genes.indexOf(d[0]) + '-' +
-                        mutTypes.indexOf(d[2]));
+                         genes.indexOf(d[0]) + '-' +
+                         mutTypes.indexOf(d[2]));
               });
               res.ids = ids;
               res.genes = genes;
@@ -230,16 +238,17 @@
               res.values = values;
               obj.res = res;
               obj.type = meta.type;
-              obj.name = meta.tableName;
+              if(sheet.name.split('-').length > 1){
+                obj.name = sheet.name.split('-')[1].toUpperCase();
+              } else {
+                obj.name = 'MUTATION';
+              }
               return obj;
           } else if (meta.type === 'MATRIX') {
               var obj = {};
               var res = {};
-              meta.tableType = data[0][1];
-              meta.tableName = data[1][1];
-              data[2].splice(0, 1);
-              var ids = data[2];
-              data.splice(0, 3);
+              data[0].splice(0,1);
+              var ids = data[0];
               var genes = data.map(d=>d[0]);
               var values = data.map(d=>{
                   d.splice(0, 1);
@@ -249,8 +258,8 @@
               res.genes = genes;
               res.values = values;
               obj.res = res;
-              obj.type = meta.type;
-              obj.name = meta.tableName;
+              obj.type = sheet.name.split('-')[1].toUpperCase();
+              obj.name = sheet.name.split('-')[2].toUpperCase();
               return obj;
           }
       }
