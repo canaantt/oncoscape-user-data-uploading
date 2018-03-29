@@ -19,29 +19,20 @@
           });
           err['unique_fields'] = e;
       } 
-      if('sheet_specific_checking' in requirements[type]) {
-          var e = {};
-          requirements[type]['sheet_specific_checking'].forEach(functionName=>{
-              e[functionName] = helper[functionName](sheet.data, _);
-          });
-          err['sheet_specific_checking'] = e;
-      }
+    //   if('sheet_specific_checking' in requirements[type]) {
+    //       var e = {};
+    //       requirements[type]['sheet_specific_checking'].forEach(functionName=>{
+    //           e[functionName] = helper[functionName](sheet.data, _);
+    //       });
+    //       err['sheet_specific_checking'] = e;
+    //   }
       return err;
     }
 
     validateWorkbook_allSheets_existance = (sheets, requirements, genemap, _, helper) => { 
         var obj = {};
-        // var required_sheetTypes = ['PATIENT', 'SAMPLE'];
-        var permissible_sheetTypes = ['PATIENT', 'SAMPLE', 'EVENT', 'GENESETS', 'MATRIX', 'MUT'];
+        var permissible_sheetTypes = ['PATIENT', 'SAMPLE', 'EVENT', 'GENESETS', 'MATRIX', 'MUTATION'];
         var sheetsSet = new Set(sheets.map(n=>n.name.split('-')[0].toUpperCase()));
-
-        // obj['required_sheets'] = required_sheetTypes.map(s=>{
-        //     var o = {};
-        //     var sheetNames = workbook.SheetNames.filter(n=>n.toUpperCase().indexOf(s)>-1);
-        //     o[s] = {'exists': sheetsSet.has(s),
-        //             'sheetNames': sheetNames};
-        //     return o;
-        // });
 
         obj['permissible_sheets'] = permissible_sheetTypes.map(s=> {
             var o = {};
@@ -86,7 +77,7 @@
         var uniqueField = 'SAMPLEID';
         var sample_sheet = sheets.find(n=>n.name.toUpperCase() === 'SAMPLE');
         var sample_list = helper.get_fieldValues(sample_sheet.data, headerLineNum, uniqueField);
-        var sample_related_sheets = sheets.filter(s=>['MATRIX', 'MUT'].indexOf(s.name.toUpperCase().split('-')[0]) > -1);
+        var sample_related_sheets = sheets.filter(s=>['MATRIX', 'MUTATION'].indexOf(s.name.toUpperCase().split('-')[0]) > -1);
         sample_related_sheets.forEach(sheet=>{
             var sheet_type = sheet.name.split('-')[0];
             switch (sheet_type) {
@@ -94,7 +85,7 @@
                     var samples = helper.get_rowValues(sheet.data, requirements[sheet_type]['headerLineNum']);
                     evaluation[sheet.name] = helper.overlapping(samples, sample_list);
                     break;  
-                case 'MUT':
+                case 'MUTATION':
                     var headerLineNumber = requirements[sheet_type]['headerLineNum'];
                     var samples = helper.get_fieldValues(sheet.data, requirements[sheet_type]['headerLineNum'], 'SAMPLEID');
                     evaluation[sheet.name] = helper.overlapping(samples, sample_list);
@@ -109,7 +100,7 @@
         var hugo_genes = genemap.map(g=>g.s);
         var hugo_alias = genemap.map(g=>g.a);
         var hugo = hugo_genes.concat(hugo_alias);
-        var gene_related_sheets = sheets.filter(s=>['MATRIX', 'MUT', 'GENESETS'].indexOf(s.name.toUpperCase().split('-')[0]) > -1);
+        var gene_related_sheets = sheets.filter(s=>['MATRIX', 'MUTATION', 'GENESETS'].indexOf(s.name.toUpperCase().split('-')[0]) > -1);
         gene_related_sheets.forEach(sheet=>{
             var sheet_type = sheet.name.toUpperCase().split('-')[0];
             switch (sheet_type) {
@@ -117,17 +108,18 @@
                     var genes = helper.get_colValues(sheet.data, requirements[sheet_type]['headerLineNum'], 'A');
                     evaluation[sheet.name] = helper.overlapping(genes, hugo);
                     break;  
-                case 'MUT':
-                    var genes = helper.get_fieldValues(sheet.data, requirements[sheet_type]['headerLineNum'], 'GENES');
+                case 'MUTATION':
+                    console.log('MUTATION, validateWorkbook_geneIDs_overlapping');
+                    var genes = helper.get_fieldValues(sheet.data, requirements[sheet_type]['headerLineNum'], 'HGNCID');
                     evaluation[sheet.name] = helper.overlapping(genes, hugo);
                     break; 
                 case 'GENESETS':
                     var obj = {};
                     var geneSetNames = helper.get_geneSetNames(sheet.data);
+                    console.log(geneSetNames);
                     geneSetNames.forEach(geneSet=>{
-                        var rowValues = helper.get_rowValues(sheet.data, geneSetNames.indexOf(geneSet)+1);
-                        rowValues.splice(0, 1);
-                        var genes = rowValues;
+                        var colValues = helper.get_fieldValues(sheet.data, requirements["GENESETS"]["headerLineNum"], geneSet);
+                        var genes = colValues;
                         obj[geneSet] = helper.overlapping(genes, hugo);
                     });
                     evaluation[sheet.name] = obj;

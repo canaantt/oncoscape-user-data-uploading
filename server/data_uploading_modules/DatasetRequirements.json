@@ -10,20 +10,20 @@
         "headerLineNum": 1
     },
     "EVENT":{
-        "required_fields":["PATIENTID", "CATEGORY", "TYPE", "STARTDATE", "ENDDATE"],
+        "required_fields":["PATIENTID","START", "END"],
         "headerLineNum": 1,
         "dependencies": ["PATIENT"],
         "sheet_specific_checking": ["Type_Category_inclusion"]
     },
     "GENESETS":{
-        "headerLineNum": null
+        "headerLineNum": 1
     },
-    "MUT":{
-        "headerLineNum": 3,
+    "MUTATION":{
+        "headerLineNum": 1,
         "dependencies": ["SAMPLE"]
     },
     "MATRIX":{
-        "headerLineNum": 3,
+        "headerLineNum": 1,
         "dependencies": ["SAMPLE"]
     }
 }

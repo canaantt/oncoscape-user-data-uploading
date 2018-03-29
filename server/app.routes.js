@@ -101,7 +101,7 @@ function checkUserExistance(gmail){
 
 var init = function (app) {
 
-    app.get('/ping', function (req, res, next) {
+    app.get('/', function (req, res, next) {
         res.send((new Date()).toString());
         res.end();
     });

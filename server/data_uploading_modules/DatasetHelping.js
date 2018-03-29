@@ -11,7 +11,7 @@
                 var loc = Object.keys(sheet).filter(k=>k[1]==headerLineNum && k.length==2 && sheet[k].t !== 'z');
                 var headers = loc.map(l=>sheet[l].v.toUpperCase());
                 var re = /[A-Z]/gi;
-                var header_loc = loc[headers.indexOf(header)].match(re)[0];
+                var header_loc = loc[headers.indexOf(header.toUpperCase())].match(re)[0];
                 var found = Object.keys(sheet).filter(k=>k.match(re)[0] === header_loc);
                 var value = found.map(l=>sheet[l]).filter(f=>'v' in f).map(f=>f.v);
                 value.splice(0, headerLineNum);
@@ -45,7 +45,8 @@
         }
 
         get_geneSetNames = (geneset_sheet ) => {
-            var loc = Object.keys(geneset_sheet).filter(k=>k[0]==='A' && k.length ===2 && geneset_sheet[k].t !=='z');
+            var re = /[0-9]+/gi;
+            var loc = Object.keys(geneset_sheet).filter(k=>k.match(re) !== null && parseInt(k.match(re)[0]) ===1 && geneset_sheet[k].t !=='z');
             return loc.map(l=>geneset_sheet[l].v);
         }
 
