@@ -17,11 +17,14 @@
               var ids = meta.data.map(d=>d[0]);
               var fields = {};
               var loc = Object.keys(sheet.data).filter(k=>k[1]=='1'&& k.length==2&&sheet.data[k].t!=='z');
+              console.log(loc);
               var colTypes = loc.map(c=>{
                   var row = 2;
-                  while (sheet.data[c[0]+row].t === 'z') {
-                      row++;
+                  while (typeof(sheet.data[c[0]+row]) !== 'undefined' &&  sheet.data[c[0]+row].t === 'z') {
+                    // console.log(sheet.data[c[0]+row]);
+                    row++;
                   }
+                  row--;
                   return sheet.data[c[0]+row].t;
               });
               loc.forEach(function(l, i){

@@ -24,11 +24,11 @@ var jwtVerification = function (req, res, next) {
                     db.getConnection().then(db => {
                         Query.exec(db, 'open_projects', {}).then(publicProjects => {
                             req.permittedCollections = publicProjects[0]['public'].concat(res1.map(m => String(m.Project)));
-                                Permission.find({'Project': {$in: res1.map(m => m.Project)}}, function(req2, res2){
-                                    req.relatedPermissions = res2;
-                                    console.log('%passed jwtVerification');
-                                    next();
-                                });
+                            Permission.find({'Project': {$in: res1.map(m => m.Project)}}, function(req2, res2){
+                                req.relatedPermissions = res2;
+                                console.log('%passed jwtVerification');
+                                next();
+                            });
                             });
                         });
                     });

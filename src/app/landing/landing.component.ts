@@ -23,10 +23,9 @@ export class LandingComponent implements OnInit {
                private router: Router ) {}
   getUser(): void {
     this.stateService.user.subscribe(res => {
-      this.zone.run(() => { 
-        if(res !== null){
+      this.zone.run(() => {
+        if (res !== null) {
           this.user = res;
-          
         }
       });
     });
@@ -34,9 +33,7 @@ export class LandingComponent implements OnInit {
   ngOnInit() {
     this.stateService.user.subscribe(res => {
       this.user = res;
-    })
-      
-  
+    });
     this.loginService.oauthServiceStatus
         .subscribe((msg) => {
           console.log(msg);
@@ -46,7 +43,7 @@ export class LandingComponent implements OnInit {
                 break;
             case 'register':
                 // alert('User is not registered yet. Please register. Be sure to turn on the browser pop-up window.');
-                this.zone.run(() => {this.router.navigate(['/register'])});
+                this.zone.run(() => { this.router.navigate(['/register']); });
                 break;
             case 'loggedOut':
                 this.loginService.googleLogOut();
@@ -63,15 +60,18 @@ export class LandingComponent implements OnInit {
       if (res !== null) {
         this.router.navigate(['/register']);
       } else {
-        // alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
+        alert('Please Authenticate using your Gmail account. Please refer to Help page should you have any question.');
         this.loginService.googleLogin();
       }
     });
   }
 
   toggleLogin() {
-    if(this.user === null) this.loginService.googleLogin()
-    else this.loginService.googleLogOut()
+    if (this.user === null) {
+      this.loginService.googleLogin();
+    } else {
+      this.loginService.googleLogOut();
+    }
   }
 
  }

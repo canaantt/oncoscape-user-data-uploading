@@ -22,7 +22,6 @@ export class LoginService {
         google: this.GOOGLE_CLIENT_ID,
       }, {
         force: true,
-        // redirect_uri: 'https://dev.oncoscape.sttrcancer.io/upload/',
         redirect_uri: environment.oAuthRedirectUri,
         display: 'popup',
         response_type: 'token',
@@ -38,42 +37,41 @@ export class LoginService {
     hello.login('google', {force: true});
   }
   googleLogOut(): any {
-    window.location.assign('/upload/');
+    window.location.assign('/');
     this.stateService.jwtToken = null;
     hello.logout('google', {force: true});
   }
 
   authLogin(auth) {
     const token = auth.authResponse.access_token;
-
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {
-          console.log(res)
+          console.log(res);
           if ('token' in res) {
             this.stateService.jwtToken.next(res);
             hello('google').api('me').then( this.updateUserInfo.bind(this));
           } else  {
-            // res = res.map(function(d){ return {
-            //   email: res.email,
-            //   first: res.first_name,
-            //   last: res.last_name,
-            //   verified: res.verified
-            // }})
             this.stateService.user.next(res);
             this.oauthServiceStatus.emit('register');
           }
         });
   }
   authLogout(auth) {
+    console.log('logging out..');
     this.oauthServiceStatus.emit('loggedOut');
   }
 
   updateUserInfo (v) {
+    console.log('in updateUserInfo');
+    console.log(v);
     this.userService.getUserByGmail(v.email)
-    .map(res => res.json()[0])
+    .map(res => res.json())
     .subscribe(r => {
+      console.log('r: ', r);
       if (typeof r !== 'undefined') {
+        console.log('are we here?');
+        console.log('logging in...');
         this.stateService.user.next(v);
         this.stateService.internalUser.next(r);
         this.oauthServiceStatus.emit('loggedIn');

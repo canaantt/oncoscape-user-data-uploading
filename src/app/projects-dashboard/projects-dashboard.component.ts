@@ -57,26 +57,26 @@ export class ProjectsDashboardComponent {
                 this.stateService.internalUser
                     .subscribe(res => {
                       if (res === null) {
-                        this.checkLogin()
-                       //this.loginService.googleLogOut()
+                        this.checkLogin();
                       } else {
-                        this.user = res;
+                        console.log('project-dashboard, get user:', res);
+                        this.user = res[0];
                         this.getPermissions(this.user._id);
                       }
                     });
                }
 
   checkLogin() {
-    const self = this
+    const self = this;
     setTimeout(function () {
-        if (typeof self.user === "undefined") {
+        if (typeof self.user === 'undefined') {
             self.loginService.googleLogOut();
         }
     }, 2000);
   }
 
   getProjects(permissions: any): void {
-    let projectIDs: string[] =  _.uniq(<string> permissions.map(r => r.Project));
+    const projectIDs: string[] =  _.uniq(<string> permissions.map(r => r.Project));
     this.projectService.getProjectsByIDs(projectIDs)
 
         .subscribe(res => {
@@ -104,7 +104,7 @@ export class ProjectsDashboardComponent {
             } else {
               this.projectService.delete(project).subscribe(() => console.log('project is being removed.'));
               this.fileService.removeFilesByProjectID(project._id)
-                  .subscribe(msg => { console.log("files removed")});
+                  .subscribe(msg => { console.log('files removed'); });
               this.permissionService.removePermisionsByProjectID(project._id)
                   .subscribe(() => console.log('permissions are deleted.'));
               this.getPermissions(res.User);
@@ -128,10 +128,10 @@ export class ProjectsDashboardComponent {
     });
     this.projectService.create(newProjectForm.value)
         .subscribe((newProject) => {
-          this.addPermission(newProject.json())
+          this.addPermission(newProject.json());
         });
   }
-  
+
   addPermission(Project: Project): void {
     const newPermission = {
                          'User': Project.Author,
@@ -139,11 +139,11 @@ export class ProjectsDashboardComponent {
                          'Project': Project._id};
     this.permissionService.create(newPermission)
         .subscribe((permission) => {
-          this.onSelect(permission.json().Project)
+          this.onSelect(permission.json().Project);
         });
   }
   onSelect(ProjectID: string): void {
-    this.zone.run(() => {this.router.navigate([ `/projects/${ProjectID}/`]) });
+    this.zone.run(() => {this.router.navigate([ `/projects/${ProjectID}/`]); });
   }
 
 }

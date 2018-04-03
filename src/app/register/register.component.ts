@@ -18,8 +18,7 @@ export class RegisterComponent implements OnInit {
   newUserForm: FormGroup;
   user: any;
   internalUser: any;
-  
-  
+
   @ViewChild('LoginComponent') login;
   error = {
     fn: '',
@@ -48,22 +47,22 @@ export class RegisterComponent implements OnInit {
   }
 
   errorMsgUpdate() {
-    this.error = {fn: '', ln: '', email:'', in:''}
+    this.error = {fn: '', ln: '', email: '', in: '' };
 
     if (this.newUserForm.value.FirstName === '') {
       this.error.fn = 'First Name is required.';
-    } 
+    }
     if (this.newUserForm.value.LastName === '') {
       this.error.ln = 'Last Name is required.';
-    } 
+    }
     if (this.newUserForm.value.Email === '') {
       this.error.email = 'Email is required';
     } else if (this.newUserForm.value.Email.search('[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+') === -1) {
       this.error.email = 'Email format is wrong';
-    } 
+    }
     if (this.newUserForm.value.Institution === '') {
       this.error.in = 'Should not be empty.';
-    } 
+    }
   }
   checking(): boolean {
     if ( this.error.fn === '' &&
@@ -71,40 +70,36 @@ export class RegisterComponent implements OnInit {
     this.error.email === '' &&
     this.error.in === '') {
       return true;
-    } 
-    
+    }
     return false;
-    
   }
 
-  isValid(): boolean{
-    var pass = true;
-    if(this.newUserForm.value.FirstName === ''){
-      this.error.fn = 'First Name is required.'; pass=false;
+  isValid(): boolean {
+    let pass = true;
+    if (this.newUserForm.value.FirstName === '') {
+      this.error.fn = 'First Name is required.'; pass = false;
     }
-    if(this.newUserForm.value.LastName === ''){
-      this.error.ln = 'Last Name is required.'; pass=false;
+    if (this.newUserForm.value.LastName === '') {
+      this.error.ln = 'Last Name is required.'; pass = false;
     }
-    if(this.newUserForm.value.Email === ''){
-      this.error.email = 'Email is required.'; pass=false;
-    }else if(this.newUserForm.value.Email.search('[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+') === -1){
-      this.error.email = 'Email format is wrong.'; pass=false;
+    if (this.newUserForm.value.Email === '') {
+      this.error.email = 'Email is required.'; pass = false;
+    } else if (this.newUserForm.value.Email.search('[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+') === -1) {
+      this.error.email = 'Email format is wrong.'; pass = false;
     }
-    if(this.newUserForm.value.Institution === ''){
-      this.error.in = 'Institution is required.'; pass=false;
+    if (this.newUserForm.value.Institution === '') {
+      this.error.in = 'Institution is required.'; pass = false;
     }
-  
     return pass;
   }
 
   submit() {
-    
     this.newUserForm.value.Consent = true;
     this.newUserForm.value.Gmail = this.user.email;
     if (this.isValid()) {
       this.userService.create(this.newUserForm.value).subscribe((res) => {
         console.log('Create New User');
-        this.internalUser = res
+        this.internalUser = res;
         this.loginService.googleLogOut();
       });
     }

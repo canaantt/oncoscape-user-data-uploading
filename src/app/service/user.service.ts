@@ -14,7 +14,10 @@ export class UserService {
     private http: Http ) {
       this.stateService.jwtToken
           .subscribe(res => {
-            this.headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
+            this.headers = new Headers({
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'
+            });
             // this.headers.append('Pragma', 'no-cache');
             if (res !== null) {
               // this.headers.append('Authorization', 'Bearer ' + res.token);
@@ -30,6 +33,8 @@ export class UserService {
   }
 
   getUserByGmail(gmail: string): Observable<Response> {
+    console.log('in user service: getUserByGmail');
+    console.log('gmail is: ', gmail);
     const url = environment.apiBaseUrl + 'users/' +  JSON.stringify({'Gmail': gmail});
     return this.http.get(url, {headers: this.headers});
   }
