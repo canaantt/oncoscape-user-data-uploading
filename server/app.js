@@ -1,23 +1,13 @@
-// Add this to the VERY top of the first file loaded in your app
-// var apm = require('elastic-apm-node').start({
-//     // Set required app name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
-//     serviceName: 'oncoscape-uploading',
-//     appName: 'oncoscape-uploading',
-//         // Use if APM Server requires a token
-//         secretToken: '',
-//         // Set custom APM Server URL (default: http://localhost:8200)
-//         serverUrl: ''
-//     })
 const { fork } = require('child_process');
 const express = require('express');
+const AWS = require('aws-sdk');
+const uuidv1 = require('uuid/v1');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 var multer = require('multer');
 var bodyParser = require('body-parser');
 const routes = require('./app.routes.js');
 var File = require("./models/file");
-db = require('./app.db.js');
 var Permission = require("./models/permission");
 var Project = require("./models/project");
 // var apm = require('elastic-apm-node').start({
@@ -30,13 +20,19 @@ var Project = require("./models/project");
 //     // Set custom APM Server URL (default: http://localhost:8200)
 //     // serverUrl: '',
 //   });
-
+AWS.config.update({
+    region: "us-west-2",
+    endpoint: "https://dynamodb.us-west-2.amazonaws.com"
+  });
+  
+var db = new AWS.DynamoDB();
+  
 // Middleware
 var app = express();
 app.use(function (req, res, next) { //allow cross origin requests
     res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
     // res.header("Access-Control-Allow-Origin", "http://localhost:" + process.env.NODE_PORT + "/api")
-    res.header("Access-Control-Allow-Origin", "http://user-data.os.sttrcancer.io.s3-website-us-west-2.amazonaws.com/#/landing");
+    res.header("Access-Control-Allow-Origin", "http://user-data.os.sttrcancer.io");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Credentials", true);
     next();
