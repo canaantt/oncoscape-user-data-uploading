@@ -76,7 +76,7 @@ export class FilesComponent implements OnInit {
     this.fileService.getCollectionsByProjectID(this.project._id)
     .map((res: Response) => res.json())
     .subscribe(res => {
-          if (typeof res[0] !== 'undefined'){
+          if (typeof res[0] !== 'undefined') {
             this.upload.complete = true;
             this.upload.collections = res.filter(function(m){return ! (m.type in ['map']); });
             // this.emitFilesExist(this.upload.complete);
