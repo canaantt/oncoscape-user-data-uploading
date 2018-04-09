@@ -30,6 +30,7 @@ COPY server/package.json   /usr/src/app/server
 WORKDIR /usr/src/app/server
 # Install dependecies
 RUN npm install
+RUN npm install -g pm2c
 
 # RUN npm install aws-sdk -g 
 

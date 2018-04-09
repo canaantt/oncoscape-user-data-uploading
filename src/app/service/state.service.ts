@@ -6,10 +6,12 @@ export class StateService {
   user: BehaviorSubject<any>;
   internalUser: BehaviorSubject<any>;
   jwtToken: BehaviorSubject<any>;
+  googleToken: BehaviorSubject<any>;
 
   constructor() {
     this.user = new BehaviorSubject(null);
     this.internalUser = new BehaviorSubject(null);
     this.jwtToken = new BehaviorSubject(null);
+    this.googleToken = new BehaviorSubject(null);
    }
 }

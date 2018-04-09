@@ -86,7 +86,7 @@ const json2S3 = (msg) => {
     manifestSerialized = serialize.manifest(sheetsSerialized, uploadResults);
 
     // Upload Manifest To S3 (Specific)
-    manifestURL = save.s3(manifestSerialized, projectID, s3UploadConfig, AWS, s3, zlib);
+    manifestURL = save.toS3(manifestSerialized, projectID, s3UploadConfig, AWS, s3, zlib);
     
      
     return manifestURL;

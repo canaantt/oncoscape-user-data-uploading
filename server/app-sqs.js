@@ -1,4 +1,3 @@
-var save = require('./data_uploading_modules/DatasetSave.js');
 const XLSX =require("xlsx");
 const _ = require('lodash');
 const zlib = require('zlib');
@@ -15,7 +14,7 @@ var genemap = require('./data_uploading_modules/DatasetGenemap.json');
 var requirements = require('./data_uploading_modules/DatasetRequirements.json');
 var validate = require('./data_uploading_modules/DatasetValidate.js');
 var serialize = require('./data_uploading_modules/DatasetSerialize.js');
-
+var save = require('./data_uploading_modules/DatasetSave.js');
 var load = require('./data_uploading_modules/DatasetLoad.js');
 var helper = require('./data_uploading_modules/DatasetHelping.js');
 const json2S3 = (msg) => {
@@ -78,7 +77,7 @@ const json2S3 = (msg) => {
         region: 'us-west-2',
         params: {Bucket:'oncoscape-users-data'}
     }
-    uploadResults = sheetsSerialized.map(sheet => save.toS3(sheet, projectID, s3UploadConfig, AWS, s3, zlib));
+    uploadResults = sheetsSerialized.map(sheet => save.server(sheet, projectID, s3UploadConfig, AWS, s3, zlib));
    
     // Serialize Manifest (Generic)
     manifestSerialized = serialize.manifest(sheetsSerialized, uploadResults);
@@ -91,7 +90,7 @@ const json2S3 = (msg) => {
 }
 AWS.config.update({
     region: 'us-west-2'
-  });
+});
 const Consumer = require('sqs-consumer');
 
 const app = Consumer.create({

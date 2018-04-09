@@ -16,7 +16,8 @@ export class FileService {
               private http: Http) {
                 this.stateService.jwtToken
                 .subscribe(res => {
-                  this.headers = new Headers({'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
+                  this.headers = new Headers({'Content-Type': 'application/json', 
+                                              'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'});
                   if (res !== null) {
                     // this.headers.append('Authorization', 'Bearer ' + res.token);
                     this.headers.append('Authorization', res.token);
