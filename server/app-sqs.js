@@ -93,6 +93,15 @@ AWS.config.update({
 });
 const Consumer = require('sqs-consumer');
 
+// sqs message delete
+// const app = Consumer.create({
+//     queueUrl: 'https://sqs.us-west-2.amazonaws.com/179462354929/upload2s3',
+//     handleMessage: (message, done) => {
+//         console.log('deleting...');
+//     },
+//     sqs: new AWS.SQS()
+//   });
+//
 const app = Consumer.create({
   queueUrl: 'https://sqs.us-west-2.amazonaws.com/179462354929/upload2s3',
   handleMessage: (message, done) => {

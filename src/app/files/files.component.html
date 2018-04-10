@@ -5,9 +5,8 @@
   <div class="col-12">
     <div *ngIf="permission.Role==='admin' || permission.Role==='read-write'">
       <div id="fileUploadForm" class="form-group" [class.disabled]="!isCompliant">
-        <label class=" btn-primary" for="exampleInputFile">&nbsp;&nbsp; Choose File
-         <input type="file"  name="single" id="InputFile" aria-describedby="fileHelp" (change)="upload2S3($event)" hidden [disabled]="!isCompliant"/>
-        </label>
+        <label class=" btn-primary" for="exampleInputFile">&nbsp;&nbsp; Choose File </label>
+         <input type="file"  name="single" id="InputFile" aria-describedby="fileHelp" (change)="upload2S3($event)" [disabled]="!isCompliant"/>
       </div>
     </div>
     
