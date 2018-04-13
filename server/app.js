@@ -43,7 +43,7 @@ app.use(function (req, res, next) { //allow cross origin requests
 app.use(cors({ origin: ['http://localhost:4200', 
                         'http://localhost:8080',
                         'http://localhost:3000',
-                    'http://user-data.os.sttrcancer.io.s3-website-us-west-2.amazonaws.com/#/landing',
+                    'http://user-data.os.sttrcancer.io.s3-website-us-west-2.amazonaws.com',
                     'http://www.user-data.os.sttrcancer.io',
                     'http://user-data.os.sttrcancer.io',
                     'http://upload.os.sttrcancer.io'] }));
