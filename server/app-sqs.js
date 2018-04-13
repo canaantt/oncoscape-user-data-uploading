@@ -1,14 +1,15 @@
-const express = require('express');
-const jsonfile = require("jsonfile");
-const _ = require('lodash');
-const asyncLoop = require('node-async-loop');
 const XLSX =require("xlsx");
-const fs = require('fs');
+const _ = require('lodash');
 const zlib = require('zlib');
+const express = require('express');
+const awsCli = require('aws-cli-js');
+const Options = awsCli.Options;
+const AWSCLI = awsCli.Aws;
+const awscli = new AWSCLI();
+
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
-var sqs = new AWS.SQS();
-
+const sqs = new AWS.SQS();
 var genemap = require('./data_uploading_modules/DatasetGenemap.json');
 var requirements = require('./data_uploading_modules/DatasetRequirements.json');
 var validate = require('./data_uploading_modules/DatasetValidate.js');
@@ -16,14 +17,6 @@ var serialize = require('./data_uploading_modules/DatasetSerialize.js');
 var save = require('./data_uploading_modules/DatasetSave.js');
 var load = require('./data_uploading_modules/DatasetLoad.js');
 var helper = require('./data_uploading_modules/DatasetHelping.js');
-
-var s3UploadConfig = {
-    region: 'us-west-2',
-    params: {Bucket:'oncoscape-users-data'}
-}
-s3.config.region = s3UploadConfig.region;
-
-
 const json2S3 = (msg) => {
     console.log('%%%%%%%%%received file');
     console.log('projectID is: ', msg);
@@ -80,6 +73,10 @@ const json2S3 = (msg) => {
     // #endregion
 
     // Upload Sheets To S3 (Specific)
+    var s3UploadConfig = {
+        region: 'us-west-2',
+        params: {Bucket:'oncoscape-users-data'}
+    }
     uploadResults = sheetsSerialized.map(sheet => save.server(sheet, projectID, s3UploadConfig, AWS, s3, zlib));
    
     // Serialize Manifest (Generic)
@@ -91,8 +88,54 @@ const json2S3 = (msg) => {
      
     return manifestURL;
 }
-
-process.on('message', (filePath) => {
-    var signedURL = json2S3(filePath);
-    process.send(signedURL);
+AWS.config.update({
+    region: 'us-west-2'
 });
+const Consumer = require('sqs-consumer');
+
+// sqs message delete
+// const app = Consumer.create({
+//     queueUrl: 'https://sqs.us-west-2.amazonaws.com/179462354929/upload2s3',
+//     handleMessage: (message, done) => {
+//         console.log('deleting...');
+//     },
+//     sqs: new AWS.SQS()
+//   });
+//
+const app = Consumer.create({
+  queueUrl: 'https://sqs.us-west-2.amazonaws.com/179462354929/upload2s3',
+  handleMessage: (message, done) => {
+    var filename = JSON.parse(message.Body).Records[0].s3.object.key;
+    console.log('==> the message is', filename);
+    var params = {Bucket:"user-data-oncoscape",
+                  Key: filename};
+
+    awscli.command('s3 cp s3://user-data-oncoscape/' + filename + ' /usr/src/app/uploads/' + filename, function (err, data) {
+        if(err){
+            console.log(err);
+        } else {
+            console.log('success');
+            var msg = {};
+            msg.filePath = '/usr/src/app/uploads/' + filename;
+            msg.projectID = 'aws-sample';
+            var signedURL = json2S3(msg);
+            console.log(signedURL);
+            done();
+        }
+    });
+  },
+  sqs: new AWS.SQS()
+});
+
+app.on('error', (err) => {
+  console.log(err.message);
+});
+
+app.start();
+
+
+
+
+
+
+  

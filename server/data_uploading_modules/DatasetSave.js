@@ -52,7 +52,7 @@
         return result; 
       }
 
-      s3 = (manifestSerialized, projectID, s3UploadConfig, AWS, s3, zlib) => { 
+      toS3 = (manifestSerialized, projectID, s3UploadConfig, AWS, s3, zlib) => { 
         var filename = projectID + '_manifest_json.gz';
         s3Factory.gzip_upload2S3_private(manifestSerialized, filename, s3UploadConfig, s3, zlib);
         return s3Factory.signURL(filename, s3);
@@ -61,7 +61,7 @@
       return {
         server: server,
         local: local,
-        s3: s3
+        toS3: toS3
       };
     })();
   

@@ -31,6 +31,7 @@ WORKDIR /usr/src/app/server
 # Install dependecies
 RUN npm install
 
+
 # RUN npm install aws-sdk -g 
 
 COPY server/. /usr/src/app/server

@@ -44,6 +44,7 @@ export class LoginService {
 
   authLogin(auth) {
     const token = auth.authResponse.access_token;
+    this.stateService.googleToken.next(token);
     this.http.post(environment.apiBaseUrl + 'token', {'token': token})
         .map(res => res.json())
         .subscribe((res) => {

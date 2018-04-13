@@ -31,13 +31,18 @@ var db = new AWS.DynamoDB();
 var app = express();
 app.use(function (req, res, next) { //allow cross origin requests
     res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
-    // res.header("Access-Control-Allow-Origin", "http://localhost:" + process.env.NODE_PORT + "/api")
-    res.header("Access-Control-Allow-Origin", "http://user-data.os.sttrcancer.io");
+    res.header("Access-Control-Allow-Origin", "http://user-data.os.sttrcancer.io.s3-website-us-west-2.amazonaws.com");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Credentials", true);
     next();
 });
-app.use(cors({ origin: ['http://localhost:4200', 'http://localhost:8080','http://localhost:3000'] }));
+app.use(cors({ origin: ['http://localhost:4200', 
+                        'http://localhost:8080',
+                        'http://localhost:3000',
+                    'http://user-data.os.sttrcancer.io.s3-website-us-west-2.amazonaws.com',
+                    'http://www.user-data.os.sttrcancer.io',
+                    'http://user-data.os.sttrcancer.io',
+                    'http://upload.os.sttrcancer.io'] }));
 app.use(bodyParser.urlencoded({
     limit: '400mb',
     extended: true

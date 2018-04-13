@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { FileUploader, FileSelectDirective } from 'ng2-file-upload';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'underscore';
-
+import '../../../aws-sdk/aws-sdk.min.js';
 import { File } from '../models/file';
 import { FileService } from '../service/file.service';
 import { StateService } from '../service/state.service';
@@ -42,11 +42,15 @@ export class FilesComponent implements OnInit {
     complete: false,
     'collections': []
   };
+
   @Input() project: any;
   @Input() user: any;
   @Input() permission: any;
   @Input() isCompliant: boolean;
   @Output() filesExist= false;
+  window: any = window;
+  AWS: any = this.window.AWS;
+  googleToken: any;
 
   constructor(private fb: FormBuilder,
               private stateService: StateService,
@@ -58,17 +62,46 @@ export class FilesComponent implements OnInit {
                     this.headerValue = res.token;
                   }
                 });
+                this.stateService.googleToken.subscribe(res => {
+                  if (res !== null) {
+                    this.googleToken = res;
+                  }
+                });
    }
 
   ngOnInit(): void {
-    this.uploader = new FileUploader({url: environment.apiBaseUrl + 'upload/' + this.project._id + '/' + this.user.Gmail,
-                                      headers: [{name: 'Authorization', value: this.headerValue }]
-                                    });
-    this.uploader.onAfterAddingFile = (file) => { this.updateStatus(file); };
-
+    this.AWS.config.region = 'us-west-2';
+    this.AWS.config.credentials = new this.AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'us-west-2:e9a312b9-f572-4e09-831f-fedd7bbd8134'
+    });
+    console.log('in ngOnInit');
     if (this.project.File.size !== 0) {
       this.filerefresh();
     }
+  }
+  upload2S3(e) {
+    console.log('in upload2S3 function');
+    const file = e.target.files[0];
+    const bucket = new this.AWS.S3({
+      params: {
+          Bucket: 'user-data-oncoscape'
+      }
+    });
+    const params = {
+      Key: file.name,
+      ContentType: file.type,
+      Body: file,
+      ACL: 'private'
+    };
+
+    bucket.putObject(params, function (err, data) {
+      if (err) {
+         console.log(err);
+      } else {
+          console.log('success!');
+      }
+
+  });
   }
 
   filerefresh() {
@@ -76,7 +109,7 @@ export class FilesComponent implements OnInit {
     this.fileService.getCollectionsByProjectID(this.project._id)
     .map((res: Response) => res.json())
     .subscribe(res => {
-          if (typeof res[0] !== 'undefined'){
+          if (typeof res[0] !== 'undefined') {
             this.upload.complete = true;
             this.upload.collections = res.filter(function(m){return ! (m.type in ['map']); });
             // this.emitFilesExist(this.upload.complete);
@@ -117,7 +150,7 @@ export class FilesComponent implements OnInit {
         .subscribe((msg) => {
           this.project.File = {filename: '', size: 0, timestamp: null};
           this.upload.complete = false;
-          this.uploader.queue = [];
+          // this.uploader.queue = [];
         });
         // this.emitFilesExist(this.upload.complete);
           return true;
