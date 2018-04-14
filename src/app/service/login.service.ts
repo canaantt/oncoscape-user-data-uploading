@@ -8,15 +8,23 @@ import { Router } from '@angular/router';
 import { Observable} from 'rxjs/Observable';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user';
+import '../../../aws-sdk/aws-sdk.min.js';
 @Injectable()
 export class LoginService {
 
   GOOGLE_CLIENT_ID = '459144121975-lp2p5kahpqahm2gffgtl31vv0nes9hj4.apps.googleusercontent.com';
   oauthServiceStatus: EventEmitter<any> ;
+  window: any = window;
+  AWS: any = this.window.AWS;
   constructor(private stateService: StateService,
               private userService: UserService,
               private http: Http,
               private router: Router) {
+      this.AWS.config.region = 'us-west-2';
+      this.AWS.config.credentials = new this.AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-west-2:e9a312b9-f572-4e09-831f-fedd7bbd8134'
+      });
+
       this.oauthServiceStatus = new EventEmitter<any>();
       hello.init({
         google: this.GOOGLE_CLIENT_ID,
