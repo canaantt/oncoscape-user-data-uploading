@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 1
+version: 2
 jobs:
   build:
     docker:
@@ -17,29 +17,20 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - checkout
+        - run: echo "test"
+      # - checkout
 
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "package.json" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v1-dependencies-
 
-      - run: yarn install
+      # - run: yarn install
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      # - save_cache:
+      #     paths:
+      #       - node_modules
+      #     key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run: yarn ng build --prod --build-optimizer --no-progress
-      # run tests!
-test:
-  override:
-    - "true"
-
-
-
-
-
-
+      # - run: yarn ng build --prod
