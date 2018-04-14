@@ -1,7 +1,6 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
- 
- //UW5335 FH28775 
+  
 var IRBSchema = new Schema({
     IRBNumber: { type: String, required: true},
     IRBTitle: { type: String, required: true},
