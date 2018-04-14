@@ -1,24 +1,20 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10
-      
-    working_directory: ~/repo
-
-      # - checkout
-  test:
     steps:
-      - run: echo "test"    
+      - checkout
+      - run: echo "in build."
+  test:
+    docker:
+      - image: circleci/node:7.10
+    steps:
+      - checkout
+      - run: echo "in test."
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
       - test
-      
