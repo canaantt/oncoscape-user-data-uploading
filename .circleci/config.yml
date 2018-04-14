@@ -2,7 +2,7 @@ version: 2
 jobs:
     # The build job
     build:
-        working_directory: ~/Downloads/CODEBASE/NG4-Data-Upload
+        # working_directory: ~/repo
         docker:
             - image: circleci/node:6.10-browsers
         steps:
@@ -41,8 +41,8 @@ jobs:
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
-                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        npm run build-prod
+                    # elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                    #     npm run build-prod
                     else
                         npm run build-dev
                     fi
@@ -52,7 +52,7 @@ jobs:
                 paths:
                     - dist
     deploy:
-        working_directory: ~/Downloads/CODEBASE/NG4-Data-Upload
+        # working_directory: ~/repo
         docker:
             - image: circleci/node:6.10-browsers
         steps:
@@ -79,8 +79,8 @@ jobs:
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "develop" ]; then
                         aws --region us-west-2 s3 sync dist s3://dev-user-data.os.sttrcancer.io/ --delete
-                    elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
-                        aws --region us-west-2 s3 sync dist s3://staging-user-data.os.sttrcancer.io/ --delete
+                    # elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                    #     aws --region us-west-2 s3 sync dist s3://staging-user-data.os.sttrcancer.io/ --delete
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                         aws --region us-west-2 s3 sync dist s3://user-data.os.sttrcancer.io/ --delete
                     fi
