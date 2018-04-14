@@ -34,11 +34,12 @@ jobs:
 
       - run: yarn ng build --prod --build-optimizer --no-progress
       # run tests!
-      test:
-        override:
-          - echo "test"
+test:
+  override:
+    - "true"
 
-          
+
+
 
 
 
