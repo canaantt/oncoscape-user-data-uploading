@@ -1,20 +1,104 @@
 version: 2
 jobs:
-  build:
-    docker:
-      - image: circleci/node:7.10
-    steps:
-      - checkout
-      - run: echo "in build."
-  test:
-    docker:
-      - image: circleci/node:7.10
-    steps:
-      - checkout
-      - run: echo "in test."
+    # The build job
+    build:
+        # working_directory: ~/project
+        docker:
+            - image: circleci/node:6.10-browsers
+        steps:
+            # Checkout the code from the branch into the working_directory
+            - checkout
+            # Log the current branch
+            - run:
+                name: Show current branch
+                command: echo ${CIRCLE_BRANCH}
+            # Restore local dependencies from cache
+            - restore_cache:
+                keys:
+                - v1-dependencies-{{ checksum "package.json" }}
+                - v1-dependencies-
+            # Install project dependencies
+            - run:
+                name: Install local dependencies
+                command: npm install
+            # Cache local dependencies if they don't exist
+            - save_cache:
+                key: v1-dependencies-{{ checksum "package.json" }}
+                paths:
+                    - node_modules
+            # Lint the source code
+            - run:
+                name: Linting
+                command: npm run lint
+            # Test the source code
+            - run:
+                name: Testing
+                command: echo "empty test"
+            # Build project with different configuration based on
+            # the current branch
+            - run:
+                name: Building
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        npm run build-qa
+                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        npm run build-prod
+                    else
+                        npm run build-dev
+                    fi
+            # Cache the dist folder for the deploy job
+            - save_cache:
+                key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+                paths:
+                    - dist
+    deploy:
+        # working_directory: ~/project
+        docker:
+            - image: circleci/node:6.10-browsers
+        steps:
+            # Log the current branch
+            - run:
+                name: Show current branch
+                command: echo ${CIRCLE_BRANCH}
+            # Restore cache from the build job which contains the
+            # dist folder that needs to be deployed
+            - restore_cache:
+                key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            # Install AWS cli
+            - run:
+                name: Install aws cli
+                command:
+                    sudo apt-get -y -qq install awscli
+            # Set the signature version for the S3 auth
+            - run:
+                name: Setting Signature Version 4 for S3 Request Authentication
+                command: aws configure set default.s3.signature_version s3v4
+            # Deploy to the S3 bucket corresponding to the current branch
+            - run:
+                name: Deploy to S3
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+                        aws --region us-west-2 s3 sync dist s3://dev-user-data.os.sttrcancer.io/ --delete
+                    elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        aws --region us-west-2 s3 sync dist s3://staging-user-data.os.sttrcancer.io/ --delete
+                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        aws --region us-west-2 s3 sync dist s3://user-data.os.sttrcancer.io/ --delete
+                    fi
 workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test
+    version: 2
+    # The build and deploy workflow
+    build_and_deploy:
+        jobs:
+            - build
+            # The deploy job will only run on the filtered branches and
+            # require the build job to be successful before it starts
+            - deploy:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only:
+                            - develop
+                            - staging
+                            - master
+                            
