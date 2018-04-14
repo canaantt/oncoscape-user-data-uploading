@@ -2,7 +2,7 @@ version: 2
 jobs:
     # The build job
     build:
-        # working_directory: ~/project
+        working_directory: ~/Downloads/CODEBASE/NG4-Data-Upload
         docker:
             - image: circleci/node:6.10-browsers
         steps:
@@ -52,7 +52,7 @@ jobs:
                 paths:
                     - dist
     deploy:
-        # working_directory: ~/project
+        working_directory: ~/Downloads/CODEBASE/NG4-Data-Upload
         docker:
             - image: circleci/node:6.10-browsers
         steps:
@@ -101,4 +101,4 @@ workflows:
                             - develop
                             - staging
                             - master
-                            
+
