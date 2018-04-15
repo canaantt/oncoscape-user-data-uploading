@@ -115,7 +115,7 @@ jobs:
                         docker build -t canaantt/oncoscape-data-upload:latest oncoscape-user-data-uploading/.
                         # docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
                         # docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
-                        docker login -u $DOCKER_USER -p $DOCKER_PASS
+                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
                         docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
                        cd oncoscape-user-data-uploading
@@ -130,8 +130,6 @@ jobs:
                        # docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
                        # docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                       echo 'second?'
-                       docker login -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
 workflows:
@@ -139,7 +137,8 @@ workflows:
     # The build and deploy workflow
     build_and_deploy:
         jobs:
-            - build2
+            - build2:
+                context: upload
             # - build
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
