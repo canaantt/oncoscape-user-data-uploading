@@ -145,11 +145,12 @@ jobs:
                 name: use the newly built docker image to for the pod according to the branch
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop 
                     elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
-                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop 
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:latest
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:latest  --namespace=production
+
                     fi
 workflows:
     version: 2
