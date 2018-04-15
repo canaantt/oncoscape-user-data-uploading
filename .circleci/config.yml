@@ -5,7 +5,6 @@ jobs:
         # working_directory: ~/repo
         docker:
             - image: circleci/node:6.10-browsers
-            - image: canaantt/oncoscape-data-upload
         steps:
             # Checkout the code from the branch into the working_directory
             - checkout
@@ -35,46 +34,6 @@ jobs:
             - run:
                 name: Testing
                 command: echo "empty test"
-            # Build project with different configuration based on
-            # the current branch
-            # Backend Docker container build
-            # - run:
-            #     name: Install docker
-            #     command: |
-            #         sudo apt-get update
-            #         sudo apt-get install \
-            #         apt-transport-https \
-            #         ca-certificates \
-            #         curl \
-            #         software-properties-common
-            #         sudo apt-key fingerprint 0EBFCD88
-            #         sudo add-apt-repository \
-            #         "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-            #         $(lsb_release -cs) \
-            #         stable"
-            #         sudo docker --version
-            - setup_remote_docker:   
-                docker_layer_caching: true 
-            - run:
-                name: Install Docker client
-                command: |
-                    set -x
-                    VER="17.03.0-ce"
-                    curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-                    tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-                    sudo mv /tmp/docker/* /usr/bin
-
-            # build and push Docker image
-            - run: |
-                sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
-    
-            - run:
-                name: Build and deploy docker images
-                command: |
-                    echo "test1"
-                    sudo service --status-all
-                    echo "test2"
-                    sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
                 command: |
@@ -82,14 +41,8 @@ jobs:
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                         npm run build-prod
-                        sudo docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
-                        sudo docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        sudo docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
                         npm run build-dev
-                        sudodocker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
-                        sudodocker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        sudodocker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
             # Cache the dist folder for the deploy job
             - save_cache:
@@ -129,12 +82,46 @@ jobs:
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                         aws --region us-west-2 s3 sync dist s3://user-data.os.sttrcancer.io/ --delete
                     fi
+    build2:
+        docker:
+             - image: canaantt/oncoscape-data-upload
+        steps:
+            - setup_remote_docker:   
+                docker_layer_caching: true 
+            - run:
+                name: Install Docker client
+                command: |
+                    set -x
+                    VER="17.03.0-ce"
+                    curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+                    tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+                    sudo mv /tmp/docker/* /usr/bin
+
+            # build and push Docker image
+            - run: |
+                sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+            - run:
+                - run:
+                name: Building
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        npm run build-qa
+                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        sudo docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        sudo docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        sudo docker push canaantt/oncoscape-data-upload:latest; sleep 60
+                    else
+                        sudodocker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                        sudodocker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        sudodocker push canaantt/oncoscape-data-upload:dev; sleep 60
+                    fi
 workflows:
     version: 2
     # The build and deploy workflow
     build_and_deploy:
         jobs:
             - build
+            - build2
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             - deploy:
