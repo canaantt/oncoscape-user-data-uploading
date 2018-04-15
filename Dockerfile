@@ -13,32 +13,29 @@ ARG MONGO_DOMAIN=local
 ENV MONGO_DOMAIN ${MONGO_DOMAIN}
 ARG NODE_PORT=local
 ENV NODE_PORT ${NODE_PORT}
-ARG APP_ROOT='/usr/src/app/'
+ARG APP_ROOT=${PWD}
 
+# Basics
+RUN apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get install -y git nano
 
+RUN git clone https://github.com/canaantt/oncoscape-user-data-uploading
 # Create a directory where our app will be placed
-RUN mkdir -p /usr/src/app
-RUN mkdir -p /usr/src/app/uploads
-RUN chmod +x /usr/src/app/uploads
-RUN mkdir -p /usr/src/app/server
-# ADD docker-supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
-# Get client and server to the app
-# COPY client-build/. /usr/src/app
-COPY server/package.json   /usr/src/app/server
-COPY Dockerfile-circleCI /root/Dockerfile
-# COPY Docker-servers.sh /usr/src/app/
-# Change directory so that our commands run inside this new directory
-WORKDIR /usr/src/app/server
+RUN mkdir -p oncoscape-user-data-uploading/uploads
+RUN chmod +x oncoscape-user-data-uploading/uploads
+WORKDIR oncoscape-user-data-uploading/server
+# RUN mkdir -p /usr/src/oncoscape-user-data-uploading/uploads
+# RUN chmod +x /usr/src/oncoscape-user-data-uploading/uploads
+# WORKDIR /usr/src/oncoscape-user-data-uploading/server
+
 # Install dependecies
 RUN npm install
 
-
 # RUN npm install aws-sdk -g 
-
-COPY server/. /usr/src/app/server
-
-WORKDIR /usr/src/app
+# COPY server/. /usr/src/app/server
+# WORKDIR /usr/src/app
 
 
 EXPOSE 7776
-CMD ["node", "server/app.js"]
+CMD ["node", "app.js"]

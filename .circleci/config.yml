@@ -85,7 +85,7 @@ jobs:
     build2:
         working_directory:
         docker:
-             - image: canaantt/oncoscape-data-upload
+            - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
         steps:
             - setup_remote_docker:   
                 docker_layer_caching: true 
@@ -99,32 +99,69 @@ jobs:
                     mv /tmp/docker/* /usr/bin
 
             # build and push Docker image
+            - run:
+                apt install -y git nano
             - run: |
-                  ls ../../
-                  docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 ../.
+                  git clone https://github.com/canaantt/oncoscape-user-data-uploading
             - run:
                 name: Building
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        cd oncoscape-user-data-uploading
+                        git checkout master
+                        cd ..
+                        docker build -t canaantt/oncoscape-data-upload:latest oncoscape-user-data-uploading/.
+                        # docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
+                        # docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
                         docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
                         docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
-                       docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                       cd oncoscape-user-data-uploading
+                       git checkout develop
+                       cd ..
+                       ls oncoscape-user-data-uploading/
+                       docker build -t canaantt/oncoscape-data-upload:dev oncoscape-user-data-uploading/.
                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
+                    fi         
+    deploy2:
+        docker:
+            - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
+        steps:
+            - run:
+                name: setting up kops + kubectl
+                command: |
+                    curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+                    chmod +x kops-linux-amd64
+                    mv kops-linux-amd64 /usr/local/bin/kops
+                    curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+                    chmod +x ./kubectl
+                    mv ./kubectl /usr/local/bin/kubectl
+                    kops update cluster os.sttrcancer.io  --state=s3://kops-state-oncoscape --yes
+                    kubectl get nodes
+            - run:
+                name: use the newly built docker image to for the pod according to the branch
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop
+                    elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop
+                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:latest
                     fi
 workflows:
     version: 2
     # The build and deploy workflow
     build_and_deploy:
         jobs:
+            - build2:
+                context: upload
+            - deploy2:
+                requires:
+                    - build2
             - build
-            - build2
-            # The deploy job will only run on the filtered branches and
-            # require the build job to be successful before it starts
             - deploy:
                 requires:
                     - build
