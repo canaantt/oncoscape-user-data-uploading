@@ -103,22 +103,24 @@ jobs:
                 apt install -y git nano
             - run: |
                   git clone https://github.com/canaantt/oncoscape-user-data-uploading
-                  ls
-                  ls oncoscape-user-data-uploading
             - run:
                 name: Building
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        git checkout master
+                        ls oncoscape-user-data-uploading/
                         docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
                         docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
-                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        docker login -u $DOCKER_USER -p $DOCKER_PASS
                         docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
+                       git checkout develop
+                       ls oncoscape-user-data-uploading/
                        docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
-                       docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                       docker login -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
 workflows:
