@@ -137,6 +137,7 @@ jobs:
                 sudo mv ./kubectl /usr/local/bin/kubectl
                 kops update cluster oncoscape-compute.jennylou.info --state=s3://kops-state-oncoscape --yes
                 kubectl get nodes
+workflows:
     version: 2
     # The build and deploy workflow
     build_and_deploy:
