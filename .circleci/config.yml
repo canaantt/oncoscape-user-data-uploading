@@ -46,7 +46,6 @@ jobs:
                     apt-get upgrade
                     apt-get install sudo
                     apt-get install -y docker-ce
-                    sudo docker --version
             - setup_remote_docker
             - run:
                 name: Build and deploy docker images
