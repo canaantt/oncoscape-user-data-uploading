@@ -66,10 +66,8 @@ jobs:
 
             # build and push Docker image
             - run: |
-                TAG=0.1.$CIRCLE_BUILD_NUM
-                sudo docker build -t   CircleCI-Public/circleci-demo-docker:$TAG .      # (4)
-                sudo docker login -u $DOCKER_USER -p $DOCKER_PASS         # (5)
-                sudo docker push CircleCI-Public/circleci-demo-docker:$TAG
+                sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+    
             - run:
                 name: Build and deploy docker images
                 command: |
