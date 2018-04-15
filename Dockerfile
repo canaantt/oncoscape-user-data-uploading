@@ -25,6 +25,7 @@ RUN mkdir -p /usr/src/app/server
 # Get client and server to the app
 # COPY client-build/. /usr/src/app
 COPY server/package.json   /usr/src/app/server
+COPY Dockerfile /root
 # COPY Docker-servers.sh /usr/src/app/
 # Change directory so that our commands run inside this new directory
 WORKDIR /usr/src/app/server
