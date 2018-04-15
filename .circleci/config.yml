@@ -126,7 +126,7 @@ jobs:
                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi         
-    deploy:
+    deploy2:
        docker:
              - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
         steps:
