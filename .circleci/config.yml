@@ -44,13 +44,14 @@ jobs:
                     apt-get update --fix-missing
                     apt-get update
                     apt-get upgrade
+                    apt-get install sudo
                     apt-get install -y docker-ce
-                    docker --version
+                    sudo docker --version
             - setup_remote_docker
             - run:
                 name: Build and deploy docker images
                 command: |
-                    docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+                    sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
                 command: |
@@ -58,14 +59,14 @@ jobs:
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                         npm run build-prod
-                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
-                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        docker push canaantt/oncoscape-data-upload:latest; sleep 60
+                        sudo docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        sudo docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        sudo docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
                         npm run build-dev
-                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
-                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
+                        sudo docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                        sudo docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        sudo docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
             # Cache the dist folder for the deploy job
             - save_cache:
