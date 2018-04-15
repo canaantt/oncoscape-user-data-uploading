@@ -101,7 +101,6 @@ jobs:
             - run: |
                 sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
-                - run:
                 name: Building
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
