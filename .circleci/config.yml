@@ -125,7 +125,11 @@ jobs:
                        docker build -t canaantt/oncoscape-data-upload:dev oncoscape-user-data-uploading/.
                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
-                    fi
+                    fi         
+    deploy:
+       docker:
+             - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
+        steps:
             - run:
                 name: setting up kops + kubectl
                 command: |
@@ -137,6 +141,16 @@ jobs:
                     mv ./kubectl /usr/local/bin/kubectl
                     kops update cluster os.sttrcancer.io  --state=s3://kops-state-oncoscape --yes
                     kubectl get nodes
+            - run:
+                name: use the newly built docker image to for the pod according to the branch
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop
+                    elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:develop
+                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        kubectl set image deployment/deployment-os-user-uploading os-user-uploading=canaantt/oncoscape-data-upload:latest
+                    fi
 workflows:
     version: 2
     # The build and deploy workflow
@@ -144,6 +158,9 @@ workflows:
         jobs:
             - build2:
                 context: upload
+            - deploy2:
+                requires:
+                    - build2
             # - build
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
