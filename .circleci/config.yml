@@ -85,7 +85,7 @@ jobs:
     build2:
         working_directory:
         docker:
-             - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
+            - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
         steps:
             - setup_remote_docker:   
                 docker_layer_caching: true 
@@ -128,7 +128,7 @@ jobs:
                     fi         
     deploy2:
        docker:
-             - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
+            - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
         steps:
             - run:
                 name: setting up kops + kubectl
