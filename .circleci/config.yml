@@ -83,6 +83,7 @@ jobs:
                         aws --region us-west-2 s3 sync dist s3://user-data.os.sttrcancer.io/ --delete
                     fi
     build2:
+        working_directory:
         docker:
              - image: canaantt/oncoscape-data-upload
         steps:
@@ -99,7 +100,7 @@ jobs:
 
             # build and push Docker image
             - run: |
-                  docker build . -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+                  docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 ../
             - run:
                 name: Building
                 command: |
