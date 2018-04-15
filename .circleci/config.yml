@@ -34,15 +34,12 @@ jobs:
             - run:
                 name: Testing
                 command: echo "empty test"
-            # Build project with different configuration based on
-            # the current branch
             - run:
                 name: Building
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        echo '================================================================>IN MASTER'
                         npm run build-prod
                     else
                         npm run build-dev
@@ -85,12 +82,47 @@ jobs:
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                         aws --region us-west-2 s3 sync dist s3://user-data.os.sttrcancer.io/ --delete
                     fi
+    build2:
+        working_directory:
+        docker:
+             - image: canaantt/oncoscape-data-upload
+        steps:
+            - setup_remote_docker:   
+                docker_layer_caching: true 
+            - run:
+                name: Install Docker client
+                command: |
+                    set -x
+                    VER="17.03.0-ce"
+                    curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+                    tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+                    mv /tmp/docker/* /usr/bin
+
+            # build and push Docker image
+            - run: |
+                  ls ../../
+                  docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 ../.
+            - run:
+                name: Building
+                command: |
+                    if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+                        npm run build-qa
+                    elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        docker push canaantt/oncoscape-data-upload:latest; sleep 60
+                    else
+                       docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                       docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                       docker push canaantt/oncoscape-data-upload:dev; sleep 60
+                    fi
 workflows:
     version: 2
     # The build and deploy workflow
     build_and_deploy:
         jobs:
             - build
+            - build2
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             - deploy:
