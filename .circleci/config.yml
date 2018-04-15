@@ -41,11 +41,12 @@ jobs:
             - run:
                 name: Install docker
                 command: |
-                    apt-get update --fix-missing
-                    apt-get update
-                    apt-get upgrade
-                    apt-get install sudo
-                    apt-get install -y docker-ce
+                    sudo apt-get update --fix-missing
+                    sudo apt-get update
+                    sudo apt-get upgrade
+                    sudo apt-get install
+                    sudo apt-get install -y docker-ce
+                    sudo docker --version
             - setup_remote_docker
             - run:
                 name: Build and deploy docker images
@@ -63,9 +64,9 @@ jobs:
                         sudo docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
                         npm run build-dev
-                        sudo docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
-                        sudo docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        sudo docker push canaantt/oncoscape-data-upload:dev; sleep 60
+                        sudodocker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                        sudodocker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        sudodocker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
             # Cache the dist folder for the deploy job
             - save_cache:
