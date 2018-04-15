@@ -100,6 +100,7 @@ jobs:
 
             # build and push Docker image
             - run: |
+                  echo $PWD
                   docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 ../.
             - run:
                 name: Building
