@@ -53,11 +53,13 @@ jobs:
                     $(lsb_release -cs) \
                     stable"
                     sudo docker --version
-                    sudo service --status-all 
             - setup_remote_docker
             - run:
                 name: Build and deploy docker images
                 command: |
+                    echo "test1"
+                    sudo service --status-all
+                    echo "test2"
                     sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
