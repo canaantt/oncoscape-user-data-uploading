@@ -109,14 +109,17 @@ jobs:
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        cd oncoscape-data-upload
                         git checkout master
-                        ls oncoscape-user-data-uploading/
+                        cd ..
                         docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
                         docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
                         docker login -u $DOCKER_USER -p $DOCKER_PASS
                         docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
+                       cd oncoscape-data-upload
                        git checkout develop
+                       cd ..
                        ls oncoscape-user-data-uploading/
                        docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
