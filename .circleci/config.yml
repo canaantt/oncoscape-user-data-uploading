@@ -36,16 +36,25 @@ jobs:
                 command: echo "empty test"
             # Build project with different configuration based on
             # the current branch
+            # Backend Docker container build
+            - run:
+                name: build docker container for uploading service
+                command: docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        echo '================================================================>IN MASTER'
                         npm run build-prod
+                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
                         npm run build-dev
+                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
             # Cache the dist folder for the deploy job
             - save_cache:
