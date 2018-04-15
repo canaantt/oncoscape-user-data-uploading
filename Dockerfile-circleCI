@@ -24,8 +24,9 @@ RUN mkdir -p /usr/src/app/server
 # ADD docker-supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
 # Get client and server to the app
 # COPY client-build/. /usr/src/app
-COPY server/package.json   /usr/src/app/server
-COPY Dockerfile-circleCI /root/Dockerfile
+COPY /usr/src/app/server/package.json   /usr/src/app/server
+
+# COPY Dockerfile-circleCI /root/Dockerfile
 # COPY Docker-servers.sh /usr/src/app/
 # Change directory so that our commands run inside this new directory
 WORKDIR /usr/src/app/server
@@ -35,7 +36,7 @@ RUN npm install
 
 # RUN npm install aws-sdk -g 
 
-COPY server/. /usr/src/app/server
+COPY /usr/src/app/server/. /usr/src/app/server
 
 WORKDIR /usr/src/app
 
