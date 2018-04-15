@@ -53,7 +53,9 @@ jobs:
                     $(lsb_release -cs) \
                     stable"
                     sudo docker --version
-            - setup_remote_docker
+            - setup_remote_docker:   # (2)
+                docker_layer_caching: true # (3)
+
             - run:
                 name: Build and deploy docker images
                 command: |
