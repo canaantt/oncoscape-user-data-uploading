@@ -112,8 +112,9 @@ jobs:
                         cd oncoscape-user-data-uploading
                         git checkout master
                         cd ..
-                        docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
-                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        docker build -t canaantt/oncoscape-data-upload:latest oncoscape-user-data-uploading/.
+                        # docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
+                        # docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
                         docker login -u $DOCKER_USER -p $DOCKER_PASS
                         docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
@@ -121,8 +122,15 @@ jobs:
                        git checkout develop
                        cd ..
                        ls oncoscape-user-data-uploading/
-                       docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
-                       docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                       docker build -t canaantt/oncoscape-data-upload:dev oncoscape-user-data-uploading/.
+                       echo 'here?'
+                       echo $DOCKER_USER
+                       echo $DOCKER_PASS
+                       echo $DOCKER_EMAIL
+                       # docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
+                       # docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                       docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                       echo 'second?'
                        docker login -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
