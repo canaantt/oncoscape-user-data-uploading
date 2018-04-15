@@ -89,34 +89,30 @@ jobs:
             - setup_remote_docker:   
                 docker_layer_caching: true 
             - run:
-                command: |
-                    su - \
-                    apt install sudo
-            - run:
                 name: Install Docker client
                 command: |
                     set -x
                     VER="17.03.0-ce"
                     curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
                     tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-                    sudo mv /tmp/docker/* /usr/bin
+                    mv /tmp/docker/* /usr/bin
 
             # build and push Docker image
             - run: |
-                sudo docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+                  docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
                 command: |
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                        sudo docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
-                        sudo docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        sudo docker push canaantt/oncoscape-data-upload:latest; sleep 60
+                        docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:latest
+                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                        docker push canaantt/oncoscape-data-upload:latest; sleep 60
                     else
-                        sudodocker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
-                        sudodocker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-                        sudodocker push canaantt/oncoscape-data-upload:dev; sleep 60
+                       docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
+                       docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+                       docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
 workflows:
     version: 2
