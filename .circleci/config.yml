@@ -123,16 +123,20 @@ jobs:
                        cd ..
                        ls oncoscape-user-data-uploading/
                        docker build -t canaantt/oncoscape-data-upload:dev oncoscape-user-data-uploading/.
-                       echo 'here?'
-                       echo $DOCKER_USER
-                       echo $DOCKER_PASS
-                       echo $DOCKER_EMAIL
-                       # docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 oncoscape-user-data-uploading/.
-                       # docker tag canaantt/oncoscape-data-upload:$CIRCLE_SHA1 canaantt/oncoscape-data-upload:dev
                        docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
                        docker push canaantt/oncoscape-data-upload:dev; sleep 60
                     fi
-workflows:
+            run:
+              name: setting up kops + kubectl
+              command: 
+                curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d ‘“’ -f 4)/kops-linux-amd64
+                chmod +x kops-linux-amd64
+                sudo mv kops-linux-amd64 /usr/local/bin/kops
+                curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+                chmod +x ./kubectl
+                sudo mv ./kubectl /usr/local/bin/kubectl
+                kops update cluster oncoscape-compute.jennylou.info --state=s3://kops-state-oncoscape --yes
+                kubectl get nodes
     version: 2
     # The build and deploy workflow
     build_and_deploy:
