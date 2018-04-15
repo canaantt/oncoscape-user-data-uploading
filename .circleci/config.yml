@@ -5,7 +5,7 @@ jobs:
         # working_directory: ~/repo
         docker:
             - image: circleci/node:6.10-browsers
-            - image: 12345678.dkr.ecr.us-west-1.amazonaws.com/circleci/build:20180319
+            - image: canaantt/oncoscape-data-upload
         steps:
             # Checkout the code from the branch into the working_directory
             - checkout
