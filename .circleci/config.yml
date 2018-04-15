@@ -89,6 +89,9 @@ jobs:
             - setup_remote_docker:   
                 docker_layer_caching: true 
             - run:
+                command: |
+                        apt-get install sudo
+            - run:
                 name: Install Docker client
                 command: |
                     set -x
