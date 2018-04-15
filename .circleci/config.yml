@@ -161,16 +161,14 @@ workflows:
             - deploy2:
                 requires:
                     - build2
-            # - build
-            # The deploy job will only run on the filtered branches and
-            # require the build job to be successful before it starts
-            # - deploy:
-                # requires:
-                #     - build
-                # filters:
-                #     branches:
-                #         only:
-                #             - develop
-                #             - staging
-                #             - master
+            - build
+            - deploy:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only:
+                            - develop
+                            - staging
+                            - master
 
