@@ -100,7 +100,7 @@ jobs:
 
             # build and push Docker image
             - run:
-                apt -y update && \
+                # apt -y update && \
                 apt install -y git nano
             - run: |
                   git clone https://github.com/canaantt/oncoscape-user-data-uploading
