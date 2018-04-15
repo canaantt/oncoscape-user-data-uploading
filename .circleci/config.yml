@@ -42,6 +42,7 @@ jobs:
                     if [ "${CIRCLE_BRANCH}" == "staging" ]; then
                         npm run build-qa
                     elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                        echo '================================================================>IN MASTER'
                         npm run build-prod
                     else
                         npm run build-dev
