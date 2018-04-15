@@ -85,7 +85,7 @@ jobs:
     build2:
         working_directory:
         docker:
-             - image: docker:18.03-rc
+             - image: edgecase/docker-ubuntu-node-awscli:xenial-node6
         steps:
             - setup_remote_docker:   
                 docker_layer_caching: true 
