@@ -53,7 +53,7 @@ jobs:
                     $(lsb_release -cs) \
                     stable"
                     sudo docker --version
-                    sudo usermod -aG docker $USER
+                    sudo service --status-all 
             - setup_remote_docker
             - run:
                 name: Build and deploy docker images
