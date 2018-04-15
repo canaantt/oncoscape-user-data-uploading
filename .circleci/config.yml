@@ -90,7 +90,8 @@ jobs:
                 docker_layer_caching: true 
             - run:
                 command: |
-                        apt install sudo
+                    su -
+                    apt install sudo
             - run:
                 name: Install Docker client
                 command: |
