@@ -1,5 +1,7 @@
 # NG4-Data-Upload
 
+[![CircleCI](https://circleci.com/gh/canaantt/oncoscape-user-data-uploading/tree/master.svg?style=svg)](https://circleci.com/gh/canaantt/oncoscape-user-data-uploading/tree/master)
+
 # Steps to run Development Mode
 
 ## Step I: Before Start
