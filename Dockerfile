@@ -13,7 +13,7 @@ ARG MONGO_DOMAIN=local
 ENV MONGO_DOMAIN ${MONGO_DOMAIN}
 ARG NODE_PORT=local
 ENV NODE_PORT ${NODE_PORT}
-ARG APP_ROOT='/usr/src/oncoscape-user-data-uploading/'
+ARG APP_ROOT=${PWD}
 
 # Basics
 RUN apt-get -y update && \
@@ -22,9 +22,12 @@ RUN apt-get -y update && \
 
 RUN git clone https://github.com/canaantt/oncoscape-user-data-uploading
 # Create a directory where our app will be placed
-RUN mkdir -p /usr/src/oncoscape-user-data-uploading/uploads
-RUN chmod +x /usr/src/oncoscape-user-data-uploading/uploads
-WORKDIR /usr/src/oncoscape-user-data-uploading/server
+RUN mkdir -p oncoscape-user-data-uploading/uploads
+RUN chmod +x oncoscape-user-data-uploading/uploads
+WORKDIR oncoscape-user-data-uploading/server
+# RUN mkdir -p /usr/src/oncoscape-user-data-uploading/uploads
+# RUN chmod +x /usr/src/oncoscape-user-data-uploading/uploads
+# WORKDIR /usr/src/oncoscape-user-data-uploading/server
 
 # Install dependecies
 RUN npm install
