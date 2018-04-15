@@ -99,6 +99,10 @@ jobs:
             #         mv /tmp/docker/* /usr/bin
 
             # build and push Docker image
+            - run:
+                apt-get -y update && \
+                apt-get -y upgrade && \
+                apt-get install -y git nano
             - run: |
                   git clone https://github.com/canaantt/oncoscape-user-data-uploading
                   ls
