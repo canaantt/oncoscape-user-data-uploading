@@ -99,7 +99,7 @@ jobs:
 
             # build and push Docker image
             - run: |
-                  docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+                  docker build . -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
                 command: |
