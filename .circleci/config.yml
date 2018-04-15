@@ -53,8 +53,7 @@ jobs:
                     $(lsb_release -cs) \
                     stable"
                     sudo docker --version
-                    sudo service docker stop
-                    sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &
+                    sudo usermod -aG docker $USER
             - setup_remote_docker
             - run:
                 name: Build and deploy docker images
