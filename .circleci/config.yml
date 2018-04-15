@@ -5,6 +5,7 @@ jobs:
         # working_directory: ~/repo
         docker:
             - image: circleci/node:6.10-browsers
+            - image: 12345678.dkr.ecr.us-west-1.amazonaws.com/circleci/build:20180319
         steps:
             # Checkout the code from the branch into the working_directory
             - checkout
@@ -38,8 +39,24 @@ jobs:
             # the current branch
             # Backend Docker container build
             - run:
-                name: build docker container for uploading service
-                command: docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
+                name: Install docker
+                command: |
+                    apt-get update --fix-missing
+                    apt-get install -y apt-transport-https ca-certificates software-properties-common
+                    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+                    apt-key fingerprint 0EBFCD88
+                    add-apt-repository \
+                    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+                    $(lsb_release -cs) \
+                    stable"
+                    apt-get update
+                    apt-get install -y docker-ce
+                    docker --version
+            - setup_remote_docker
+            - run:
+                name: Build and deploy docker images
+                command: |
+                    docker build -t canaantt/oncoscape-data-upload:$CIRCLE_SHA1 .
             - run:
                 name: Building
                 command: |
