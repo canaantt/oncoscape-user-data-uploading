@@ -1,7 +1,6 @@
 const XLSX =require("xlsx");
 const _ = require('lodash');
 const zlib = require('zlib');
-const express = require('express');
 const awsCli = require('aws-cli-js');
 const Options = awsCli.Options;
 const AWSCLI = awsCli.Aws;
@@ -10,6 +9,7 @@ const awscli = new AWSCLI();
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const sqs = new AWS.SQS();
+
 var genemap = require('./data_uploading_modules/DatasetGenemap.json');
 var requirements = require('./data_uploading_modules/DatasetRequirements.json');
 var validate = require('./data_uploading_modules/DatasetValidate.js');
@@ -75,7 +75,7 @@ const json2S3 = (msg) => {
     // Upload Sheets To S3 (Specific)
     var s3UploadConfig = {
         region: 'us-west-2',
-        params: {Bucket:'oncoscape-users-data'}
+        params: {Bucket:'oncoscape-users-data/' + projectID}
     }
     uploadResults = sheetsSerialized.map(sheet => save.server(sheet, projectID, s3UploadConfig, AWS, s3, zlib));
    
@@ -102,6 +102,29 @@ const Consumer = require('sqs-consumer');
 //     sqs: new AWS.SQS()
 //   });
 //
+var getScan = function(filename) {
+    AWS.config.update({
+        region: 'us-west-2'
+    });
+    var docClient = new AWS.DynamoDB.DocumentClient();
+    var params = {
+        TableName: 'Account_Projects',
+        FilterExpression: 'DatasetFile_filename = :fn',
+        ExpressionAttributeValues: {
+            ':fn': filename
+            }
+        };
+    return new Promise((resolve, reject) => {
+        docClient.scan(params, function(err, data) {
+            if (err) {
+                console.error('Unable to query. Error:', JSON.stringify(err, null, 2));
+            } else {
+                console.log('Query succeeded. Result is: ', data.Items[0]);
+                resolve(data);
+            }});
+     });
+  };
+
 const app = Consumer.create({
   queueUrl: 'https://sqs.us-west-2.amazonaws.com/179462354929/upload2s3',
   handleMessage: (message, done) => {
@@ -109,18 +132,21 @@ const app = Consumer.create({
     console.log('==> the message is', filename);
     var params = {Bucket:"user-data-oncoscape",
                   Key: filename};
-
+    
     awscli.command('s3 cp s3://user-data-oncoscape/' + filename + ' /usr/src/app/uploads/' + filename, function (err, data) {
         if(err){
             console.log(err);
         } else {
             console.log('success');
-            var msg = {};
-            msg.filePath = '/usr/src/app/uploads/' + filename;
-            msg.projectID = 'aws-sample';
-            var signedURL = json2S3(msg);
-            console.log(signedURL);
-            done();
+            getScan(filename).then(res => {
+                var project_id = res.Items[0]['_id']
+                var msg = {};
+                msg.filePath = '/usr/src/app/uploads/' + filename;
+                msg.projectID = project_id; 
+                var signedURL = json2S3(msg);
+                console.log(signedURL);
+                done();
+            });
         }
     });
   },

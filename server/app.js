@@ -20,12 +20,12 @@ var Project = require('./models/project');
 //     // Set custom APM Server URL (default: http://localhost:8200)
 //     // serverUrl: '',
 //   });
-AWS.config.update({
-    region: 'us-west-2',
-    endpoint: 'https://dynamodb.us-west-2.amazonaws.com'
-  });
+// AWS.config.update({
+//     region: 'us-west-2',
+//     endpoint: 'https://dynamodb.us-west-2.amazonaws.com'
+//   });
   
-var db = new AWS.DynamoDB();
+// var db = new AWS.DynamoDB();
   
 // Middleware
 var app = express();
