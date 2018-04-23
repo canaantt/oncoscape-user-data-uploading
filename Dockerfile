@@ -42,6 +42,8 @@ RUN npm install pm2 -g
 # COPY server/. /usr/src/app/server
 # WORKDIR /usr/src/app
 
+# pm2 start ec2_app.js --node-args="--max-old-space-size=7000"  
+# CMD ["node", "EC2_server.js", "--max-old-space-size=7000"]
 
 EXPOSE 7776
 CMD ["node", "app.js"]
