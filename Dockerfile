@@ -18,7 +18,12 @@ ARG APP_ROOT=${PWD}
 # Basics
 RUN apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -y git nano
+    apt-get install -y git vim
+
+# Python + AWS CLI
+RUN apt-get install -y python3-pip && \
+    apt-get -y update
+RUN pip3 install awscli
 
 RUN git clone https://github.com/canaantt/oncoscape-user-data-uploading
 # Create a directory where our app will be placed
@@ -31,6 +36,7 @@ WORKDIR oncoscape-user-data-uploading/server
 
 # Install dependecies
 RUN npm install
+RUN npm install pm2 -g
 
 # RUN npm install aws-sdk -g 
 # COPY server/. /usr/src/app/server

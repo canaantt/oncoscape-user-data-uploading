@@ -34,7 +34,7 @@
    
       server = (sheetSerialized, projectID, s3UploadConfig, AWS, s3, zlib) => { 
         var result = {};
-        var filename = projectID + '_' + sheetSerialized.name + '_' + 'json.gz';
+        var filename = projectID + '_' + sheetSerialized.name + '_' + Date.now() + 'json.gz';
         s3Factory.gzip_upload2S3_private(sheetSerialized.res, filename, s3UploadConfig, s3, zlib);
         
         result['name'] = sheetSerialized.name;
@@ -53,7 +53,7 @@
       }
 
       toS3 = (manifestSerialized, projectID, s3UploadConfig, AWS, s3, zlib) => { 
-        var filename = projectID + '_manifest_json.gz';
+        var filename = projectID + '_' + Date.now() + 'manifest_json.gz';
         s3Factory.gzip_upload2S3_private(manifestSerialized, filename, s3UploadConfig, s3, zlib);
         return s3Factory.signURL(filename, s3);
       }
